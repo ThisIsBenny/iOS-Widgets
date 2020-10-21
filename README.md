@@ -19,3 +19,4 @@ _Roadmap_:
 
 _Credits_:
 * Sillium for the inspiration https://gist.github.com/Sillium/f904fb89444bc8dde12cfc07b8fa8728
+* Chaeimg for the Circle diagram (https://github.com/chaeimg/battCircle)

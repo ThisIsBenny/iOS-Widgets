@@ -2,10 +2,58 @@
 // These must be at the very top of the file. Do not edit.
 // icon-color: teal; icon-glyph: magic;
 
-// Credits Sillium@GitHub (https://gist.github.com/Sillium/f904fb89444bc8dde12cfc07b8fa8728)
+// Credits: 
+//   - Sillium@GitHub (https://gist.github.com/Sillium/f904fb89444bc8dde12cfc07b8fa8728)
+//   - Chaeimg@Github (https://github.com/chaeimg/battCircle)
 
 // How many minutes should the cache be valid
 let cacheMinutes = 60;
+
+const canvFillColor = '#EDEDED';
+const canvStrokeColor = '#121212';
+const canvBackColor = '#FD0000'; //Widget background color
+const canvTextColor = '#FFFFFF'; //Widget text color
+
+const canvas = new DrawContext();
+const canvSize = 200;
+const canvTextSize = 36;
+
+const canvWidth = 22;
+const canvRadius = 80;
+
+canvas.size = new Size(canvSize, canvSize);
+canvas.respectScreenScale = true;
+
+function sinDeg(deg) {
+  return Math.sin((deg * Math.PI) / 180);
+}
+
+function cosDeg(deg) {
+  return Math.cos((deg * Math.PI) / 180);
+}
+
+function drawArc(ctr, rad, w, deg) {
+  bgx = ctr.x - rad;
+  bgy = ctr.y - rad;
+  bgd = 2 * rad;
+  bgr = new Rect(bgx, bgy, bgd, bgd);
+
+  bgc = new Rect(0, 0, canvSize, canvSize);
+  canvas.setFillColor(new Color(canvBackColor));
+  canvas.fill(bgc);
+
+  canvas.setFillColor(new Color(canvFillColor));
+  canvas.setStrokeColor(new Color(canvStrokeColor));
+  canvas.setLineWidth(w);
+  canvas.strokeEllipse(bgr);
+
+  for (t = 0; t < deg; t++) {
+    rect_x = ctr.x + rad * sinDeg(t) - w / 2;
+    rect_y = ctr.y - rad * cosDeg(t) - w / 2;
+    rect_r = new Rect(rect_x, rect_y, w, w);
+    canvas.fillEllipse(rect_r);
+  }
+}
 
 async function getSessionCookies() {
   let req;
@@ -101,7 +149,8 @@ try {
 // Create Widget
 let widget = new ListWidget();
 
-widget.backgroundColor = new Color("#FD0000")
+widget.setPadding(10, 10, 10, 10)
+widget.backgroundColor = new Color(canvBackColor)
 
 let provider = widget.addText("Vodafone")
 provider.font = Font.mediumSystemFont(12)
@@ -110,17 +159,39 @@ widget.addSpacer()
 
 let remainingPercentage = (100 / data.total * data.remaining).toFixed(0);
 
-const remainingPercentageText = widget.addText(remainingPercentage + "%")
-remainingPercentageText.font = Font.boldSystemFont(36)
+drawArc(
+  new Point(canvSize / 2, canvSize / 2),
+  canvRadius,
+  canvWidth,
+  Math.floor(remainingPercentage * 3.6)
+);
+
+const canvTextRect = new Rect(
+  0,
+  100 - canvTextSize / 2,
+  canvSize,
+  canvTextSize
+);
+canvas.setTextAlignedCenter();
+canvas.setTextColor(new Color(canvTextColor));
+canvas.setFont(Font.boldSystemFont(canvTextSize));
+canvas.drawTextInRect(`${remainingPercentage}%`, canvTextRect);
+
+const canvImage = canvas.getImage();
+let image = widget.addImage(canvImage);
+image.centerAlignImage()
 
 widget.addSpacer()
 
-let remainingGB = (data.remaining / 1024).toFixed(1)
+// Total Values
+let remainingGB = (data.remaining / 1024).toFixed(2)
 let totalGB = (data.total / 1024).toFixed(0)
 let totalValuesText = widget.addText(`${remainingGB} GB von ${totalGB} GB`)
 totalValuesText.font = Font.mediumSystemFont(12)
+totalValuesText.centerAlignText()
 
-widget.addSpacer()
+// Last Update
+widget.addSpacer(5)
 let lastUpdateText = widget.addDate(lastUpdate)
 lastUpdateText.font = Font.mediumSystemFont(10)
 lastUpdateText.centerAlignText()
