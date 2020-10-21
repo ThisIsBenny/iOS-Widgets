@@ -21,6 +21,10 @@ If no parameter are set or not four colors are set the default color set for lig
 
 _Roadmap_:
 * Add GigaDepot volume
+* MegaByte Support
+
+_Contributers_:
+* [Necriso](https://github.com/Necriso)
 
 _Credits_:
 * Sillium for the inspiration https://gist.github.com/Sillium/f904fb89444bc8dde12cfc07b8fa8728

@@ -10,9 +10,12 @@
 let cacheMinutes = 60;
 
 let backColor; //Widget background color
+let backColor2; //Widget background color
 let textColor; //Widget text color
 let fillColor;
 let strokeColor;
+
+let useGradient = true
 
 let widgetInputRAW = args.widgetParameter;
 let widgetInput = null;
@@ -27,13 +30,16 @@ if (widgetInput !== null && widgetInput.length == 4) {
   textColor = widgetInput[1];
   fillColor = widgetInput[2];
   strokeColor = widgetInput[3];
+  useGradient = false
 } else if (Device.isUsingDarkAppearance()) {
-  backColor = '222222';
+  backColor = '111111';
+  backColor2 = '222222';
   textColor = 'EDEDED';
   fillColor = 'EDEDED';
   strokeColor = '121212';
 } else {
   backColor = 'D32D1F';
+  backColor2 = '76150C';
   textColor = 'EDEDED';
   fillColor = 'EDEDED';
   strokeColor = 'B0B0B0';
@@ -97,6 +103,7 @@ async function getSessionCookies() {
     let res = await req.loadJSON()
     return { cookies: req.response.cookies, msisdn: res.msisdn}
   } catch (e) {
+    console.log("Login vailed! Please check if Wifi is disabled.")
     console.log(e)
     throw e
   }
@@ -117,20 +124,23 @@ async function getUsage() {
   }
   try {
     let res = await req.loadJSON()
-    
+    console.log("unbilled-usage loaded")
+    console.log("Try to find usageGroup 'Daten'")
     let datenContainer = res['serviceUsageVBO']['usageAccounts'][0]['usageGroup'].find(function(v){
       return v.container == "Daten"
     })
+    console.log("usageGroup 'Daten' founded")
     let datenvolumen = datenContainer.usage.find(function(v){
       return v.code == "-1"
     })
     console.log(datenvolumen)
     return {
-      total: datenvolumen.total,
-      used: datenvolumen.used,
-      remaining: datenvolumen.remaining
+      total: datenvolumen.total || 0,
+      used: datenvolumen.used || 0,
+      remaining: datenvolumen.remaining || 0
     }
   } catch (e) {
+    console.log("Loading usage data failed")
     console.log(e)
     throw e
   }
@@ -151,14 +161,21 @@ let data;
 let lastUpdate
 try {
   // If cache exists and it's been less than 30 minutes since last request, use cached data.
-  if (cacheExists && (today.getTime() - cacheDate.getTime()) < (cacheMinutes * 60 * 1000)) {
+  if (cacheExists&& (today.getTime() - cacheDate.getTime()) < (cacheMinutes * 60 * 1000)) {
     console.log("Get from Cache")
     data = JSON.parse(files.readString(cachePath))
     lastUpdate = cacheDate
   } else {
     console.log("Get from API")
     data = await getUsage()
-    files.writeString(cachePath, JSON.stringify(data))
+    console.log("Write Data to Cache")
+    try {
+      files.writeString(cachePath, JSON.stringify(data))
+    } catch(e) {
+      console.log("Creating Cache failed!")
+      console.log(e)
+    }
+
     lastUpdate = today
   }
 } catch (e) {
@@ -168,15 +185,28 @@ try {
   lastUpdate = cacheDate
 }
 
+console.log(data)
+
 // Create Widget
 let widget = new ListWidget();
 
 widget.setPadding(10, 10, 10, 10)
-widget.backgroundColor = new Color(backColor)
+
+if (useGradient) {
+  const gradient = new LinearGradient()
+  gradient.locations = [0, 1]
+  gradient.colors = [
+    new Color(backColor),
+    new Color(backColor2)
+  ]
+  widget.backgroundGradient = gradient
+} else {
+  widget.backgroundColor = new Color(backColor)
+}
 
 let provider = widget.addText("Vodafone")
 provider.font = Font.mediumSystemFont(12)
-provider.color = new Color(textColor)
+provider.textColor = new Color(textColor)
 
 widget.addSpacer()
 
@@ -212,7 +242,7 @@ let totalGB = (data.total / 1024).toFixed(0)
 let totalValuesText = widget.addText(`${remainingGB} GB von ${totalGB} GB`)
 totalValuesText.font = Font.mediumSystemFont(12)
 totalValuesText.centerAlignText()
-totalValuesText.color = new Color(textColor)
+totalValuesText.textColor = new Color(textColor)
 
 // Last Update
 widget.addSpacer(5)
