@@ -9,10 +9,35 @@
 // How many minutes should the cache be valid
 let cacheMinutes = 60;
 
-const canvFillColor = '#EDEDED';
-const canvStrokeColor = '#121212';
-const canvBackColor = '#FD0000'; //Widget background color
-const canvTextColor = '#FFFFFF'; //Widget text color
+let backColor; //Widget background color
+let textColor; //Widget text color
+let fillColor;
+let strokeColor;
+
+let widgetInputRAW = args.widgetParameter;
+let widgetInput = null;
+
+if (widgetInputRAW !== null) {
+  widgetInput = widgetInputRAW.toString().split("|");
+}
+
+// BackgroundColor|TextColor|CircleFillColor|CircleStrokeColor
+if (widgetInput !== null && widgetInput.length == 4) {
+  backColor = widgetInput[0];
+  textColor = widgetInput[1];
+  fillColor = widgetInput[2];
+  strokeColor = widgetInput[3];
+} else if (Device.isUsingDarkAppearance()) {
+  backColor = '222222';
+  textColor = 'EDEDED';
+  fillColor = 'EDEDED';
+  strokeColor = '121212';
+} else {
+  backColor = 'D32D1F';
+  textColor = 'EDEDED';
+  fillColor = 'EDEDED';
+  strokeColor = 'B0B0B0';
+}
 
 const canvas = new DrawContext();
 const canvSize = 200;
@@ -39,11 +64,11 @@ function drawArc(ctr, rad, w, deg) {
   bgr = new Rect(bgx, bgy, bgd, bgd);
 
   bgc = new Rect(0, 0, canvSize, canvSize);
-  canvas.setFillColor(new Color(canvBackColor));
+  canvas.setFillColor(new Color(backColor));
   canvas.fill(bgc);
 
-  canvas.setFillColor(new Color(canvFillColor));
-  canvas.setStrokeColor(new Color(canvStrokeColor));
+  canvas.setFillColor(new Color(fillColor));
+  canvas.setStrokeColor(new Color(strokeColor));
   canvas.setLineWidth(w);
   canvas.strokeEllipse(bgr);
 
@@ -150,10 +175,11 @@ try {
 let widget = new ListWidget();
 
 widget.setPadding(10, 10, 10, 10)
-widget.backgroundColor = new Color(canvBackColor)
+widget.backgroundColor = new Color(backColor)
 
 let provider = widget.addText("Vodafone")
 provider.font = Font.mediumSystemFont(12)
+provider.color = new Color(textColor)
 
 widget.addSpacer()
 
@@ -173,7 +199,7 @@ const canvTextRect = new Rect(
   canvTextSize
 );
 canvas.setTextAlignedCenter();
-canvas.setTextColor(new Color(canvTextColor));
+canvas.setTextColor(new Color(textColor));
 canvas.setFont(Font.boldSystemFont(canvTextSize));
 canvas.drawTextInRect(`${remainingPercentage}%`, canvTextRect);
 
@@ -189,6 +215,7 @@ let totalGB = (data.total / 1024).toFixed(0)
 let totalValuesText = widget.addText(`${remainingGB} GB von ${totalGB} GB`)
 totalValuesText.font = Font.mediumSystemFont(12)
 totalValuesText.centerAlignText()
+totalValuesText.color = new Color(textColor)
 
 // Last Update
 widget.addSpacer(5)
@@ -196,7 +223,7 @@ let lastUpdateText = widget.addDate(lastUpdate)
 lastUpdateText.font = Font.mediumSystemFont(10)
 lastUpdateText.centerAlignText()
 lastUpdateText.applyTimeStyle()
-lastUpdateText.textColor = Color.darkGray()
+lastUpdateText.textColor = Color.lightGray()
 
 if(!config.runsInWidget) {
   await widget.presentSmall()
