@@ -11,8 +11,9 @@ Then you have to copy & paste the desired script into the Scriptable App. Now yo
 This widget loads the remaining data volume via the MyVodafone API. For this purpose, an automatic login via the cell phone network is performed, therefore it is necessary that the WIFI is not active for the first usage.
 After the first usage, the informations are cached and will be used in case of an active WIFI Connection. The cached information will be also used to prevent the API from a lot of request. The TTL (Time To Live) of the Cache can be setup at the beginning of the script (default is 60 min)
 
-It is possible to overwrite the used colors of the widget. To overwrite the color, you have to add four color codes separated by | to the widget parameter option: BackgroundColor|TextColor|CircleFillColor|CircleStrokeColor
-Example: D32D1F|EDEDED|EDEDED|B0B0B0
+It is possible to overwrite the used colors of the widget. To overwrite the colors, you have to add four color codes separated by | to the widget parameter option: `BackgroundColor|TextColor|CircleFillColor|CircleStrokeColor`
+
+Example: `D32D1F|EDEDED|EDEDED|B0B0B0`
 
 If no parameter are set or not four colors are set the default color set for light or dark Mode will be used.
 
