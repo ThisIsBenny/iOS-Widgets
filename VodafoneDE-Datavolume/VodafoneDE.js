@@ -101,7 +101,22 @@ try {
 // Create Widget
 let widget = new ListWidget();
 
-widget.backgroundColor = new Color("#FD0000")
+const gradient = new LinearGradient()
+gradient.locations = [0, 1]
+
+if (Device.isUsingDarkAppearance()){
+  gradient.colors = [
+    new Color("111111"),
+    new Color("222222")
+  ]
+} else {
+  gradient.colors = [
+    new Color("D32D1F"),
+    new Color("76150C")
+  ]  
+}
+
+widget.backgroundGradient = gradient
 
 let provider = widget.addText("Vodafone")
 provider.font = Font.mediumSystemFont(12)
@@ -125,7 +140,7 @@ let lastUpdateText = widget.addDate(lastUpdate)
 lastUpdateText.font = Font.mediumSystemFont(10)
 lastUpdateText.centerAlignText()
 lastUpdateText.applyTimeStyle()
-lastUpdateText.textColor = Color.darkGray()
+lastUpdateText.textColor = Color.lightGray()
 
 if(!config.runsInWidget) {
   await widget.presentSmall()
