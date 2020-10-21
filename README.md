@@ -23,7 +23,7 @@ _Roadmap_:
 * Add GigaDepot volume
 * MegaByte Support
 
-_Contributers_:
+_Contributors_:
 * [Necriso](https://github.com/Necriso)
 
 _Credits_:
