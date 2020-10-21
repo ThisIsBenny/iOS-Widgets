@@ -9,7 +9,7 @@ Then you have to copy & paste the desired script into the Scriptable App. Now yo
 
 This widget loads the remaining data volume via the MyVodafone API. For this purpose, an automatic login via the cell phone network is performed, therefore it is necessary that the WIFI is not active.
 
-[Download](https://raw.githubusercontent.com/ThisIsBenny/iOS-Widgets/main/VodafoneDE-Datavolume/VodafoneDE.js)
+[[Download]](https://raw.githubusercontent.com/ThisIsBenny/iOS-Widgets/main/VodafoneDE-Datavolume/VodafoneDE.js)
 
 _Roadmap_:
 * Caching as Fallback in Case of active WIFI
