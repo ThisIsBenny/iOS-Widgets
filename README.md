@@ -16,3 +16,6 @@ _Roadmap_:
 * Change Background Color
 * Add diagramm
 * Add GigaDepot volume
+
+_Credits_:
+* Sillium for the inspiration https://gist.github.com/Sillium/f904fb89444bc8dde12cfc07b8fa8728
