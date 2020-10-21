@@ -46,6 +46,7 @@ const canvTextSize = 36;
 const canvWidth = 22;
 const canvRadius = 80;
 
+canvas.opaque = false
 canvas.size = new Size(canvSize, canvSize);
 canvas.respectScreenScale = true;
 
@@ -62,10 +63,6 @@ function drawArc(ctr, rad, w, deg) {
   bgy = ctr.y - rad;
   bgd = 2 * rad;
   bgr = new Rect(bgx, bgy, bgd, bgd);
-
-  bgc = new Rect(0, 0, canvSize, canvSize);
-  canvas.setFillColor(new Color(backColor));
-  canvas.fill(bgc);
 
   canvas.setFillColor(new Color(fillColor));
   canvas.setStrokeColor(new Color(strokeColor));
