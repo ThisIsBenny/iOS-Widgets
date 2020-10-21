@@ -101,6 +101,7 @@ async function getSessionCookies() {
   })
   try {
     let res = await req.loadJSON()
+    console.log("Login sucessfull")
     return { cookies: req.response.cookies, msisdn: res.msisdn}
   } catch (e) {
     console.log("Login vailed! Please check if Wifi is disabled.")
