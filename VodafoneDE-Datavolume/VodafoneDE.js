@@ -4,6 +4,9 @@
 
 // Credits Sillium@GitHub (https://gist.github.com/Sillium/f904fb89444bc8dde12cfc07b8fa8728)
 
+// How many minutes should the cache be valid
+let cacheMinutes = 60;
+
 async function getSessionCookies() {
   let req;
   req = new Request("https://www.vodafone.de/mint/rest/session/start")
@@ -22,20 +25,18 @@ async function getSessionCookies() {
   })
   try {
     let res = await req.loadJSON()
-    console.log(res)
     return { cookies: req.response.cookies, msisdn: res.msisdn}
   } catch (e) {
     console.log(e)
+    throw e
   }
 };
 
 async function getUsage() {
   let {cookies, msisdn} = await getSessionCookies();
-  console.log(cookies)
   let CookieValues = cookies.map(function(v){
     return v.name + "=" + v.value
   })
-  console.log(CookieValues)
   let req;
   req = new Request(`https://www.vodafone.de/api/enterprise-resources/core/bss/sub-nil/mobile/payment/service-usages/subscriptions/${msisdn}/unbilled-usage`)
   req.headers = {
@@ -61,14 +62,43 @@ async function getUsage() {
     }
   } catch (e) {
     console.log(e)
+    throw e
   }
 };
 
-let data = await getUsage()
+var today = new Date();
 
-console.log(data)
+// Set up the file manager.
+const files = FileManager.local()
 
+// Set up cache .
+const cachePath = files.joinPath(files.documentsDirectory(), "widget-vodafone")
+const cacheExists = files.fileExists(cachePath)
+const cacheDate = cacheExists ? files.modificationDate(cachePath) : 0
 
+// Get Data
+let data;
+let lastUpdate
+try {
+  // If cache exists and it's been less than 30 minutes since last request, use cached data.
+  if (cacheExists && (today.getTime() - cacheDate.getTime()) < (cacheMinutes * 60 * 1000)) {
+    console.log("Get from Cache")
+    data = JSON.parse(files.readString(cachePath))
+    lastUpdate = cacheDate
+  } else {
+    console.log("Get from API")
+    data = await getUsage()
+    files.writeString(cachePath, JSON.stringify(data))
+    lastUpdate = today
+  }
+} catch (e) {
+  console.log(e)
+  console.log("Get from Cache")
+  data = JSON.parse(files.readString(cachePath))
+  lastUpdate = cacheDate
+}
+
+// Create Widget
 let widget = new ListWidget();
 
 widget.backgroundColor = new Color("#FD0000")
@@ -90,7 +120,12 @@ let totalGB = (data.total / 1024).toFixed(0)
 let totalValuesText = widget.addText(`${remainingGB} GB von ${totalGB} GB`)
 totalValuesText.font = Font.mediumSystemFont(12)
 
-
+widget.addSpacer()
+let lastUpdateText = widget.addDate(lastUpdate)
+lastUpdateText.font = Font.mediumSystemFont(10)
+lastUpdateText.centerAlignText()
+lastUpdateText.applyTimeStyle()
+lastUpdateText.textColor = Color.darkGray()
 
 if(!config.runsInWidget) {
   await widget.presentSmall()

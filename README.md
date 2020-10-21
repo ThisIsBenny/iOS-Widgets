@@ -7,12 +7,12 @@ Then you have to copy & paste the desired script into the Scriptable App. Now yo
 ## Vodafone DE Datavolume
 ![Vodafone Widget](https://raw.githubusercontent.com/ThisIsBenny/iOS-Widgets/main/VodafoneDE-Datavolume/preview.jpeg)
 
-This widget loads the remaining data volume via the MyVodafone API. For this purpose, an automatic login via the cell phone network is performed, therefore it is necessary that the WIFI is not active.
+This widget loads the remaining data volume via the MyVodafone API. For this purpose, an automatic login via the cell phone network is performed, therefore it is necessary that the WIFI is not active for the first usage.
+After the first usage, the informations are cached and will be used in case of an active WIFI Connection. The cached information will be also used to prevent the API from a lot of request. The TTL (Time To Live) of the Cache can be setup at the beginning of the script (default is 60 min)
 
 [[Download]](https://raw.githubusercontent.com/ThisIsBenny/iOS-Widgets/main/VodafoneDE-Datavolume/VodafoneDE.js)
 
 _Roadmap_:
-* Caching as Fallback in Case of active WIFI
 * Change Background Color
 * Add diagramm
 * Add GigaDepot volume
