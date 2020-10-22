@@ -55,11 +55,15 @@ This widget displays the departure times of a selected station. The data for thi
 
 
 ### Setup
-A Station-ID is required to set up the widget. The ID can be searched with this URL: 
+A Station-ID is required to set up the widget. To get the Station-ID, you can run the Script directly in the Scriptable App.
+After you confirm the prompt with the "yes" button, a list of stations will be displayed. Click at the desired station on "Copy ID to clipboard". The Station-ID is copied to the clipboard. Alternativ, you can use the method descriped below to get the Station-ID.
+
+Add the Station-ID and the needed Walking Minutes to the Station, separated by a ";", to the Widget Parameter like this:
+![VRR-Monitor Widget setup](https://raw.githubusercontent.com/ThisIsBenny/iOS-Widgets/main/VRR-Monitor/setup.jpeg)
+
+#### Alternativ
+The Station-ID can be searched with this URL: 
 `https://abfahrtsmonitor.vrr.de/backend/api/stations/search?query=`
 
 Put the name of the station behind the "query=" in the URL and open the URL in your Browser.
 Example: `https://abfahrtsmonitor.vrr.de/backend/api/stations/search?query=Düsseldorf HBF`
-
-Add the Station-ID and the needed Walking Minutes, separated by a ";", to the Widget Parameter like this:
-![VRR-Monitor Widget setup](https://raw.githubusercontent.com/ThisIsBenny/iOS-Widgets/main/VRR-Monitor/setup.jpeg)
