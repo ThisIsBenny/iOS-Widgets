@@ -12,7 +12,6 @@ You can also download a Script with this Shortcut via iOS Share Menu: https://ww
 
 ### Roadmap
 The following widget are planned from my side:
-* VRR Abfahrmonitor
 * Countdown
 * Covid-19 7-Day-Inzidenz
 * Skype Meeting Dial-In via Phone or Web
