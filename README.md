@@ -34,6 +34,7 @@ If no parameter are set or not four colors are set the default color set for lig
 _Roadmap_:
 * Add GigaDepot volume
 * MegaByte Support
+* Show remaining Days
 
 _Contributors_:
 * [Necriso](https://github.com/Necriso)
