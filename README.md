@@ -2,7 +2,10 @@
 This is a Collection of Scripts which can be used with the Scriptable App to create a iOS Widget.
 
 To use the Script, you have to Download the App "Scriptable" from the App Store: https://apps.apple.com/de/app/scriptable/id1405459188
+
 Then you have to copy & paste the desired script into the Scriptable App. Now you can create a Sciptable widget and select the script in the widget settings.
+
+You can also download a Script with this Shortcut via iOS Share Menu: https://www.reddit.com/r/Scriptable/comments/jdcyuu/simply_ios_shortcut_to_renamesave_a_script_from
 
 ### Roadmap
 The following widget are planned from my side:
