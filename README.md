@@ -13,7 +13,6 @@ You can also download a Script with this Shortcut via iOS Share Menu: https://ww
 ### Roadmap
 The following widget are planned from my side:
 * Countdown
-* Covid-19 7-Day-Inzidenz
 * Skype Meeting Dial-In via Phone or Web
 
 If you have widget ideas, please feel free and share those ideas with me via GitHub Issue
