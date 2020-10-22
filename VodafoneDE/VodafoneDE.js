@@ -2,9 +2,21 @@
 // These must be at the very top of the file. Do not edit.
 // icon-color: teal; icon-glyph: magic;
 
-// Credits: 
-//   - Sillium@GitHub (https://gist.github.com/Sillium/f904fb89444bc8dde12cfc07b8fa8728)
-//   - Chaeimg@Github (https://github.com/chaeimg/battCircle)
+/**************
+Version 1.0.1
+
+Changelog:
+  v1.0.1:
+          - Better Error handling
+          - Better logging
+          - Fallback Widget screen in case of an error
+
+If you have problems or need help, ask for support here: https://github.com/ThisIsBenny/iOS-Widgets/issues
+
+Credits: 
+  - Sillium@GitHub (https://gist.github.com/Sillium/f904fb89444bc8dde12cfc07b8fa8728)
+  - Chaeimg@Github (https://github.com/chaeimg/battCircle)
+**************/
 
 // How many minutes should the cache be valid
 let cacheMinutes = 60;
@@ -101,12 +113,10 @@ async function getSessionCookies() {
   })
   try {
     let res = await req.loadJSON()
-    console.log("Login sucessfull")
     return { cookies: req.response.cookies, msisdn: res.msisdn}
   } catch (e) {
     console.log("Login vailed! Please check if Wifi is disabled.")
-    console.log(e)
-    throw e
+    throw new Error(`Login failed with HTTP-Status-Code ${req.response.statusCode}`)
   }
 };
 
@@ -130,15 +140,26 @@ async function getUsage() {
     let datenContainer = res['serviceUsageVBO']['usageAccounts'][0]['usageGroup'].find(function(v){
       return v.container == "Daten"
     })
-    console.log("usageGroup 'Daten' founded")
+    
+    if (datenContainer === undefined) {
+      throw new Error("Can't find usageGroup 'Daten'")
+    } else {
+      console.log("usageGroup 'Daten' founded")
+    }
+    
     let datenvolumen = datenContainer.usage.find(function(v){
       return v.code == "-1"
     })
-    console.log(datenvolumen)
+    
+    if (datenvolumen === undefined) {
+      console.log("Can't find Usage with Code -1. Please check the following log to find the correct code for your case and addjust the code to 4 lines above: " + JSON.stringify(datenContainer.usage))
+      throw new Error("Can't find Usage with Code -1.")
+    }
+    
     return {
-      total: datenvolumen.total || 0,
-      used: datenvolumen.used || 0,
-      remaining: datenvolumen.remaining || 0
+      total: datenvolumen.total,
+      used: datenvolumen.used,
+      remaining: datenvolumen.remaining
     }
   } catch (e) {
     console.log("Loading usage data failed")
@@ -181,77 +202,85 @@ try {
   }
 } catch (e) {
   console.log(e)
-  console.log("Get from Cache")
-  data = JSON.parse(files.readString(cachePath))
-  lastUpdate = cacheDate
+  if (cacheExists) { 
+    console.log("Get from Cache")
+    data = JSON.parse(files.readString(cachePath))
+    lastUpdate = cacheDate
+  } else {
+    console.log("No fallback to cache possible. Due to missing cache.")
+  }
 }
-
-console.log(data)
 
 // Create Widget
 let widget = new ListWidget();
 
 widget.setPadding(10, 10, 10, 10)
 
-if (useGradient) {
-  const gradient = new LinearGradient()
-  gradient.locations = [0, 1]
-  gradient.colors = [
-    new Color(backColor),
-    new Color(backColor2)
-  ]
-  widget.backgroundGradient = gradient
+if (data !== undefined) {
+  if (useGradient) {
+    const gradient = new LinearGradient()
+    gradient.locations = [0, 1]
+    gradient.colors = [
+      new Color(backColor),
+      new Color(backColor2)
+    ]
+    widget.backgroundGradient = gradient
+  } else {
+    widget.backgroundColor = new Color(backColor)
+  }
+  
+  let provider = widget.addText("Vodafone")
+  provider.font = Font.mediumSystemFont(12)
+  provider.textColor = new Color(textColor)
+  
+  widget.addSpacer()
+  
+  let remainingPercentage = (100 / data.total * data.remaining).toFixed(0);
+  
+  drawArc(
+    new Point(canvSize / 2, canvSize / 2),
+    canvRadius,
+    canvWidth,
+    Math.floor(remainingPercentage * 3.6)
+  );
+  
+  const canvTextRect = new Rect(
+    0,
+    100 - canvTextSize / 2,
+    canvSize,
+    canvTextSize
+  );
+  canvas.setTextAlignedCenter();
+  canvas.setTextColor(new Color(textColor));
+  canvas.setFont(Font.boldSystemFont(canvTextSize));
+  canvas.drawTextInRect(`${remainingPercentage}%`, canvTextRect);
+  
+  const canvImage = canvas.getImage();
+  let image = widget.addImage(canvImage);
+  image.centerAlignImage()
+  
+  widget.addSpacer()
+  
+  // Total Values
+  let remainingGB = (data.remaining / 1024).toFixed(2)
+  let totalGB = (data.total / 1024).toFixed(0)
+  let totalValuesText = widget.addText(`${remainingGB} GB von ${totalGB} GB`)
+  totalValuesText.font = Font.mediumSystemFont(12)
+  totalValuesText.centerAlignText()
+  totalValuesText.textColor = new Color(textColor)
+  
+  // Last Update
+  widget.addSpacer(5)
+  let lastUpdateText = widget.addDate(lastUpdate)
+  lastUpdateText.font = Font.mediumSystemFont(10)
+  lastUpdateText.centerAlignText()
+  lastUpdateText.applyTimeStyle()
+  lastUpdateText.textColor = Color.lightGray() 
 } else {
-  widget.backgroundColor = new Color(backColor)
+  let fallbackText = widget.addText("Es ist ein Fehler aufgetreten! Bitte prüfen Sie die Logs direkt in der App.")
+  fallbackText.font = Font.mediumSystemFont(12)
+  fallbackText.textColor = new Color(textColor)
 }
-
-let provider = widget.addText("Vodafone")
-provider.font = Font.mediumSystemFont(12)
-provider.textColor = new Color(textColor)
-
-widget.addSpacer()
-
-let remainingPercentage = (100 / data.total * data.remaining).toFixed(0);
-
-drawArc(
-  new Point(canvSize / 2, canvSize / 2),
-  canvRadius,
-  canvWidth,
-  Math.floor(remainingPercentage * 3.6)
-);
-
-const canvTextRect = new Rect(
-  0,
-  100 - canvTextSize / 2,
-  canvSize,
-  canvTextSize
-);
-canvas.setTextAlignedCenter();
-canvas.setTextColor(new Color(textColor));
-canvas.setFont(Font.boldSystemFont(canvTextSize));
-canvas.drawTextInRect(`${remainingPercentage}%`, canvTextRect);
-
-const canvImage = canvas.getImage();
-let image = widget.addImage(canvImage);
-image.centerAlignImage()
-
-widget.addSpacer()
-
-// Total Values
-let remainingGB = (data.remaining / 1024).toFixed(2)
-let totalGB = (data.total / 1024).toFixed(0)
-let totalValuesText = widget.addText(`${remainingGB} GB von ${totalGB} GB`)
-totalValuesText.font = Font.mediumSystemFont(12)
-totalValuesText.centerAlignText()
-totalValuesText.textColor = new Color(textColor)
-
-// Last Update
-widget.addSpacer(5)
-let lastUpdateText = widget.addDate(lastUpdate)
-lastUpdateText.font = Font.mediumSystemFont(10)
-lastUpdateText.centerAlignText()
-lastUpdateText.applyTimeStyle()
-lastUpdateText.textColor = Color.lightGray()
 
 if(!config.runsInWidget) {
   await widget.presentSmall()
