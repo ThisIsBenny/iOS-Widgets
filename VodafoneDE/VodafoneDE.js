@@ -174,7 +174,7 @@ async function getUsage() {
       console.log(ErrorMsg)
 
       const listOfCodeInResponse = datenContainer.usage.map(function(v) {
-        return v.code;
+        return `Code: "${v.code}" for "${v.description}"`;
       })
       console.log("Please check the following list to find the correct code for your case and adjust the list of codes at the beginnging: " + listOfCodeInResponse.join(", "))
       throw new Error(ErrorMsg)
