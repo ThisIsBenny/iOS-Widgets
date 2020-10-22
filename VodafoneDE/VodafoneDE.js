@@ -3,9 +3,11 @@
 // icon-color: red; icon-glyph: broadcast-tower;
 
 /**************
-Version 1.1.0
+Version 1.1.1
 
 Changelog:
+  v1.1.1:
+          - new CallYa Tariff added: C_DIY_Data_National
   v1.1.0:
           - Login via MeinVodafone Login added
           - Show Remaining Days
@@ -37,7 +39,7 @@ const password = "";
 const phonenumber = ""; // with leading 49 instead of 0. Example: 4917212345678
 
 // Please add additional values to these list, in case that your contract/tarif isn't supported by these default values.
-const containerList = ['Daten', 'D_EU_DATA']
+const containerList = ['Daten', 'D_EU_DATA', 'C_DIY_Data_National']
 const codeList = ['-1', '45500']
 
 ////////////////////////////////////////////////////////////////////////////////
