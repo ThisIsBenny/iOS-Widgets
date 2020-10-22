@@ -3,9 +3,11 @@
 // icon-color: teal; icon-glyph: magic;
 
 /**************
-Version 1.0.1
+Version 1.0.2
 
 Changelog:
+  v1.0.2:
+          - Enhanced logging for CallYa troubeshooting
   v1.0.1:
           - Better Error handling
           - Better logging
@@ -142,6 +144,7 @@ async function getUsage() {
     })
     
     if (datenContainer === undefined) {
+      console.log(JSON.stringify(res, null, 2))
       throw new Error("Can't find usageGroup 'Daten'")
     } else {
       console.log("usageGroup 'Daten' founded")
