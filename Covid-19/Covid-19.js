@@ -1,14 +1,37 @@
 // Variables used by Scriptable.
 // These must be at the very top of the file. Do not edit.
 // icon-color: blue; icon-glyph: microscope;
+
+/**************
+Credits:
+  - drewkerr@GitHub (https://github.com/drewkerr/scriptable) for the diagram idea
+**************/
+
 // How many minutes should the cache be valid
-let cacheMinutes = 60 * 2;
+const cacheMinutes = 60 * 2;
+const population = 646000;
+const daysInGraph = 14;
 
 ////////////////////////////////////////////////////////////////////////////////
 let backColor; //Widget background color
 let backColor2; //Widget background color
 let textColor; //Widget text color
 let textWarningColor; //Widget warning text color
+let graphColor;
+
+if (Device.isUsingDarkAppearance()) {
+  backColor = '111111';
+  backColor2 = '222222';
+  textColor = 'EDEDED';
+  textWarningColor = 'CB4335';
+  graphColor = 'EDEDED';
+} else {
+  backColor = '1A5276';
+  backColor2 = '1F618D';
+  textColor = 'EDEDED';
+  textWarningColor = 'CB4335';
+  graphColor = 'EDEDED';
+}
 
 var today = new Date();
 
@@ -20,6 +43,22 @@ const path = files.joinPath(files.documentsDirectory(), "widget-covid")
 const cacheExists = files.fileExists(path)
 const cacheDate = cacheExists ? files.modificationDate(path) : 0
 
+function columnGraph(data, width, height, colour) {
+  let max = Math.max(...data)
+  let context = new DrawContext()
+  context.size = new Size(width, height)
+  context.opaque = false
+  context.setFillColor(colour)
+  data.forEach((value, index) => {
+    let w = width / (2 * data.length - 1)
+    let h = value / max * height
+    let x = width - (index * 2 + 1) * w
+    let y = height - h
+    let rect = new Rect(x, y, w, h)
+    context.fillRect(rect)
+  })
+  return context
+}
 
 async function fetchCovidData() {
   let csv;
@@ -40,26 +79,19 @@ async function getCovidSevenDayIndex() {
   let data = await fetchCovidData();
   let diff = data[data.length - 1][4] - data[data.length - 8][4];
   let diffBefore = data[data.length - 2][4] - data[data.length - 9][4];
-  let idx = diff / 646000 * 100000;
-  let idxBefore = diffBefore / 646000 * 100000;
-  return {index: idx.toFixed(0), indexBefore: idxBefore.toFixed(0), growing: (idx > idxBefore ? true : false), date: (data[data.length - 1][0]).replace('2020', '')};
+  let idx = diff / population * 100000;
+  let idxBefore = diffBefore / population * 100000;
+  
+  let graph = [];
+  for (let i = 0; i < daysInGraph; i++) {  
+    let diff = data[data.length - 1 - i][4] - data[data.length - 8 - i][4];
+    graph.push((diff / population * 100000).toFixed(0))
+  }
+  
+  return {index: idx.toFixed(0), growing: (idx > idxBefore ? true : false), date: (data[data.length - 1][0]).replace('2020', ''), graph};
 }
 
-let covidIndex = await getCovidSevenDayIndex()
-console.log(covidIndex)
-
-
-if (Device.isUsingDarkAppearance()) {
-  backColor = '111111';
-  backColor2 = '222222';
-  textColor = 'EDEDED';
-  textWarningColor = 'CB4335';
-} else {
-  backColor = '1A5276';
-  backColor2 = '1F618D';
-  textColor = 'EDEDED';
-  textWarningColor = 'CB4335';
-}
+let data = await getCovidSevenDayIndex()
 
 // Create Widget
 let widget = new ListWidget();
@@ -80,18 +112,21 @@ provider.font = Font.mediumSystemFont(12)
 provider.textColor = new Color(textColor)
 
 widget.addSpacer()
-
-
   
-let covidText = widget.addText(`${(covidIndex.growing ? "⬈" : "⬊")} ${+covidIndex.index}`)
+let covidText = widget.addText(`${(data.growing ? "⬈" : "⬊")} ${+data.index}`)
 covidText.font = Font.regularSystemFont(50)
-covidText.textColor = covidIndex.index < 50 ? new Color(textColor) : (new Color(textWarningColor));
+covidText.textColor = data.index < 50 ? new Color(textColor) : (new Color(textWarningColor));
 covidText.centerAlignText()
 
 widget.addSpacer()
 
-let dateText = widget.addText(`Stand: ${covidIndex.date}`)
-dateText.font = Font.mediumSystemFont(12)
+let image = columnGraph(data["graph"], 400, 50, new Color(graphColor)).getImage()
+widget.addImage(image)
+
+widget.addSpacer(5)
+
+let dateText = widget.addText(`Stand: ${data.date}`)
+dateText.font = Font.mediumSystemFont(8)
 dateText.textColor = new Color(textColor)
 
 
