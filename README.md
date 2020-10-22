@@ -46,8 +46,8 @@ It is possible to add the MeinVodafone Credentails to the beginning of script, w
 * Chaeimg for the Circle diagram (https://github.com/chaeimg/battCircle)
 
 ## VRR-Monitor
-![VRR-Monitor Widget Preview light](https://raw.githubusercontent.com/ThisIsBenny/iOS-Widgets/main/VRR-Monitor/previewLight.png)
-![VRR-Monitor Widget Preview dark](https://raw.githubusercontent.com/ThisIsBenny/iOS-Widgets/main/VRR-Monitor/previewDark.png)
+![VRR-Monitor Widget Preview light](https://raw.githubusercontent.com/ThisIsBenny/iOS-Widgets/main/VRR-Monitor/previewLight.jpeg)
+![VRR-Monitor Widget Preview dark](https://raw.githubusercontent.com/ThisIsBenny/iOS-Widgets/main/VRR-Monitor/previewDark.jpeg)
 
 This widget displays the departure times of a selected station. The data for this is provided by the Verkehrsverbund Rhein-Ruhr (VRR), which is why only stations within the VRR are supported.
 
