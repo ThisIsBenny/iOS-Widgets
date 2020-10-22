@@ -3,9 +3,12 @@
 // icon-color: teal; icon-glyph: magic;
 
 /**************
-Version 1.0.2
+Version 1.0.3
 
 Changelog:
+  v1.0.3:
+          - CallYa Support
+          - Write more useful information in the log, so that you can add support yourself if necessary
   v1.0.2:
           - Enhanced logging for CallYa troubeshooting
   v1.0.1:
@@ -23,12 +26,16 @@ Credits:
 // How many minutes should the cache be valid
 let cacheMinutes = 60;
 
+// Please add additional values to these list, in case that your contract/tarif isn't supported by these default values.
+const containerList = ['Daten', 'D_EU_DATA']
+const codeList = ['-1', '45500']
+
+////////////////////////////////////////////////////////////////////////////////
 let backColor; //Widget background color
 let backColor2; //Widget background color
 let textColor; //Widget text color
 let fillColor;
 let strokeColor;
-
 let useGradient = true
 
 let widgetInputRAW = args.widgetParameter;
@@ -138,25 +145,39 @@ async function getUsage() {
   try {
     let res = await req.loadJSON()
     console.log("unbilled-usage loaded")
-    console.log("Try to find usageGroup 'Daten'")
     let datenContainer = res['serviceUsageVBO']['usageAccounts'][0]['usageGroup'].find(function(v){
-      return v.container == "Daten"
+      return containerList.includes(v.container)
     })
     
     if (datenContainer === undefined) {
-      console.log(JSON.stringify(res, null, 2))
-      throw new Error("Can't find usageGroup 'Daten'")
-    } else {
-      console.log("usageGroup 'Daten' founded")
+      const ErrorMsg = "Can't find usageGroup with supported Container: " + containerList.join(', ') + ".";
+      console.log(ErrorMsg)
+
+      const listOfContainerNamesInResponse = res['serviceUsageVBO']['usageAccounts'][0]['usageGroup'].map(function (v) {
+        return v.container;
+      })
+      console.log("Please check the following list to find the correct container name for your case and adjust the list of container names at the beginnging: " + listOfContainerNamesInResponse.join(", "))
+      throw new Error(ErrorMsg)
     }
     
-    let datenvolumen = datenContainer.usage.find(function(v){
-      return v.code == "-1"
-    })
+    let datenvolumen;
+    if (datenContainer.usage.length == 1) {
+      datenvolumen = datenContainer.usage[0]
+    } else {
+      datenvolumen = datenContainer.usage.find(function (v) {
+        return codeList.includes(v.code)
+      })
+    }
     
     if (datenvolumen === undefined) {
-      console.log("Can't find Usage with Code -1. Please check the following log to find the correct code for your case and addjust the code to 4 lines above: " + JSON.stringify(datenContainer.usage))
-      throw new Error("Can't find Usage with Code -1.")
+      const ErrorMsg = "Can't find Usage with supported Codes: " + codeList.join(', ') + ".";
+      console.log(ErrorMsg)
+
+      const listOfCodeInResponse = datenContainer.usage.map(function(v) {
+        return v.code;
+      })
+      console.log("Please check the following list to find the correct code for your case and adjust the list of codes at the beginnging: " + listOfCodeInResponse.join(", "))
+      throw new Error(ErrorMsg)
     }
     
     return {
@@ -166,7 +187,6 @@ async function getUsage() {
     }
   } catch (e) {
     console.log("Loading usage data failed")
-    console.log(e)
     throw e
   }
 };
@@ -204,7 +224,7 @@ try {
     lastUpdate = today
   }
 } catch (e) {
-  console.log(e)
+  console.error(e)
   if (cacheExists) { 
     console.log("Get from Cache")
     data = JSON.parse(files.readString(cachePath))
