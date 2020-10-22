@@ -30,7 +30,8 @@ Credits:
 // How many minutes should the cache be valid
 let cacheMinutes = 60;
 
-// Login via MeinVodafone Login.
+// Login via MeinVodafone Login
+// Please never share the content of this script with included credentails!
 const username = "";
 const password = "";
 const phonenumber = ""; // with leading 49 instead of 0. Example: 4917212345678
