@@ -79,12 +79,60 @@ async function fetchStationdata(Id, linesFilter, distance, transportCodes) {
   }
 };
 
+async function findNextStations(latitude, longitude) {
+  let req = new Request(`https://abfahrtsmonitor.vrr.de/backend/api/stations/coord?long=${longitude}&lat=${latitude}`)
+  
+  let res = await req.loadJSON()
+  return res['suggestions']
+};
+
+function populateTable(table, stations) {
+  table.removeAllRows()
+  for (i = 0; i < stations.length; i++) {
+    let station = stations[i]
+    let row = new UITableRow()
+    
+    let nameCell = row.addText(station.value)
+    nameCell.leftAligned()
+    nameCell.widthWeight = 1
+    
+    let buttonCell = row.addButton('Copy ID to clipboard');
+    buttonCell.rightAligned()
+    buttonCell.widthWeight = 1
+    buttonCell.onTap = () => {
+      Pasteboard.copy(station.data);
+      
+      let alert = new Alert();
+      alert.message = `The Station ID '${station.data}' was copied to the clipboard`;
+      alert.presentSheet()
+    }
+    
+    table.addRow(row)
+  }
+}
+
 let widgetInputRAW = args.widgetParameter;
 let widgetInput = null;
 
 if (widgetInputRAW !== null) {
   widgetInput = widgetInputRAW.toString().split(";");
 } else {
+  if(!config.runsInWidget) {
+    let prompt = new Alert()
+    prompt.message = 'Do you like to find Station IDs from Stations next to you?'
+    let okAction = prompt.addAction('Yes')
+    
+    let cancelAction = prompt.addCancelAction('No')
+    let decision = await prompt.presentAlert()
+    if (decision === 0) {
+      let l = await Location.current()
+      let stations = await findNextStations(l.latitude, l.longitude)
+      let table = new UITable()
+      table.showSeparators = true
+      populateTable(table, stations)
+      await QuickLook.present(table)
+    }
+  }
   throw new Error('No Station Code set!')
 }
 
@@ -116,7 +164,6 @@ if (data) {
   ]
   widget.backgroundGradient = gradient
 
-  
   let firstLineStack = widget.addStack()
   
   let provider = firstLineStack.addText("🚏 " + stationName)
@@ -181,4 +228,3 @@ if(!config.runsInWidget) {
   Script.setWidget(widget)
   Script.complete()
 }
-
