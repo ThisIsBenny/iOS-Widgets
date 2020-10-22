@@ -3,9 +3,13 @@
 // icon-color: red; icon-glyph: broadcast-tower;
 
 /**************
-Version 1.0.3
+Version 1.1.0
 
 Changelog:
+  v1.1.0:
+          - Login via MeinVodafone Login added
+          - Show Remaining Days
+          - MegaByte Support added for tariffs with <= 1 GB 
   v1.0.3:
           - CallYa Support
           - Write more useful information in the log, so that you can add support yourself if necessary
@@ -25,6 +29,11 @@ Credits:
 
 // How many minutes should the cache be valid
 let cacheMinutes = 60;
+
+// Login via MeinVodafone Login.
+const username = "";
+const password = "";
+const phonenumber = ""; // with leading 49 instead of 0. Example: 4917212345678
 
 // Please add additional values to these list, in case that your contract/tarif isn't supported by these default values.
 const containerList = ['Daten', 'D_EU_DATA']
@@ -104,7 +113,23 @@ function drawArc(ctr, rad, w, deg) {
   }
 }
 
-async function getSessionCookies() {
+function getTimeRemaining(endtime){
+  const total = Date.parse(endtime) - Date.parse(new Date());
+  const seconds = Math.floor( (total/1000) % 60 );
+  const minutes = Math.floor( (total/1000/60) % 60 );
+  const hours = Math.floor( (total/(1000*60*60)) % 24 );
+  const days = Math.floor( total/(1000*60*60*24) );
+
+  return {
+    total,
+    days,
+    hours,
+    minutes,
+    seconds
+  };
+}
+
+async function getSessionCookiesViaNetworkLogin() {
   let req;
   req = new Request("https://www.vodafone.de/mint/rest/session/start")
   req.method = "POST";
@@ -124,13 +149,47 @@ async function getSessionCookies() {
     let res = await req.loadJSON()
     return { cookies: req.response.cookies, msisdn: res.msisdn}
   } catch (e) {
-    console.log("Login vailed! Please check if Wifi is disabled.")
+    console.log("Login failed! Please check if Wifi is disabled.")
+    throw new Error(`Login failed with HTTP-Status-Code ${req.response.statusCode}`)
+  }
+};
+
+async function getSessionCookiesViaMeinVodafoneLogin() {
+  let req;
+  req = new Request("https://www.vodafone.de/mint/rest/session/start")
+  req.method = "POST";
+  req.headers = {
+    'Content-Type': 'application/json',
+    'Accept': 'application/json'
+  }
+
+  req.body = JSON.stringify({
+    "clientType": "Portal",
+    "username": username,
+    "password": password,
+  })
+  try {
+    let res = await req.loadJSON()
+    return { cookies: req.response.cookies}
+  } catch (e) {
+    console.log("Login failed!")
     throw new Error(`Login failed with HTTP-Status-Code ${req.response.statusCode}`)
   }
 };
 
 async function getUsage() {
-  let {cookies, msisdn} = await getSessionCookies();
+  let cookies, msisdn;
+  if (username !== "" && password !== "" && msisdn !== "") {
+    console.log("Login via MeinVodafone")
+    let { cookies: c }= await getSessionCookiesViaMeinVodafoneLogin();
+    cookies = c;
+    msisdn = phonenumber;
+  } else {
+    console.log("Login via Network")
+    let { cookies: c, msisdn: m } = await getSessionCookiesViaNetworkLogin();
+    cookies = c;
+    msisdn = m;
+  }
   let CookieValues = cookies.map(function(v){
     return v.name + "=" + v.value
   })
@@ -180,10 +239,17 @@ async function getUsage() {
       throw new Error(ErrorMsg)
     }
     
+    
+    let endDate = datenvolumen.endDate;
+    if (endDate == null) {
+      endDate = res['serviceUsageVBO']['billDetails']['billCycleEndDate'] || null
+    }
+    
     return {
       total: datenvolumen.total,
       used: datenvolumen.used,
-      remaining: datenvolumen.remaining
+      remaining: datenvolumen.remaining,
+      endDate
     }
   } catch (e) {
     console.log("Loading usage data failed")
@@ -240,6 +306,7 @@ let widget = new ListWidget();
 widget.setPadding(10, 10, 10, 10)
 
 if (data !== undefined) {
+  console.log(data)
   if (useGradient) {
     const gradient = new LinearGradient()
     gradient.locations = [0, 1]
@@ -252,9 +319,19 @@ if (data !== undefined) {
     widget.backgroundColor = new Color(backColor)
   }
   
-  let provider = widget.addText("Vodafone")
+  let firstLineStack = widget.addStack()
+  
+  let provider = firstLineStack.addText("Vodafone")
   provider.font = Font.mediumSystemFont(12)
   provider.textColor = new Color(textColor)
+  
+  // Last Update
+  firstLineStack.addSpacer()
+  let lastUpdateText = firstLineStack.addDate(lastUpdate)
+  lastUpdateText.font = Font.mediumSystemFont(8)
+  lastUpdateText.rightAlignText()
+  lastUpdateText.applyTimeStyle()
+  lastUpdateText.textColor = Color.lightGray() 
   
   widget.addSpacer()
   
@@ -285,20 +362,29 @@ if (data !== undefined) {
   widget.addSpacer()
   
   // Total Values
-  let remainingGB = (data.remaining / 1024).toFixed(2)
-  let totalGB = (data.total / 1024).toFixed(0)
-  let totalValuesText = widget.addText(`${remainingGB} GB von ${totalGB} GB`)
+  let totalValues;
+  if (parseInt(data.total) < 1000) {
+    totalValues = `${data.remaining} MB von ${data.total} MB`
+  } else {
+    let remainingGB = (data.remaining / 1024).toFixed(2)
+    let totalGB = (data.total / 1024).toFixed(0)
+    totalValues = `${remainingGB} GB von ${totalGB} GB`
+  }
+  let totalValuesText = widget.addText(totalValues)
   totalValuesText.font = Font.mediumSystemFont(12)
   totalValuesText.centerAlignText()
-  totalValuesText.textColor = new Color(textColor)
+  totalValuesText.textColor = new Color(textColor)  
   
-  // Last Update
-  widget.addSpacer(5)
-  let lastUpdateText = widget.addDate(lastUpdate)
-  lastUpdateText.font = Font.mediumSystemFont(10)
-  lastUpdateText.centerAlignText()
-  lastUpdateText.applyTimeStyle()
-  lastUpdateText.textColor = Color.lightGray() 
+  // Remaining Days    
+  if (data.endDate) {
+    widget.addSpacer(5)
+    let remainingDays = getTimeRemaining(data.endDate).days + 1
+    let remainingDaysText = widget.addText(`${remainingDays} Tage verleibend`)
+    remainingDaysText.font = Font.mediumSystemFont(8)
+    remainingDaysText.centerAlignText()
+    remainingDaysText.textColor = new Color(textColor) 
+  }
+ 
 } else {
   let fallbackText = widget.addText("Es ist ein Fehler aufgetreten! Bitte prüfen Sie die Logs direkt in der App.")
   fallbackText.font = Font.mediumSystemFont(12)

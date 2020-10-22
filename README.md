@@ -26,22 +26,22 @@ If you have widget ideas, please feel free and share those ideas with me via Git
 This widget loads the remaining data volume via the MyVodafone API. For this purpose, an automatic login via the cell phone network is performed, therefore it is necessary that the WIFI is not active for the first usage.
 After the first usage, the informations are cached and will be used in case of an active WIFI Connection. The cached information will be also used to prevent the API from a lot of request. The TTL (Time To Live) of the Cache can be setup at the beginning of the script (default is 60 min)
 
-It is possible to overwrite the used colors of the widget. To overwrite the colors, you have to add four color codes separated by | to the widget parameter option: `BackgroundColor|TextColor|CircleFillColor|CircleStrokeColor`
+[[Download]](https://raw.githubusercontent.com/ThisIsBenny/iOS-Widgets/main/VodafoneDE/VodafoneDE.js)
+
+### Options
+#### Set own color scheme
+To overwrite the colors, you have to add four color codes separated by | to the widget parameter option: `BackgroundColor|TextColor|CircleFillColor|CircleStrokeColor`
 
 Example: `D32D1F|EDEDED|EDEDED|B0B0B0`
 
 If no parameter are set or not four colors are set the default color set for light or dark Mode will be used.
 
-[[Download]](https://raw.githubusercontent.com/ThisIsBenny/iOS-Widgets/main/VodafoneDE/VodafoneDE.js)
+#### Use MeinVodafone Login
+It is possible to add the MeinVodafone Credentails to the beginning of script, which allows the widget to update itself even with active WIFI or show data usage of another mobile contract.
 
-_Roadmap_:
-* Add GigaDepot volume
-* MegaByte Support
-* Show remaining Days
-
-_Contributors_:
+### Contributors
 * [Necriso](https://github.com/Necriso)
 
-_Credits_:
+### Credits
 * Sillium for the inspiration https://gist.github.com/Sillium/f904fb89444bc8dde12cfc07b8fa8728
 * Chaeimg for the Circle diagram (https://github.com/chaeimg/battCircle)
