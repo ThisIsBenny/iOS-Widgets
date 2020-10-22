@@ -4,6 +4,15 @@ This is a Collection of Scripts which can be used with the Scriptable App to cre
 To use the Script, you have to Download the App "Scriptable" from the App Store: https://apps.apple.com/de/app/scriptable/id1405459188
 Then you have to copy & paste the desired script into the Scriptable App. Now you can create a Sciptable widget and select the script in the widget settings.
 
+### Roadmap
+The following widget are planned from my side:
+* VRR Abfahrmonitor
+* Countdown
+* Covid-19 7-Day-Inzidenz
+* Skype Meeting Dial-In via Phone or Web
+
+If you have widget ideas, please feel free and share those ideas with me via GitHub Issue
+
 ## Vodafone DE data usage
 ![Vodafone Widget Preview light](https://raw.githubusercontent.com/ThisIsBenny/iOS-Widgets/main/VodafoneDE/previewLight.jpeg)
 ![Vodafone Widget Preview dark](https://raw.githubusercontent.com/ThisIsBenny/iOS-Widgets/main/VodafoneDE/previewDark.jpeg)
