@@ -94,11 +94,11 @@ function populateTable(table, stations) {
     
     let nameCell = row.addText(station.value)
     nameCell.leftAligned()
-    nameCell.widthWeight = 1
+    nameCell.widthWeight = 70
     
     let buttonCell = row.addButton('Copy ID');
     buttonCell.rightAligned()
-    buttonCell.widthWeight = 1
+    buttonCell.widthWeight = 20
     buttonCell.onTap = () => {
       Pasteboard.copy(station.data);
       
