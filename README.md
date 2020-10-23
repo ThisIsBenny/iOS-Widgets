@@ -62,7 +62,7 @@ Add your Credentails in this format to your widget parameters: `username|passwor
 
 Example: `JohnSmith|TopSecretPassword!|491721234567`
 
-_Remark: If your password contains a | character, you have to adapt the script and use a different divider._
+_Remark:_ If your password contains a | character, you have to adapt the script and use a different divider.
 
 ### Roadmap
 * Add Medium Widget Support to display GigaDepot usage
