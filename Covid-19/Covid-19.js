@@ -10,7 +10,10 @@ Credits:
 // How many minutes should the cache be valid
 const cacheMinutes = 60 * 2;
 const population = 646000;
-const daysInGraph = 14;
+
+// Show days in graph based on widget size
+const daysInGraph = (config.widgetFamily === 'small')? 14 : 28;
+const graphWidh = (config.widgetFamily === 'small')? 400 : 800;
 
 ////////////////////////////////////////////////////////////////////////////////
 let backColor; //Widget background color
@@ -120,8 +123,9 @@ covidText.centerAlignText()
 
 widget.addSpacer()
 
-let image = columnGraph(data["graph"], 400, 50, new Color(graphColor)).getImage()
-widget.addImage(image)
+let image = columnGraph(data["graph"], graphWidh, 50, new Color(graphColor)).getImage()
+let graph = widget.addImage(image)
+graph.centerAlignImage()
 
 widget.addSpacer(5)
 
