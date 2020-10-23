@@ -58,7 +58,7 @@ After the first usage, the informations are cached and will be used in case of a
 ### Options
 #### Use MeinVodafone Login
 It is possible to set the MeinVodafone Credentails via widget parameter, which allows the widget to update itself even with active WIFI connection or to show data usage of a different mobile contract.
-Add your Credentails in this format to your widget parameters: `username|password|mobile-number`. the mobile-number has to start with 49 instead of 0. 491721234567
+Add your Credentails in this format to your widget parameters: `username|password|mobile-number`. the mobile-number has to start with 49 instead of 0.
 
 Example: `JohnSmith|TopSecretPassword!|491721234567`
 
