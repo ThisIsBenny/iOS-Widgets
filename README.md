@@ -14,6 +14,8 @@ You can also download a Script with this Shortcut via iOS Share Menu: https://ww
 The following widget are planned from my side:
 * Countdown
 * Skype Meeting Dial-In via Phone or Web
+* Server Health Check
+* Script to Download / Update Widget from a Widget catalog, like a Widget Store
 
 If you have widget ideas, please feel free and share those ideas with me via GitHub Issue
 
@@ -45,6 +47,9 @@ If no parameter are set or not four colors are set the default color set for lig
 #### Use MeinVodafone Login
 It is possible to add the MeinVodafone Credentails to the beginning of script, which allows the widget to update itself even with active WIFI or show data usage of another mobile contract.
 
+### Roadmap
+* Add Medium Widget Support to display GigaDepot usage
+
 ### Contributors
 * [Necriso](https://github.com/Necriso)
 
@@ -75,3 +80,6 @@ The Station-ID can be searched with this URL:
 
 Put the name of the station behind the "query=" in the URL and open the URL in your Browser.
 Example: `https://abfahrtsmonitor.vrr.de/backend/api/stations/search?query=Düsseldorf HBF`
+
+### Roadmap
+* Add Transport-Line filter option
