@@ -66,6 +66,7 @@ A Station-ID is required to set up the widget. To get the Station-ID, you can ru
 After you confirm the prompt with the "yes" button, a list of stations will be displayed. Click at the desired station on "Copy ID to clipboard". The Station-ID is copied to the clipboard. Alternativ, you can use the method descriped below to get the Station-ID.
 
 Add the Station-ID and the needed Walking Minutes to the Station, separated by a ";", to the Widget Parameter like this:
+
 ![VRR-Monitor Widget setup](https://raw.githubusercontent.com/ThisIsBenny/iOS-Widgets/main/VRR-Monitor/setup.jpeg)
 
 #### Alternativ
