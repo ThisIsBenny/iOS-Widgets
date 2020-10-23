@@ -46,11 +46,11 @@ This widget displays current 7-Day-incidence for Düsseldorf. The incidence is b
 [[Download]](https://raw.githubusercontent.com/ThisIsBenny/iOS-Widgets/main/Covid-19/Covid-19.js)
 
 
-## Vodafone DE data usage
+## Vodafone DE remaining data volume
 ![Vodafone Widget Preview light](https://raw.githubusercontent.com/ThisIsBenny/iOS-Widgets/main/VodafoneDE/previewLight.jpeg)
 ![Vodafone Widget Preview dark](https://raw.githubusercontent.com/ThisIsBenny/iOS-Widgets/main/VodafoneDE/previewDark.jpeg)
 
-This widget loads the remaining data volume via the MyVodafone API. For this purpose, an automatic login via the cell phone network is performed, therefore it is necessary that the WIFI is not active for the first usage.
+This widget shows the remaining data volume for a Vodafone contract or prepaid card. The information will be loaded via MeinVodafone API. For this purpose, an automatic login via the cell phone network is performed, therefore it is necessary that the WIFI is not active for the first usage.
 After the first usage, the informations are cached and will be used in case of an active WIFI Connection. The cached information will be also used to prevent the API from a lot of request. The TTL (Time To Live) of the Cache can be setup at the beginning of the script (default is 60 min)
 
 [[Download]](https://raw.githubusercontent.com/ThisIsBenny/iOS-Widgets/main/VodafoneDE/VodafoneDE.js)
