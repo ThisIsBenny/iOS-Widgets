@@ -96,7 +96,7 @@ function populateTable(table, stations) {
     nameCell.leftAligned()
     nameCell.widthWeight = 1
     
-    let buttonCell = row.addButton('Copy ID to clipboard');
+    let buttonCell = row.addButton('Copy ID');
     buttonCell.rightAligned()
     buttonCell.widthWeight = 1
     buttonCell.onTap = () => {
