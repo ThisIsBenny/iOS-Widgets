@@ -37,15 +37,13 @@ After the first usage, the informations are cached and will be used in case of a
 [[Download]](https://raw.githubusercontent.com/ThisIsBenny/iOS-Widgets/main/VodafoneDE/VodafoneDE.js)
 
 ### Options
-#### Set own color scheme
-To overwrite the colors, you have to add four color codes separated by | to the widget parameter option: `BackgroundColor|TextColor|CircleFillColor|CircleStrokeColor`
-
-Example: `D32D1F|EDEDED|EDEDED|B0B0B0`
-
-If no parameter are set or not four colors are set the default color set for light or dark Mode will be used.
-
 #### Use MeinVodafone Login
-It is possible to add the MeinVodafone Credentails to the beginning of script, which allows the widget to update itself even with active WIFI or show data usage of another mobile contract.
+It is possible to set the MeinVodafone Credentails via widget parameter, which allows the widget to update itself even with active WIFI or to show data usage of a different mobile contract.
+Add your Credentails in this format to your widget parameters: `username|password|mobile-number`. the mobile-number has to start with 49 instead of 0. 491721234567
+
+Example: `JohnSmith|TopSecret!|491721234567`
+
+_Remark: If your password contains a | character, you have to adapt the script and use a different divider._
 
 ### Roadmap
 * Add Medium Widget Support to display GigaDepot usage

@@ -3,9 +3,12 @@
 // icon-color: red; icon-glyph: broadcast-tower;
 
 /**************
-Version 1.1.1
+Version 1.2.0
 
 Changelog:
+  v1.2.0:
+          - Option to set colors by widget parameters removed
+          - Option to set MeinVodafone credentails via widget parameters added
   v1.1.1:
           - new CallYa Tariff added: C_DIY_Data_National
   v1.1.0:
@@ -32,12 +35,6 @@ Credits:
 // How many minutes should the cache be valid
 let cacheMinutes = 60;
 
-// Login via MeinVodafone Login
-// Please never share the content of this script with included credentails!
-const username = "";
-const password = "";
-const phonenumber = ""; // with leading 49 instead of 0. Example: 4917212345678
-
 // Please add additional values to these list, in case that your contract/tarif isn't supported by these default values.
 const containerList = ['Daten', 'D_EU_DATA', 'C_DIY_Data_National']
 const codeList = ['-1', '45500']
@@ -48,23 +45,24 @@ let backColor2; //Widget background color
 let textColor; //Widget text color
 let fillColor;
 let strokeColor;
-let useGradient = true
 
 let widgetInputRAW = args.widgetParameter;
 let widgetInput = null;
 
+let user, pass, number
+
 if (widgetInputRAW !== null) {
-  widgetInput = widgetInputRAW.toString().split("|");
+  [user, pass, number] = widgetInputRAW.toString().split("|");
+  
+  if(!user || !pass || !number) {
+    throw new Error("Invalid Widget parameter. Expected format: username|password|phonenumber") 
+  }
+  if(/^49[\d]{5,}/.test(number) === false) {
+    throw new Error("Invalid phonenumber format. Expected format: 491721234567") 
+  }
 }
 
-// BackgroundColor|TextColor|CircleFillColor|CircleStrokeColor
-if (widgetInput !== null && widgetInput.length == 4) {
-  backColor = widgetInput[0];
-  textColor = widgetInput[1];
-  fillColor = widgetInput[2];
-  strokeColor = widgetInput[3];
-  useGradient = false
-} else if (Device.isUsingDarkAppearance()) {
+if (Device.isUsingDarkAppearance()) {
   backColor = '111111';
   backColor2 = '222222';
   textColor = 'EDEDED';
@@ -157,7 +155,7 @@ async function getSessionCookiesViaNetworkLogin() {
   }
 };
 
-async function getSessionCookiesViaMeinVodafoneLogin() {
+async function getSessionCookiesViaMeinVodafoneLogin(u, p) {
   let req;
   req = new Request("https://www.vodafone.de/mint/rest/session/start")
   req.method = "POST";
@@ -168,8 +166,8 @@ async function getSessionCookiesViaMeinVodafoneLogin() {
 
   req.body = JSON.stringify({
     "clientType": "Portal",
-    "username": username,
-    "password": password,
+    "username": u,
+    "password": p,
   })
   try {
     let res = await req.loadJSON()
@@ -180,13 +178,13 @@ async function getSessionCookiesViaMeinVodafoneLogin() {
   }
 };
 
-async function getUsage() {
+async function getUsage(user, pass, number) {
   let cookies, msisdn;
-  if (username !== "" && password !== "" && msisdn !== "") {
+  if (user && pass && number) {
     console.log("Login via MeinVodafone")
-    let { cookies: c }= await getSessionCookiesViaMeinVodafoneLogin();
+    let { cookies: c }= await getSessionCookiesViaMeinVodafoneLogin(user, pass);
     cookies = c;
-    msisdn = phonenumber;
+    msisdn = number;
   } else {
     console.log("Login via Network")
     let { cookies: c, msisdn: m } = await getSessionCookiesViaNetworkLogin();
@@ -281,7 +279,7 @@ try {
     lastUpdate = cacheDate
   } else {
     console.log("Get from API")
-    data = await getUsage()
+    data = await getUsage(user, pass, number)
     console.log("Write Data to Cache")
     try {
       files.writeString(cachePath, JSON.stringify(data))
@@ -310,17 +308,13 @@ widget.setPadding(10, 10, 10, 10)
 
 if (data !== undefined) {
   console.log(data)
-  if (useGradient) {
-    const gradient = new LinearGradient()
-    gradient.locations = [0, 1]
-    gradient.colors = [
-      new Color(backColor),
-      new Color(backColor2)
-    ]
-    widget.backgroundGradient = gradient
-  } else {
-    widget.backgroundColor = new Color(backColor)
-  }
+  const gradient = new LinearGradient()
+  gradient.locations = [0, 1]
+  gradient.colors = [
+    new Color(backColor),
+    new Color(backColor2)
+  ]
+  widget.backgroundGradient = gradient
   
   let firstLineStack = widget.addStack()
   
