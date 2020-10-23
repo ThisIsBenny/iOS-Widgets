@@ -1,0 +1,28 @@
+{
+  "widgets": [
+    {
+      "name": "Countdown",
+      "scriptURL": "https://raw.githubusercontent.com/ThisIsBenny/iOS-Widgets/main/Countdown/Countdown.js",
+      "previewURL": "https://raw.githubusercontent.com/ThisIsBenny/iOS-Widgets/main/Countdown/previewLight.jpeg",
+      "descriptionURL": "https://github.com/ThisIsBenny/iOS-Widgets/blob/main/README.md#countdown"
+    },
+    {
+      "name": "Covid-19 7-Day-Inzidenz for Düsseldorf",
+      "scriptURL": "https://raw.githubusercontent.com/ThisIsBenny/iOS-Widgets/main/Covid-19/Covid-19.js",
+      "previewURL": "https://raw.githubusercontent.com/ThisIsBenny/iOS-Widgets/main/Covid-19/previewLight.jpeg",
+      "descriptionURL": "https://github.com/ThisIsBenny/iOS-Widgets/blob/main/README.md#covid-19-7-day-inzidenz-for-d%C3%BCsseldorf"
+    },
+    {
+      "name": "Vodafone DE remaining data volume",
+      "scriptURL": "https://raw.githubusercontent.com/ThisIsBenny/iOS-Widgets/main/VodafoneDE/VodafoneDE.js",
+      "previewURL": "https://raw.githubusercontent.com/ThisIsBenny/iOS-Widgets/main/VodafoneDE/previewLight.jpeg",
+      "descriptionURL": "https://github.com/ThisIsBenny/iOS-Widgets/blob/main/README.md#vodafone-de-remaining-data-volume"
+    },
+    {
+      "name": "VRR-Monitor",
+      "scriptURL": "https://raw.githubusercontent.com/ThisIsBenny/iOS-Widgets/main/VRR-Monitor/VRR-Monitor.js",
+      "previewURL": "https://raw.githubusercontent.com/ThisIsBenny/iOS-Widgets/main/VRR-Monitor/previewLight.jpeg",
+      "descriptionURL": "https://github.com/ThisIsBenny/iOS-Widgets/blob/main/README.md#vrr-monitor"
+    }
+  ]
+}
