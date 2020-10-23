@@ -19,6 +19,24 @@ The following widget are planned from my side:
 
 If you have widget ideas, please feel free and share those ideas with me via GitHub Issue
 
+
+## Countdown
+![Countdown Widget Preview light](https://raw.githubusercontent.com/ThisIsBenny/iOS-Widgets/main/Countdown/previewLight.jpeg)
+![Countdown Widget Preview dark](https://raw.githubusercontent.com/ThisIsBenny/iOS-Widgets/main/Countdown/previewDark.jpeg)
+![Countdown Widget Preview light](https://raw.githubusercontent.com/ThisIsBenny/iOS-Widgets/main/Countdown/previewLight2.jpeg)
+![Countdown Widget Preview dark](https://raw.githubusercontent.com/ThisIsBenny/iOS-Widgets/main/Countdown/previewDark2.jpeg)
+
+Simple Countdown widget which shows the remaining days to a specified date.
+
+[[Download]](https://raw.githubusercontent.com/ThisIsBenny/iOS-Widgets/main/Countdown/Countdown.js)
+
+### Setup
+Set the date in ISO8601 format (YYYY-MM-DD) to the Widget Parameter.
+Optional: Define an emoji for your widget by adding the desired emoji behind the date and separating both values with a ";". Like this:
+
+![Countdown Widget setup](https://raw.githubusercontent.com/ThisIsBenny/iOS-Widgets/main/Countdown/setup.jpeg)
+
+
 ## Covid-19 7-Day-Inzidenz for Düsseldorf
 ![Covid-19 Widget Preview light](https://raw.githubusercontent.com/ThisIsBenny/iOS-Widgets/main/Covid-19/previewLight.jpeg)
 ![Covid-19 Widget Preview dark](https://raw.githubusercontent.com/ThisIsBenny/iOS-Widgets/main/Covid-19/previewDark.jpeg)
@@ -26,6 +44,7 @@ If you have widget ideas, please feel free and share those ideas with me via Git
 This widget displays current 7-Day-incidence for Düsseldorf. The incidence is based on the OpenData data of the city Düsseldorf. New data are published daily at around 12 pm.
 
 [[Download]](https://raw.githubusercontent.com/ThisIsBenny/iOS-Widgets/main/Covid-19/Covid-19.js)
+
 
 ## Vodafone DE data usage
 ![Vodafone Widget Preview light](https://raw.githubusercontent.com/ThisIsBenny/iOS-Widgets/main/VodafoneDE/previewLight.jpeg)
@@ -54,6 +73,7 @@ _Remark: If your password contains a | character, you have to adapt the script a
 ### Credits
 * Sillium for the inspiration https://gist.github.com/Sillium/f904fb89444bc8dde12cfc07b8fa8728
 * Chaeimg for the Circle diagram (https://github.com/chaeimg/battCircle)
+
 
 ## VRR-Monitor
 ![VRR-Monitor Widget Preview light](https://raw.githubusercontent.com/ThisIsBenny/iOS-Widgets/main/VRR-Monitor/previewLight.jpeg)
