@@ -1,4 +1,4 @@
-# Covid-19 7-Day-Inzidenz for Düsseldorf
+# Covid-19 7-Day-Incidence for Düsseldorf
 ![Covid-19 Widget Preview light](https://raw.githubusercontent.com/ThisIsBenny/iOS-Widgets/main/Covid-19/previewLight.jpeg)
 ![Covid-19 Widget Preview dark](https://raw.githubusercontent.com/ThisIsBenny/iOS-Widgets/main/Covid-19/previewDark.jpeg)
 
