@@ -11,10 +11,10 @@ Then you have to copy & paste the desired script into the Scriptable App. Now yo
 You can also download a Script with this Shortcut via iOS Share Menu: https://www.reddit.com/r/Scriptable/comments/jdcyuu/simply_ios_shortcut_to_renamesave_a_script_from
 
 ## Widget collection
-* [Countdown](https://raw.githubusercontent.com/ThisIsBenny/iOS-Widgets/main/Countdown/README.md)
-* [Covid-19 7-Day-Inzidenz for Düsseldorf](https://raw.githubusercontent.com/ThisIsBenny/iOS-Widgets/main/Covid-19/README.md)
-* [Vodafone DE remaining data volume](https://raw.githubusercontent.com/ThisIsBenny/iOS-Widgets/main/VodafoneDE/README.md)
-* [VRR-Monitor](https://raw.githubusercontent.com/ThisIsBenny/iOS-Widgets/main/VRR-Monitor/README.md)
+* [Countdown](https://github.com/ThisIsBenny/iOS-Widgets/main/Countdown/README.md)
+* [Covid-19 7-Day-Inzidenz for Düsseldorf](https://github.com/ThisIsBenny/iOS-Widgets/main/Covid-19/README.md)
+* [Vodafone DE remaining data volume](https://github.com/ThisIsBenny/iOS-Widgets/main/VodafoneDE/README.md)
+* [VRR-Monitor](https://github.com/ThisIsBenny/iOS-Widgets/main/VRR-Monitor/README.md)
 
 
 ## Roadmap
