@@ -1,7 +1,7 @@
 // Variables used by Scriptable.
 // These must be at the very top of the file. Do not edit.
 // icon-color: blue; icon-glyph: microscope;
-// Version 1.0.0
+// Version 1.0.1
 
 /**************
 Credits:
@@ -119,6 +119,7 @@ widget.addSpacer()
   
 let covidText = widget.addText(`${(data.growing ? "⬈" : "⬊")} ${+data.index}`)
 covidText.font = Font.regularSystemFont(50)
+covidText.minimumScaleFactor = 0.5
 covidText.textColor = data.index < 50 ? new Color(textColor) : (new Color(textWarningColor));
 covidText.centerAlignText()
 
