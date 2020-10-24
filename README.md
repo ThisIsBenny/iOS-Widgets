@@ -12,7 +12,7 @@ You can also download a Script with this Shortcut via iOS Share Menu: https://ww
 
 ## Widget collection
 * [Countdown](https://github.com/ThisIsBenny/iOS-Widgets/blob/main/Countdown/README.md)
-* [Covid-19 7-Day-Inzidenz for Düsseldorf](https://github.com/ThisIsBenny/iOS-Widgets/blob/main/Covid-19/README.md)
+* [Covid-19 7-Day-Incidence for Düsseldorf](https://github.com/ThisIsBenny/iOS-Widgets/blob/main/Covid-19/README.md)
 * [Vodafone DE remaining data volume](https://github.com/ThisIsBenny/iOS-Widgets/blob/main/VodafoneDE/README.md)
 * [VRR-Monitor](https://github.com/ThisIsBenny/iOS-Widgets/blob/main/VRR-Monitor/README.md)
 
