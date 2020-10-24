@@ -11,11 +11,28 @@ Then you have to copy & paste the desired script into the Scriptable App. Now yo
 You can also download a Script with this Shortcut via iOS Share Menu: https://www.reddit.com/r/Scriptable/comments/jdcyuu/simply_ios_shortcut_to_renamesave_a_script_from
 
 ## Widget collection
-* [Countdown](https://github.com/ThisIsBenny/iOS-Widgets/blob/main/Countdown/README.md)
-* [Covid-19 7-Day-Incidence for Düsseldorf](https://github.com/ThisIsBenny/iOS-Widgets/blob/main/Covid-19/README.md)
-* [Vodafone DE remaining data volume](https://github.com/ThisIsBenny/iOS-Widgets/blob/main/VodafoneDE/README.md)
-* [VRR-Monitor](https://github.com/ThisIsBenny/iOS-Widgets/blob/main/VRR-Monitor/README.md)
-
+<table>
+  <tr>
+    <td><img height="100px" src="https://raw.githubusercontent.com/ThisIsBenny/iOS-Widgets/main/Countdown/previewLight.jpeg" /></td>
+    <td><img height="100px" src="https://raw.githubusercontent.com/ThisIsBenny/iOS-Widgets/main/Countdown/previewDark.jpeg" /></td>
+    <td><a href="https://github.com/ThisIsBenny/iOS-Widgets/blob/main/Countdown/README.md">Countdown</a></td>
+  </tr>
+  <tr>
+    <td><img height="100px" src="https://raw.githubusercontent.com/ThisIsBenny/iOS-Widgets/main/Covid-19/previewLight.jpeg" /></td>
+    <td><img height="100px" src="https://raw.githubusercontent.com/ThisIsBenny/iOS-Widgets/main/Covid-19/previewDark.jpeg" /></td>
+    <td><a href="https://github.com/ThisIsBenny/iOS-Widgets/blob/main/Covid-19/README.md">Covid-19 7-Day-Incidence for Düsseldorf</a></td>
+  </tr>
+  <tr>
+    <td><img height="100px" src="https://raw.githubusercontent.com/ThisIsBenny/iOS-Widgets/main/VodafoneDE/previewLight.jpeg" /></td>
+    <td><img height="100px" src="https://raw.githubusercontent.com/ThisIsBenny/iOS-Widgets/main/VodafoneDE/previewDark.jpeg" /></td>
+    <td><a href="https://github.com/ThisIsBenny/iOS-Widgets/blob/main/VodafoneDE/README.md">Vodafone DE remaining data volume</a></td>
+  </tr>
+  <tr>
+    <td><img height="100px" src="https://raw.githubusercontent.com/ThisIsBenny/iOS-Widgets/main/VRR-Monitor/previewLight.jpeg" /></td>
+    <td><img height="100px" src="https://raw.githubusercontent.com/ThisIsBenny/iOS-Widgets/main/VRR-Monitor/previewDark.jpeg" /></td>
+    <td><a href="https://github.com/ThisIsBenny/iOS-Widgets/blob/main/VRR-Monitor/README.md">VRR-Monitor</a></td>
+  </tr>
+</table>
 
 ## Roadmap
 The following widget are planned from my side:
