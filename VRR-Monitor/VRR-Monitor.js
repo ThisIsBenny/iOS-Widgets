@@ -3,9 +3,11 @@
 // icon-color: deep-green; icon-glyph: bus-alt;
 
 /**************
-Version 1.1.0
+Version 1.2.0
 
 Changelog:
+  v1.2.0:
+          - show original time and the delay in red
   v1.1.0:
           - Line filter support added
           - Setup Wizard enhanced
@@ -257,7 +259,7 @@ widget.addSpacer(10)
   
 let row = widget.addStack()
 row.layoutHorizontally()
-row.spacing = 15
+row.spacing = 10
   
 let timeColumn = row.addStack()
 timeColumn.layoutVertically();
@@ -269,12 +271,22 @@ let directionColumn = row.addStack()
 directionColumn.layoutVertically()
   
 data.forEach(function(l) {
-    
-  let timeText = timeColumn.addText(`${l.hour}:${l.minute}`)
+  let timeStack = timeColumn.addStack()
+  timeStack.layoutHorizontally()
+  timeStack.spacing = 2
+  
+  let timeText = timeStack.addText(`${l.orgHour}:${l.orgMinute}`)
   timeText.font = Font.mediumSystemFont(12)
   timeText.textColor = new Color(textColor)
   timeText.leftAlignText()
-    
+  
+  if (parseInt(l.delay) > 0) {
+    let delayText = timeStack.addText(`+${l.delay}`)
+    delayText.font = Font.mediumSystemFont(12)
+    delayText.textColor = Color.red()
+    delayText.leftAlignText()
+  }
+  
   let lineText = lineColumn.addText(l.name)
   lineText.font = Font.mediumSystemFont(12)
   lineText.textColor = new Color(textColor)
