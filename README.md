@@ -12,9 +12,10 @@ You can also download a Script with this Shortcut via iOS Share Menu: https://ww
 
 ### Roadmap
 The following widget are planned from my side:
-* Countdown
 * Skype Meeting Dial-In via Phone or Web
 * Server Health Check
+* Where did I park my car?
+* Reminder / Countdown to watering the plants
 * Script to Download / Update Widget from a Widget catalog, like a Widget Store
 
 If you have widget ideas, please feel free and share those ideas with me via GitHub Issue
