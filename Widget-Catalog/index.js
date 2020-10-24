@@ -1,7 +1,7 @@
 // Variables used by Scriptable.
 // These must be at the very top of the file. Do not edit.
 // icon-color: teal; icon-glyph: book-open;
-// Version 1.0.0
+// Version 1.1.0
 
 const catalogURL = "https://raw.githubusercontent.com/ThisIsBenny/iOS-Widgets/main/Widget-Catalog/catalog.json"
 const cacheMinutes = 60 * 4;
@@ -23,6 +23,34 @@ async function loadScript(url) {
     content,
     filename
   }
+}
+
+function compareVersions(a, b) {
+  if (a === b) {
+    return 0;
+  }
+
+  var a_components = a.split(".");
+  var b_components = b.split(".");
+
+  var len = Math.min(a_components.length, b_components.length);
+  for (var i = 0; i < len; i++) {
+    if (parseInt(a_components[i]) > parseInt(b_components[i])) {
+      return 1;
+    }
+
+    if (parseInt(a_components[i]) < parseInt(b_components[i])) {
+      return -1;
+    }
+  }
+  if (a_components.length > b_components.length) {
+    return 1;
+  }
+
+  if (a_components.length < b_components.length) {
+    return -1;
+  }
+  return 0;
 }
 
 async function downloadWidget(widget) {
@@ -74,8 +102,13 @@ function populateWidgetTable(table, widgets) {
     row.cellSpacing = 10
     let imageCell = row.addImageAtURL(widgets[i].previewURL)
     imageCell.widthWeight = 20
-
-    let nameCell = row.addText(widgets[i].name)
+    
+    let subTitle = ""
+    if (widgets[i].localVersion !== "" && compareVersions(widgets[i].version, widgets[i].localVersion) === 1) {
+      subTitle = `✨ New Version (${widgets[i].version}) available ✨`
+    }
+    
+    let nameCell = row.addText(widgets[i].name, subTitle)
     nameCell.widthWeight = 70
 
     let descriptionButtonCell = row.addButton('ⓘ')
@@ -127,6 +160,27 @@ module.exports.present = async () => {
       console.log("No fallback to cache possible. Due to missing cache.")
     }
   }
+
+  // Check Version of local Script
+  catalog.widgets = catalog.widgets.map((w) => {
+    w.localVersion = ""
+    
+    const filename = w.scriptURL.split('/').pop()
+    const scriptPath = fmCloud.joinPath(fmCloud.documentsDirectory(), filename)
+    const scriptExists = fmCloud.fileExists(scriptPath)
+
+    if (scriptExists) {
+      const scriptContent = fmCloud.readString(scriptPath)
+      const m = scriptContent.match(/Version[\s]*([\d]+(\.[\d]+){0,2})/m)
+      if(m && m[1]) {
+        w.localVersion = m[1]
+      }
+    }
+
+    return w;
+  })
+  console.log(catalog)
+
   populateWidgetTable(widgetCatalogTable, catalog.widgets)
 
   await widgetCatalogTable.present()
