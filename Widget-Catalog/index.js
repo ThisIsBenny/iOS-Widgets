@@ -19,7 +19,10 @@ async function loadScript(url) {
   let content = await req.loadString()
   let filename = url.split('/').pop()
 
-  return {content, filename}
+  return {
+    content,
+    filename
+  }
 }
 
 async function downloadWidget(widget) {
@@ -27,30 +30,33 @@ async function downloadWidget(widget) {
   downloadAlert.message = `Do you like to Download the  '${widget.name}' Widget-Script?`;
   downloadAlert.addAction('Yes')
   downloadAlert.addCancelAction('No')
-  
+
   if (await downloadAlert.presentAlert() === 0) {
-    let {content, filename} = await loadScript(widget.scriptURL)
-    
+    let {
+      content,
+      filename
+    } = await loadScript(widget.scriptURL)
+
     const scriptPath = fmCloud.joinPath(fmCloud.documentsDirectory(), filename)
     const scriptExists = fmCloud.fileExists(scriptPath)
-    
+
     if (scriptExists) {
       let alreadyExistsAlert = new Alert()
       alreadyExistsAlert.message = `The Script '${filename}' already exists!`;
       alreadyExistsAlert.addAction('Replace')
       alreadyExistsAlert.addCancelAction('Cancel')
-      
+
       if (await alreadyExistsAlert.presentAlert() === -1) {
-       return false
+        return false
       }
     }
     fmCloud.writeString(scriptPath, content)
-    
+
     let successAlert = new Alert()
     successAlert.message = `Script '${filename}' saved!`;
     successAlert.addAction('Close')
     successAlert.presentAlert()
-    
+
     return filename
   }
 }
@@ -60,7 +66,7 @@ async function fetchCatalog(url) {
   return await req.loadJSON()
 }
 
-function populateWidgetTable(table, widgets){
+function populateWidgetTable(table, widgets) {
   for (let i = 0; i < widgets.length; i++) {
     let row = new UITableRow()
     row.dismissOnSelect = false
@@ -68,10 +74,10 @@ function populateWidgetTable(table, widgets){
     row.cellSpacing = 10
     let imageCell = row.addImageAtURL(widgets[i].previewURL)
     imageCell.widthWeight = 20
-    
+
     let nameCell = row.addText(widgets[i].name)
     nameCell.widthWeight = 70
-    
+
     let descriptionButtonCell = row.addButton('ⓘ')
     descriptionButtonCell.rightAligned()
     descriptionButtonCell.widthWeight = 10
@@ -81,7 +87,7 @@ function populateWidgetTable(table, widgets){
     let downloadButtonCell = row.addButton('↓')
     downloadButtonCell.rightAligned()
     downloadButtonCell.widthWeight = 10
-    downloadButtonCell.onTap = async function() {
+    downloadButtonCell.onTap = async function () {
       await downloadWidget(widgets[i])
     }
     table.addRow(row)
@@ -90,7 +96,7 @@ function populateWidgetTable(table, widgets){
 
 module.exports.present = async () => {
   // Set up cache .
-  const cachePath = fmLocal.joinPath(fmLocal.documentsDirectory(), "widget-catalog")
+  const cachePath = fmLocal.joinPath(fmLocal.temporaryDirectory(), "cache-widget-catalog")
   const cacheExists = fmLocal.fileExists(cachePath)
   const cacheDate = cacheExists ? fmLocal.modificationDate(cachePath) : 0
 
