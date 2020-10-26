@@ -6,8 +6,8 @@ If you don't know the way to the car anymore, you can start the navigation to th
 [[Download]](https://raw.githubusercontent.com/ThisIsBenny/iOS-Widgets/main/car-location/car-location.js)
 
 ## Setup
-For this widget is a free API-Key from mapquest.com required. Sign in on https://developer.mapquest.com to get your personal API-Key.
-Add your API to your Widget parameters and that's it.
+For this widget is a free API-Key from mapquest.com required. Sign up on https://developer.mapquest.com to get your personal API-Key.
+Add your API-Key to your Widget parameters and that's it.
 
  It is recommended to select the option "Run Script" in the widget settings under "When Interacting".
  This will display a larger map view of the small widget when you click on the widget.
