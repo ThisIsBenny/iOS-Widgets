@@ -43,7 +43,6 @@ You can also download a Script with this Shortcut via iOS Share Menu: https://ww
 The following widget are planned from my side:
 * Skype Meeting Dial-In via Phone or Web
 * Server Health Check
-* Where did I park my car?
 * Reminder / Countdown to watering the plants
 * Ecosia.org Tree counter
 * Script to Download / Update Widget from a Widget catalog, like a Widget Store
