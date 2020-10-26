@@ -1,4 +1,7 @@
 # Where did I park my car?
+![Car location Widget Preview light](https://raw.githubusercontent.com/ThisIsBenny/iOS-Widgets/main/car-location/previewLight.jpeg)
+![Car location Widget Preview dark](https://raw.githubusercontent.com/ThisIsBenny/iOS-Widgets/main/car-location/previewDark.jpeg)
+
 
 This widget allows you to save the location of your car, which will then displayed in the widget as a map. So you know exactly where you parked.
 If you don't know the way to the car anymore, you can start the navigation to the car's location with one click and let Apple Maps or Google Maps navigate you.
