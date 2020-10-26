@@ -23,7 +23,7 @@
     },
     {
       "name": "VRR-Monitor",
-      "version": "1.2.0",
+      "version": "1.2.1",
       "scriptURL": "https://raw.githubusercontent.com/ThisIsBenny/iOS-Widgets/main/VRR-Monitor/VRR-Monitor.js",
       "previewURL": "https://raw.githubusercontent.com/ThisIsBenny/iOS-Widgets/main/VRR-Monitor/previewLight.jpeg",
       "descriptionURL": "https://github.com/ThisIsBenny/iOS-Widgets/blob/main/VRR-Monitor/README.md"

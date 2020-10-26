@@ -3,9 +3,11 @@
 // icon-color: deep-green; icon-glyph: bus-alt;
 
 /**************
-Version 1.2.0
+Version 1.2.1
 
 Changelog:
+  v1.2.1:
+          - Fix issue with small widget where time will be not correct displayed in case that a delay will be displayed
   v1.2.0:
           - show original time and the delay in red
   v1.1.0:
@@ -243,9 +245,10 @@ widget.backgroundGradient = gradient
 
 let firstLineStack = widget.addStack()
   
-let provider = firstLineStack.addText("🚏 " + stationName)
-provider.font = Font.boldSystemFont(12)
-provider.textColor = new Color(textColor)
+let stationText = firstLineStack.addText("🚏 " + stationName)
+stationText.font = Font.boldSystemFont(12)
+stationText.textColor = new Color(textColor)
+stationText.lineLimit = 2
   
 // Last Update
 firstLineStack.addSpacer()
@@ -271,20 +274,27 @@ let directionColumn = row.addStack()
 directionColumn.layoutVertically()
   
 data.forEach(function(l) {
-  let timeStack = timeColumn.addStack()
-  timeStack.layoutHorizontally()
-  timeStack.spacing = 2
-  
-  let timeText = timeStack.addText(`${l.orgHour}:${l.orgMinute}`)
-  timeText.font = Font.mediumSystemFont(12)
-  timeText.textColor = new Color(textColor)
-  timeText.leftAlignText()
-  
-  if (parseInt(l.delay) > 0) {
-    let delayText = timeStack.addText(`+${l.delay}`)
-    delayText.font = Font.mediumSystemFont(12)
-    delayText.textColor = Color.red()
-    delayText.leftAlignText()
+  if (config.widgetFamily !== 'small') {
+    let timeStack = timeColumn.addStack()
+    timeStack.layoutHorizontally()
+    timeStack.spacing = 2
+
+    let timeText = timeStack.addText(`${l.orgHour}:${l.orgMinute}`)
+    timeText.font = Font.mediumSystemFont(12)
+    timeText.textColor = new Color(textColor)
+    timeText.leftAlignText()
+
+    if (parseInt(l.delay) > 0) {
+      let delayText = timeStack.addText(`+${l.delay}`)
+      delayText.font = Font.mediumSystemFont(12)
+      delayText.textColor = Color.red()
+      delayText.leftAlignText()
+    }
+  } else {
+    let timeText = timeColumn.addText(`${l.hour}:${l.minute}`)
+    timeText.font = Font.mediumSystemFont(12)
+    timeText.textColor = new Color(textColor)
+    timeText.leftAlignText()
   }
   
   let lineText = lineColumn.addText(l.name)
