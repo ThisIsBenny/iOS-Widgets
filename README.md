@@ -35,11 +35,9 @@ You can also download a Script with this Shortcut via iOS Share Menu: https://ww
   <tr>
     <td><img height="100px" src="https://raw.githubusercontent.com/ThisIsBenny/iOS-Widgets/main/car-location/previewLight.jpeg" /></td>
     <td><img height="100px" src="https://raw.githubusercontent.com/ThisIsBenny/iOS-Widgets/main/car-location/previewDark.jpeg" /></td>
-    <td><a href="https://github.com/ThisIsBenny/iOS-Widgets/blob/main/car-location/README.md">here did I park my car?</a></td>
+    <td><a href="https://github.com/ThisIsBenny/iOS-Widgets/blob/main/car-location/README.md">Where did I park my car?</a></td>
   </tr>
 </table>
-
-Where did I park my car?
 
 ## Roadmap
 The following widget are planned from my side:
