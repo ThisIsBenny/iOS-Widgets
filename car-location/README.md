@@ -3,6 +3,8 @@
 This widget allows you to save the location of your car, which will then displayed in the widget as a map. So you know exactly where you parked.
 If you don't know the way to the car anymore, you can start the navigation to the car's location with one click and let Apple Maps or Google Maps navigate you.
 
+[[Download]](https://raw.githubusercontent.com/ThisIsBenny/iOS-Widgets/main/car-location/car-location.js)
+
 ## Setup
 For this widget is a free API-Key from mapquest.com required. Sign in on https://developer.mapquest.com to get your personal API-Key.
 Add your API to your Widget parameters and that's it.
