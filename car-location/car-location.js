@@ -1,7 +1,7 @@
 // Variables used by Scriptable.
 // These must be at the very top of the file. Do not edit.
 // icon-color: deep-green; icon-glyph: car;
-// Version 1.0.1
+// Version 1.0.2
 
 /*
 Notice: You need a free API Key from https://developer.mapquest.com for this Widget
@@ -105,12 +105,15 @@ if (config.widgetFamily !== 'small') {
   let navigationImage = iconStack.addImage(SFSymbol.named('arrow.triangle.turn.up.right.diamond').image)
   navigationImage.imageSize = new Size(25,25)
   navigationImage.tintColor = new Color(iconColorUpdate)
-  let location = fm.readString(paths['location']).split(';')
 
-  if ((widgetInput[1] || '').trim().toLocaleLowerCase() == 'google') {
-    navigationImage.url = `comgooglemaps://?daddr=${location[0]},${location[1]}&travelMode=walking`
-  } else {
-    navigationImage.url = `http://maps.apple.com/maps?saddr=Current%20Location&daddr=${location[0]},${location[1]}`
+  if (locactionInformationExists) {
+    let location = fm.readString(paths['location']).split(';')
+
+    if ((widgetInput[1] || '').trim().toLocaleLowerCase() == 'google') {
+      navigationImage.url = `comgooglemaps://?daddr=${location[0]},${location[1]}&travelMode=walking`
+    } else {
+      navigationImage.url = `http://maps.apple.com/maps?saddr=Current%20Location&daddr=${location[0]},${location[1]}`
+    }
   }
   widget.addSpacer()
 }
