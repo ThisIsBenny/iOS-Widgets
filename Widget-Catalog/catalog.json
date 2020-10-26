@@ -16,7 +16,7 @@
     },
     {
       "name": "Vodafone DE remaining data volume",
-      "version": "1.2.0",
+      "version": "1.2.1",
       "scriptURL": "https://raw.githubusercontent.com/ThisIsBenny/iOS-Widgets/main/VodafoneDE/VodafoneDE.js",
       "previewURL": "https://raw.githubusercontent.com/ThisIsBenny/iOS-Widgets/main/VodafoneDE/previewLight.jpeg",
       "descriptionURL": "https://github.com/ThisIsBenny/iOS-Widgets/blob/main/VodafoneDE/README.md"
