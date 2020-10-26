@@ -40,6 +40,7 @@ The following widget are planned from my side:
 * Server Health Check
 * Where did I park my car?
 * Reminder / Countdown to watering the plants
+* Ecosia.org Tree counter
 * Script to Download / Update Widget from a Widget catalog, like a Widget Store
 
 If you have widget ideas, please feel free and share those ideas with me via GitHub Issue
