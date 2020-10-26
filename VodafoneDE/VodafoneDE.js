@@ -3,9 +3,11 @@
 // icon-color: red; icon-glyph: broadcast-tower;
 
 /**************
-Version 1.2.0
+Version 1.2.1
 
 Changelog:
+  v1.2.1:
+          - Code '40100' added for CallYa Tariff
   v1.2.0:
           - Option to set colors by widget parameters removed
           - Option to set MeinVodafone credentails via widget parameters added
@@ -37,7 +39,7 @@ let cacheMinutes = 60;
 
 // Please add additional values to these list, in case that your contract/tarif isn't supported by these default values.
 const containerList = ['Daten', 'D_EU_DATA', 'C_DIY_Data_National']
-const codeList = ['-1', '45500']
+const codeList = ['-1', '45500', '40100']
 
 ////////////////////////////////////////////////////////////////////////////////
 let backColor; //Widget background color
