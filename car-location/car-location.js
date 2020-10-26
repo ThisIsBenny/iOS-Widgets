@@ -1,14 +1,14 @@
 // Variables used by Scriptable.
 // These must be at the very top of the file. Do not edit.
 // icon-color: deep-green; icon-glyph: car;
-// Version 1.0.0
+// Version 1.0.1
 
 /*
 Notice: You need a free API Key from https://developer.mapquest.com for this Widget
         Please add the API Key to your Widget via widget parameter.
 */
 const zoomLevel = 17
-let type,iconColor;
+let type,iconColor, cachedParameter;
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -22,24 +22,30 @@ if (Device.isUsingDarkAppearance()) {
   iconColorUpdate = '222222'
 }
 ////////////////////////////////////////////////////////////////////////////////
-let widgetInputRAW = args.widgetParameter;
-let widgetInput = null;
-
-if (widgetInputRAW !== null) {
-  widgetInput = widgetInputRAW.toString().split(';')
-} else {
-  throw new Error('No API Key! Please add a API-Key from "developer.mapquest.com" to the widget parameter')
-}
-////////////////////////////////////////////////////////////////////////////////
-
 let fm = FileManager.local()
 let paths = {
   'location': fm.joinPath(fm.documentsDirectory(), 'widget-car-location'),
+  'parameter': fm.joinPath(fm.documentsDirectory(), 'widget-car-location-parameter'),
   'small': fm.joinPath(fm.documentsDirectory(), 'widget-car-location-image-small'),
   'medium': fm.joinPath(fm.documentsDirectory(), 'widget-car-location-image-medium'),
   'large': fm.joinPath(fm.documentsDirectory(), 'widget-car-location-image-large')
 }
 let locactionInformationExists = fm.fileExists(paths['location'])
+
+if (fm.fileExists(paths['parameter'])) {
+  cachedParameter = fm.readString(paths['parameter'])
+}
+
+////////////////////////////////////////////////////////////////////////////////
+let widgetInputRAW = args.widgetParameter || cachedParameter; // set stored Parameter as fallback in case that the script will be run in the app
+let widgetInput = null;
+
+if (widgetInputRAW !== null && widgetInputRAW !== undefined) {
+  widgetInput = widgetInputRAW.toString().split(';')
+} else {
+  throw new Error('No API Key! Please add a API-Key from "developer.mapquest.com" to the widget parameter')
+}
+fm.writeString(paths['parameter'], widgetInputRAW.toString())
 ////////////////////////////////////////////////////////////////////////////////
 async function updateLocationImage (location, size) {
   let sizeQuery 
@@ -56,7 +62,7 @@ async function updateLocationImage (location, size) {
     default: throw new Error('Not supported Size!')
   }
   
-    let url = `https://www.mapquestapi.com/staticmap/v5/map?key=${widgetInput.trim()}&locations=${location.latitude},${location.longitude}&zoom=${zoomLevel}&format=png&size=${sizeQuery}&type=${type}&defaultMarker=marker-${iconColorPosition}`
+    let url = `https://www.mapquestapi.com/staticmap/v5/map?key=${widgetInput[0].trim()}&locations=${location.latitude},${location.longitude}&zoom=${zoomLevel}&format=png&size=${sizeQuery}&type=${type}&defaultMarker=marker-${iconColorPosition}`
   
   let req = new Request(url)
   let img = await req.loadImage()
