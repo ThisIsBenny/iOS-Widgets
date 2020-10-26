@@ -1,7 +1,7 @@
 // Variables used by Scriptable.
 // These must be at the very top of the file. Do not edit.
 // icon-color: deep-green; icon-glyph: car;
-// Version 1.0.2
+// Version 1.0.3
 
 /*
 Notice: You need a free API Key from https://developer.mapquest.com for this Widget
@@ -106,8 +106,9 @@ if (config.widgetFamily !== 'small') {
   navigationImage.imageSize = new Size(25,25)
   navigationImage.tintColor = new Color(iconColorUpdate)
 
-  if (locactionInformationExists) {
-    let location = fm.readString(paths['location']).split(';')
+  let locationString = fm.readString(paths['location'])
+  if (locactionInformationExists && locationString) {
+    let location = locationString.split(';')
 
     if ((widgetInput[1] || '').trim().toLocaleLowerCase() == 'google') {
       navigationImage.url = `comgooglemaps://?daddr=${location[0]},${location[1]}&travelMode=walking`
