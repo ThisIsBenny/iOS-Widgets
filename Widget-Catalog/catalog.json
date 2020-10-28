@@ -15,6 +15,13 @@
       "descriptionURL": "https://github.com/ThisIsBenny/iOS-Widgets/blob/main/Covid-19/README.md"
     },
     {
+      "name": "Meeting dial in",
+      "version": "0.1.0",
+      "scriptURL": "https://raw.githubusercontent.com/ThisIsBenny/iOS-Widgets/main/Meeting-dial-in/Meeting-dial-in.js",
+      "previewURL": "",
+      "descriptionURL": "https://github.com/ThisIsBenny/iOS-Widgets/blob/main/Meeting-dial-in/README.md"
+    },
+    {
       "name": "Vodafone DE remaining data volume",
       "version": "1.2.1",
       "scriptURL": "https://raw.githubusercontent.com/ThisIsBenny/iOS-Widgets/main/VodafoneDE/VodafoneDE.js",

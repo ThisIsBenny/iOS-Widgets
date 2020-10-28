@@ -23,6 +23,11 @@ You can also download a Script with this Shortcut via iOS Share Menu: https://ww
     <td><a href="https://github.com/ThisIsBenny/iOS-Widgets/blob/main/Covid-19">Covid-19 7-Day-Incidence for Düsseldorf</a></td>
   </tr>
   <tr>
+    <td></td>
+    <td></td>
+    <td><a href="https://github.com/ThisIsBenny/iOS-Widgets/blob/main/Meeting dial in">Meeting dial in (Beta-Version)</a></td>
+  </tr>
+  <tr>
     <td><img height="100px" src="https://raw.githubusercontent.com/ThisIsBenny/iOS-Widgets/main/VodafoneDE/previewLight.jpeg" /></td>
     <td><img height="100px" src="https://raw.githubusercontent.com/ThisIsBenny/iOS-Widgets/main/VodafoneDE/previewDark.jpeg" /></td>
     <td><a href="https://github.com/ThisIsBenny/iOS-Widgets/blob/main/VodafoneDE">Vodafone DE remaining data volume</a></td>
