@@ -39,7 +39,6 @@ if (Device.isUsingDarkAppearance()) {
 let now = new Date()
 let end = new Date()
 end.setHours(23, 59, 59, 999);
-end.setDate(31)
 
 const matchPatterns = {
   skype: {
