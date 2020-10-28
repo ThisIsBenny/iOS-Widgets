@@ -1,6 +1,7 @@
 # Meeting dial in (Beta-Version)
 ![Meeting dial in Widget Preview light](https://raw.githubusercontent.com/ThisIsBenny/iOS-Widgets/main/Meeting-dial-in/previewLight.jpeg)
 ![Meeting dial in Widget Preview dark](https://raw.githubusercontent.com/ThisIsBenny/iOS-Widgets/main/Meeting-dial-in/previewDark.jpeg)
+![Meeting dial in Widget Preview](https://raw.githubusercontent.com/ThisIsBenny/iOS-Widgets/main/Meeting-dial-in/preview.gif)
 
 This widget shows the next and upcoming remote meeting. The widget can be used to dial into the meeting directly via phone number + pin or url.
 
