@@ -25,7 +25,7 @@ You can also download a Script with this Shortcut via iOS Share Menu: https://ww
   <tr>
     <td></td>
     <td></td>
-    <td><a href="https://github.com/ThisIsBenny/iOS-Widgets/blob/main/Meeting dial in">Meeting dial in (Beta-Version)</a></td>
+    <td><a href="https://github.com/ThisIsBenny/iOS-Widgets/blob/main/Meeting-dial-in">Meeting dial in (Beta-Version)</a></td>
   </tr>
   <tr>
     <td><img height="100px" src="https://raw.githubusercontent.com/ThisIsBenny/iOS-Widgets/main/VodafoneDE/previewLight.jpeg" /></td>
