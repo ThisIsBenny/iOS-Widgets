@@ -115,6 +115,7 @@ let widget = new ListWidget();
 widget.setPadding(10, 10, 10, 10)
 
 let [nextUpcomingMeeting, ...upComingMeetings] = upcomingRemoteMeeting
+upComingMeetings = upComingMeetings.slice(0, listLimit)
 
 if (config.widgetFamily == 'small')
   widget.addText("Small widget isn't supported. Please use the medium or large widget.")
@@ -222,7 +223,7 @@ else if (nextUpcomingMeeting) {
 }
 
 if (!config.runsInWidget) {
-  await widget.presentLarge()
+  await widget.presentMedium()
 } else {
   // Tell the system to show the widget.
   Script.setWidget(widget)

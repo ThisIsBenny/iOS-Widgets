@@ -1,4 +1,6 @@
 # Meeting dial in (Beta-Version)
+![Meeting dial in Widget Preview light](https://raw.githubusercontent.com/ThisIsBenny/iOS-Widgets/main/Meeting-dial-in/previewLight.jpeg)
+![Meeting dial in Widget Preview dark](https://raw.githubusercontent.com/ThisIsBenny/iOS-Widgets/main/Meeting-dial-in/previewDark.jpeg)
 
 This widget shows the next and upcoming remote meeting. The widget can be used to dial into the meeting directly via phone number + pin or url.
 
@@ -19,7 +21,6 @@ By default, the german date format will be used: DD.MM.YYYY, HH:mm
 To use a different format, the format has to be set to the widget parameter. The format has to be separated from the country code with a ;
 
 ![Meeting dial in Widget setup](https://raw.githubusercontent.com/ThisIsBenny/iOS-Widgets/main/Meeting-dial-in/setup.jpeg)
-
 
 ## Notice 1
 Since some services, such as Skype, allow own domains or phone numbers, it cannot be guaranteed that the current search patterns always find all dial-in data.
