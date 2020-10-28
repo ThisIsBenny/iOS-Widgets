@@ -46,7 +46,6 @@ You can also download a Script with this Shortcut via iOS Share Menu: https://ww
 
 ## Roadmap
 The following widget are planned from my side:
-* Skype Meeting Dial-In via Phone or Web
 * Server Health Check
 * Reminder / Countdown to watering the plants
 * Ecosia.org Tree counter
