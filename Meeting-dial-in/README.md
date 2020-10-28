@@ -9,6 +9,18 @@ The following services are currently supported:
 
 [[Download]](https://raw.githubusercontent.com/ThisIsBenny/iOS-Widgets/main/Meeting-dial-in/Meeting-dial-in.js)
 
+## Setup
+Via the widget parameters the country code has to be set. This code has to start with a +. Example: +49
+The country code is needed in case several international phone numbers are found (please check notice 1, because a country code does not automatically mean that the phone number is found).
+
+### Optional
+By default, the german date format will be used: DD.MM.YYYY, HH:mm
+
+To use a different format, the format has to be set to the widget parameter. The format has to be separated from the country code with a ;
+
+![Meeting dial in Widget setup](https://raw.githubusercontent.com/ThisIsBenny/iOS-Widgets/main/Meeting-dial-in/setup.jpeg)
+
+
 ## Notice 1
 Since some services, such as Skype, allow own domains or phone numbers, it cannot be guaranteed that the current search patterns always find all dial-in data.
 The search pattern list must be constantly expanded.
