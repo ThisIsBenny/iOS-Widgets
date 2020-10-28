@@ -1,7 +1,7 @@
 // Variables used by Scriptable.
 // These must be at the very top of the file. Do not edit.
 // icon-color: light-brown; icon-glyph: magic;
-// Version 0.1.0 Beta-Version
+// Version 0.1.1 Beta-Version
 
 /****************************
 Notice
@@ -11,8 +11,8 @@ The search pattern list must be constantly expanded.
 If the dial-in data of a meeting should not be recognized, the invitation can be provided under https://github.com/ThisIsBenny/iOS-Widgets/issues/21, so that the list of search patterns can be extended.
 
 *****************************/
-
-let timeformat, countryCode
+let countryCode
+let timeformat = Device.locale().replace('_', '-')
 
 let widgetInputRAW = args.widgetParameter;
 let widgetInput = null;
@@ -20,13 +20,11 @@ let widgetInput = null;
 if (widgetInputRAW) {
   widgetInput = widgetInputRAW.toString().split(';')
   countryCode = widgetInput[0]
-  timeformat = widgetInput[1] || 'de-DE'
   if (/^\+[\d]{1,3}$/.test(countryCode) === false) {
     throw new Error('Invalid format of country code: ' + countryCode);
   }
 } else {
   countryCode = '+49'
-  timeformat = 'de-DE'
 }
 
 const listLimit = (config.widgetFamily == 'medium') ? 1 : 5;
@@ -41,6 +39,7 @@ if (Device.isUsingDarkAppearance()) {
 let now = new Date()
 let end = new Date()
 end.setHours(23, 59, 59, 999);
+end.setDate(31)
 
 const matchPatterns = {
   skype: {
