@@ -1,7 +1,7 @@
 // Variables used by Scriptable.
 // These must be at the very top of the file. Do not edit.
 // icon-color: light-brown; icon-glyph: magic;
-// Version 0.1.1 Beta-Version
+// Version 0.1.2 Beta-Version
 
 /****************************
 Notice
