@@ -42,10 +42,6 @@ Then you have to copy & paste the desired script into the Scriptable App. Now yo
 </table>
 
 ## Roadmap
-The following widget are planned from my side:
-* Server Health Check
-* Reminder / Countdown to watering the plants
-* Ecosia.org Tree counter
-* Script to Download / Update Widget from a Widget catalog, like a Widget Store
+You will find the List of Widgets where I'm working on here: ![Roadmap](https://www.notion.so/bennysworkspace/Roadmap-8416252edf784fd7bc380478b1c8749d)
 
-If you have widget ideas, please feel free and share those ideas with me via GitHub Issue
+If you have widget ideas, please feel free and share those ideas with me via GitHub Issue. But there is no guarantee that I will realize the widget idea.
