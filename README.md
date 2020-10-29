@@ -7,9 +7,6 @@ Then you have to copy & paste the desired script into the Scriptable App. Now yo
 
 ![Setup](https://raw.githubusercontent.com/ThisIsBenny/iOS-Widgets/main/setup.gif)
 
-
-You can also download a Script with this Shortcut via iOS Share Menu: https://www.reddit.com/r/Scriptable/comments/jdcyuu/simply_ios_shortcut_to_renamesave_a_script_from
-
 ## Widget collection
 <table>
   <tr>
