@@ -221,7 +221,7 @@ else if (nextUpcomingMeeting) {
 }
 
 if (!config.runsInWidget) {
-  await widget.presentMedium()
+  await widget.presentLarge()
 } else {
   // Tell the system to show the widget.
   Script.setWidget(widget)
