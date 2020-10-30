@@ -6,7 +6,10 @@
 let widgetInputRAW = args.widgetParameter;
 let token;
 if (widgetInputRAW !== null) {
-  token = widgetInputRAW.toString();
+  token = widgetInputRAW.toString().trim();
+  if (/^[a-z0-9]{8}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{12}$/.text(token) === false) {
+    throw new Errpr('Invalid Token Format')
+  }
 } else {
   throw new Error('No token set via widget parameter! You can request a token here: https://www.ecosia.org/account/login')
 }

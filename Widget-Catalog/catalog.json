@@ -15,6 +15,13 @@
       "descriptionURL": "https://github.com/ThisIsBenny/iOS-Widgets/blob/main/Covid-19/README.md"
     },
     {
+      "name": "Ecosia Tree Counter",
+      "version": "1.0.0",
+      "scriptURL": "https://raw.githubusercontent.com/ThisIsBenny/iOS-Widgets/main/Ecosia/Ecosia.js",
+      "previewURL": "https://raw.githubusercontent.com/ThisIsBenny/iOS-Widgets/main/Ecosia/previewLight.jpeg",
+      "descriptionURL": "https://github.com/ThisIsBenny/iOS-Widgets/blob/main/Ecosia/README.md"
+    },
+    {
       "name": "Meeting dial in",
       "version": "0.1.1",
       "scriptURL": "https://raw.githubusercontent.com/ThisIsBenny/iOS-Widgets/main/Meeting-dial-in/Meeting-dial-in.js",
