@@ -2,7 +2,7 @@
 ![Ecosia Widget Preview light](https://raw.githubusercontent.com/ThisIsBenny/iOS-Widgets/main/Ecosia/previewLight.jpeg)
 ![Ecosia Widget Preview dark](https://raw.githubusercontent.com/ThisIsBenny/iOS-Widgets/main/Ecosia/previewDark.jpeg)
 
-This widget shows how many trees you have already planted based on your searches on Ecosia.org.
+This widget shows how many trees you have already planted through your searches on Ecosia.org.
 Clicking on the widget will open Ecosia.org in your browser. 
 
 [[Download]](https://raw.githubusercontent.com/ThisIsBenny/iOS-Widgets/main/Ecosia/Ecosia.js)
