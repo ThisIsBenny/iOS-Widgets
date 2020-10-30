@@ -3,9 +3,11 @@
 // icon-color: red; icon-glyph: broadcast-tower;
 
 /**************
-Version 1.2.1
+Version 1.2.2
 
 Changelog:
+  v1.2.2:
+          - Add CallYa Amount
   v1.2.1:
           - Code '40100' added for CallYa Tariff
   v1.2.0:
@@ -222,6 +224,15 @@ async function getUsage(user, pass, number) {
       throw new Error(ErrorMsg)
     }
     
+    let amount
+    if (res['serviceUsageVBO']['usageAccounts'][0]['details']['amount'] === undefined) {
+      const ErrorMsgDetails = "Can't find amount."
+      console.log(ErrorMsgDetails)
+      throw new Error(ErrorMsgDetails)
+    }else{
+    	amount = res['serviceUsageVBO']['usageAccounts'][0]['details']['amount']
+    }
+    
     let datenvolumen;
     if (datenContainer.usage.length == 1) {
       datenvolumen = datenContainer.usage[0]
@@ -252,6 +263,7 @@ async function getUsage(user, pass, number) {
       total: datenvolumen.total,
       used: datenvolumen.used,
       remaining: datenvolumen.remaining,
+      amount: amount,
       endDate
     }
   } catch (e) {
@@ -374,11 +386,16 @@ if (data !== undefined) {
   totalValuesText.centerAlignText()
   totalValuesText.textColor = new Color(textColor)  
   
+  let strAmount = ""
+  if (data.amount) {
+    strAmount = ` - ${data.amount} €`
+  }
+  
   // Remaining Days    
   if (data.endDate) {
     widget.addSpacer(5)
     let remainingDays = getTimeRemaining(data.endDate).days + 1
-    let remainingDaysText = widget.addText(`${remainingDays} Tage verleibend`)
+    let remainingDaysText = widget.addText(`${remainingDays} Tage verleibend${strAmount}`)
     remainingDaysText.font = Font.mediumSystemFont(8)
     remainingDaysText.centerAlignText()
     remainingDaysText.textColor = new Color(textColor) 
