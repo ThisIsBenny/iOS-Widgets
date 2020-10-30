@@ -20,6 +20,11 @@ Then you have to copy & paste the desired script into the Scriptable App. Now yo
     <td><a href="https://github.com/ThisIsBenny/iOS-Widgets/blob/main/Covid-19">Covid-19 7-Day-Incidence for Düsseldorf</a></td>
   </tr>
   <tr>
+    <td><img height="100px" src="https://raw.githubusercontent.com/ThisIsBenny/iOS-Widgets/main/Ecosia/previewLight.jpeg" /></td>
+    <td><img height="100px" src="https://raw.githubusercontent.com/ThisIsBenny/iOS-Widgets/main/Ecosia/previewDark.jpeg" /></td>
+    <td><a href="https://github.com/ThisIsBenny/iOS-Widgets/blob/main/Ecosia">Ecosia Tree Counter</a></td>
+  </tr>
+  <tr>
     <td><img height="100px" src="https://raw.githubusercontent.com/ThisIsBenny/iOS-Widgets/main/Meeting-dial-in/previewLight.jpeg" /></td>
     <td><img height="100px" src="https://raw.githubusercontent.com/ThisIsBenny/iOS-Widgets/main/Meeting-dial-in/previewDark.jpeg" /></td>
     <td><a href="https://github.com/ThisIsBenny/iOS-Widgets/blob/main/Meeting-dial-in">Meeting dial in (Beta-Version)</a></td>
