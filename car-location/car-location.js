@@ -1,12 +1,18 @@
 // Variables used by Scriptable.
 // These must be at the very top of the file. Do not edit.
 // icon-color: deep-green; icon-glyph: car;
-// Version 1.0.3
+/**************
+Version 1.1.0
 
-/*
+Changelog:
+  v1.1.0:
+          - X-Callback-URL Parameter skipDialogs=true added to skip the update process alerts
+          - x-success support to go back in case of a X-Callback
+
+
 Notice: You need a free API Key from https://developer.mapquest.com for this Widget
         Please add the API Key to your Widget via widget parameter.
-*/
+**************/
 const zoomLevel = 17
 let type,iconColor, cachedParameter;
 
@@ -130,16 +136,24 @@ if (locactionInformationExists) {
 
 let appQuery = args.queryParameters
 if (config.runsInWidget === false && ((appQuery.option && appQuery.option == 'updateLocation') || locactionInformationExists == false)) {
-  let a = new Alert()
-  a.message = 'Do you like to set the current position as the position of your car?'
-  a.addAction('Yes')
-  a.addCancelAction('No')
-  if(await a.present() === 0) {
+  if (appQuery.skipDialogs && appQuery.skipDialogs === 'true') {
     await updateLocation()
-    let b = new Alert()
-    b.message = 'New location was set'
-    b.addAction('Close')
-    await b.present()
+  } else {
+    let a = new Alert()
+    a.message = 'Do you like to set the current position as the position of your car?'
+    a.addAction('Yes')
+    a.addCancelAction('No')
+    if(await a.present() === 0) {
+      await updateLocation()
+      let b = new Alert()
+      b.message = 'New location was set'
+      b.addAction('Close')
+      await b.present()
+    }
+  }
+  if (appQuery['x-success']) {
+    Safari.open(appQuery['x-success'])
+    Script.complete()
   }
 }else if(config.runsInWidget === false) {
   await widget.presentLarge()

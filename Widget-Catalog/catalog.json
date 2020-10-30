@@ -37,7 +37,7 @@
     },
     {
       "name": "Where did I park my car?",
-      "version": "1.0.1",
+      "version": "1.1.0",
       "scriptURL": "https://raw.githubusercontent.com/ThisIsBenny/iOS-Widgets/main/car-location/car-location.js",
       "previewURL": "https://raw.githubusercontent.com/ThisIsBenny/iOS-Widgets/main/car-location/previewLight.jpeg",
       "descriptionURL": "https://github.com/ThisIsBenny/iOS-Widgets/blob/main/car-location/README.md"

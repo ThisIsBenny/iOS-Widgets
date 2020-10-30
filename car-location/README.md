@@ -20,6 +20,17 @@ Add your API-Key to your Widget parameters and that's it.
 ### Use Google Maps instead of Apple Maps
 By default Apple Maps is used for navigation. If you want to use Google Maps you need to write `;google` in the widget parameter behind the API key.
 
+## X-Callback-URL
+It is possible to update the Location via a X-Callback-URL: `scriptable:///run?scriptName=car-location&option=updateLocation&skipDialogs=true`
+
+This can be used to update the Location in a Shortcut for example or you write the URL to a NFC-Tag in your Car.
+
+If you use the X-Callback function in shortcut, you will navigated back to shortcuts after the update process which will be performed in Scriptable.
+
+Demo Shortcut: https://www.icloud.com/shortcuts/00bed73b06e84326b5e88203c31f1e1b
+
+![xCallbackDemo](https://raw.githubusercontent.com/ThisIsBenny/iOS-Widgets/main/car-location/xCallbackDemo.gif)
+
 ## Notice
 Due to limitations in iOS 14, it is not possible to tap on individual elements in the small widget to perform a specific action.
 For this reason, no icons are displayed in the small widget at the top right.
