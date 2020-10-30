@@ -7,7 +7,7 @@ let widgetInputRAW = args.widgetParameter;
 let token;
 if (widgetInputRAW !== null) {
   token = widgetInputRAW.toString().trim();
-  if (/^[a-z0-9]{8}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{12}$/.text(token) === false) {
+  if (/^[a-z0-9]{8}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{12}$/.test(token) === false) {
     throw new Errpr('Invalid Token Format')
   }
 } else {
