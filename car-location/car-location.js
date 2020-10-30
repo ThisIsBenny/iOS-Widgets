@@ -14,7 +14,7 @@ Notice: You need a free API Key from https://developer.mapquest.com for this Wid
         Please add the API Key to your Widget via widget parameter.
 **************/
 const zoomLevel = 17
-let type,iconColor, cachedParameter;
+let type, iconColorPosition, iconColorUpdate, cachedParameter;
 
 ////////////////////////////////////////////////////////////////////////////////
 
