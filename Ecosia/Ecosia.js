@@ -1,7 +1,7 @@
 // Variables used by Scriptable.
 // These must be at the very top of the file. Do not edit.
 // icon-color: brown; icon-glyph: magic;
-// Version 1.0.0
+// Version 1.0.1
 
 let widgetInputRAW = args.widgetParameter;
 let token;
