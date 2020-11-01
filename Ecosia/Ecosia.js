@@ -24,8 +24,8 @@ if (Device.isUsingDarkAppearance()) {
   backColor2 = '222222';
   textColor = 'EDEDED';
 } else {
-  backColor = '196f3d';
-  backColor2 = '1e8449 ';
+  backColor = '229954';
+  backColor2 = '52be80 ';
   textColor = 'EDEDED';
 }
 ////////////////////////////////////////////////////////////////////////////////
