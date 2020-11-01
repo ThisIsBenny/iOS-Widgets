@@ -21,6 +21,15 @@ if (widgetInputRAW !== null) {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+const localeText = {
+  default: ['Day', 'Days'],
+  en: ['Day', 'Days'],
+  de: ['Tag', 'Tage'],
+  fr: ['Jour', 'Jours'],
+  es: ['día', 'días'],
+  it: ['giorno', 'giorni']
+}
+////////////////////////////////////////////////////////////////////////////////
 let backColor; //Widget background color
 let backColor2; //Widget background color
 let textColor; //Widget text color
@@ -84,12 +93,14 @@ dayText.minimumScaleFactor = 0.5;
 
 textStack.addSpacer(5)
 
+const languageCode = Device.language().match(/^[\a-z]{2}/)
+const t = (localeText[languageCode]) ? localeText[languageCode] : localeText.default
 let postfixText;
 if (remainingDays === 1) {
-  postfixText = textStack.addText('Tag')
+  postfixText = textStack.addText(t[0])
 
 } else {
-  postfixText = textStack.addText('Tage')
+  postfixText = textStack.addText(t[1])
 }
 postfixText.font = Font.regularSystemFont(20)
 postfixText.textColor = new Color(textColor);
