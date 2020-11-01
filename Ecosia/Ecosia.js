@@ -1,7 +1,7 @@
 // Variables used by Scriptable.
 // These must be at the very top of the file. Do not edit.
 // icon-color: brown; icon-glyph: magic;
-// Version 1.0.1
+// Version 1.1.0
 
 let widgetInputRAW = args.widgetParameter;
 let token;
@@ -24,8 +24,8 @@ if (Device.isUsingDarkAppearance()) {
   backColor2 = '222222';
   textColor = 'EDEDED';
 } else {
-  backColor = 'D32D1F';
-  backColor2 = '76150C';
+  backColor = '196f3d';
+  backColor2 = '1e8449 ';
   textColor = 'EDEDED';
 }
 ////////////////////////////////////////////////////////////////////////////////
