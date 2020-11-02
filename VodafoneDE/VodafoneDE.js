@@ -3,9 +3,11 @@
 // icon-color: red; icon-glyph: broadcast-tower;
 
 /**************
-Version 1.2.1
+Version 1.2.2
 
 Changelog:
+  v1.2.2:
+          - Fix remaining Day issue
   v1.2.1:
           - Code '40100' added for CallYa Tariff
   v1.2.0:
@@ -377,7 +379,7 @@ if (data !== undefined) {
   // Remaining Days    
   if (data.endDate) {
     widget.addSpacer(5)
-    let remainingDays = getTimeRemaining(data.endDate).days + 1
+    let remainingDays = getTimeRemaining(data.endDate).days + 2
     let remainingDaysText = widget.addText(`${remainingDays} Tage verleibend`)
     remainingDaysText.font = Font.mediumSystemFont(8)
     remainingDaysText.centerAlignText()
