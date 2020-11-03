@@ -3,7 +3,9 @@ This is a Collection of Scripts which can be used with the Scriptable App to cre
 
 To use the Script, you have to Download the App "Scriptable" from the App Store: https://apps.apple.com/de/app/scriptable/id1405459188
 
-All widgets can be easily installed via [Widget Hub](https://widget-hub.app/)
+All widgets can be easily installed via [Widget Hub](https://widget-hub.app/):
+
+![Widget Hub](https://github.com/ThisIsBenny/iOS-Widgets/raw/main/widgetHub.gif)
 
 ## Widget collection
 <table>
