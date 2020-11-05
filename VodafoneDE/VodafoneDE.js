@@ -380,7 +380,7 @@ if (data !== undefined) {
   if (data.endDate) {
     widget.addSpacer(5)
     let remainingDays = getTimeRemaining(data.endDate).days + 2
-    let remainingDaysText = widget.addText(`${remainingDays} Tage verleibend`)
+    let remainingDaysText = widget.addText(`${remainingDays} Tage verbleibend`)
     remainingDaysText.font = Font.mediumSystemFont(8)
     remainingDaysText.centerAlignText()
     remainingDaysText.textColor = new Color(textColor) 
