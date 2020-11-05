@@ -3,9 +3,11 @@
 // icon-color: red; icon-glyph: broadcast-tower;
 
 /**************
-Version 1.2.2
+Version 1.2.3
 
 Changelog:
+  v1.2.3:
+          - Fix typo (thanks @CuzImStantac)
   v1.2.2:
           - Fix remaining Day issue
   v1.2.1:
