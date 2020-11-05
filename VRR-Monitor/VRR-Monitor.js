@@ -3,9 +3,11 @@
 // icon-color: deep-green; icon-glyph: bus-alt;
 
 /**************
-Version 1.2.1
+Version 1.2.2
 
 Changelog:
+  v1.2.2:
+          - Fix issue with empty response
   v1.2.1:
           - Fix issue with small widget where time will be not correct displayed in case that a delay will be displayed
   v1.2.0:
@@ -15,7 +17,6 @@ Changelog:
           - Setup Wizard enhanced
 
 **************/
-
 let transportTypes = [
   {
     name: 'ICE/IC/EC',
@@ -93,7 +94,8 @@ async function fetchStationdata(Id, linesFilter, distance, transportCodes) {
   
   try {
     let res = await req.loadJSON()
-    return {departureData: res['departureData'], stationName: res['stationName']}
+    
+    return {departureData: res['departureData'] || [], stationName: res['stationName']}
   } catch (e) {
     console.log(req.response)
     console.log(e)
