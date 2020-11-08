@@ -17,4 +17,4 @@ After this, you have to copy the token from the Link in the E-Mail and paste the
 
 Or you can use this Shortcut to get the Token from a already loggend in iOS Safari: [Get Ecosia Token Shortcut](https://www.icloud.com/shortcuts/77b82210c35e4db79695fb00990eef88)
 
-You have to execute this Shortcut from the Share-Menu in Safari.
+You have to execute this Shortcut from the Share-Menu in Safari while you are on Ecosia.org.
