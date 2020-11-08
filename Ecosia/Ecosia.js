@@ -3,6 +3,9 @@
 // icon-color: brown; icon-glyph: magic;
 // Version 1.1.3
 
+// You can use this shortcut to get the needed Token via Safari Share Menu: https://www.icloud.com/shortcuts/77b82210c35e4db79695fb00990eef88
+// It is important, that you are already logged in with the Safari Browser where you execute Shortcut
+
 let widgetInputRAW = args.widgetParameter;
 let token;
 if (widgetInputRAW !== null) {
