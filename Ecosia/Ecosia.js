@@ -1,7 +1,7 @@
 // Variables used by Scriptable.
 // These must be at the very top of the file. Do not edit.
 // icon-color: brown; icon-glyph: magic;
-// Version 1.1.1
+// Version 1.1.2
 
 let widgetInputRAW = args.widgetParameter;
 let token;
@@ -53,9 +53,13 @@ async function getLogo() {
     }
   }
 }
-
+console.log('Load Tree Counter')
 let treeCounter = await getTreeCounter(token);
+console.log('Tree Counter loaded')
+console.log(treeCounter)
+console.log('Load Logo')
 let ecosiaLogo = await getLogo()
+console.log('Logo loaded')
 // Create Widget
 let widget = new ListWidget();
 
