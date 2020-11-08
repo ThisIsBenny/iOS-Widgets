@@ -3,7 +3,7 @@
 ![Ecosia Widget Preview dark](https://raw.githubusercontent.com/ThisIsBenny/iOS-Widgets/main/Ecosia/previewDark.jpeg)
 
 This widget shows how many trees you have already planted through your searches on Ecosia.org.
-Clicking on the widget will open Ecosia.org in your browser. 
+Clicking on the widget will open Ecosia.org in your browser.
 
 [[Download]](https://raw.githubusercontent.com/ThisIsBenny/iOS-Widgets/main/Ecosia/Ecosia.js)
 
@@ -15,6 +15,6 @@ After this, you have to copy the token from the Link in the E-Mail and paste the
 ![Get Token](https://raw.githubusercontent.com/ThisIsBenny/iOS-Widgets/main/Ecosia/token.jpeg)
 ![Setup](https://raw.githubusercontent.com/ThisIsBenny/iOS-Widgets/main/Ecosia/setup.jpeg)
 
-Or you can use this Shortcut to get the Token from a already loggend in iOS Safari: [Get Ecosia Token Shortcut](https://www.icloud.com/shortcuts/77b82210c35e4db79695fb00990eef88)
+Or you can use this Shortcut to get the Token from a already loggend in iOS Safari: [Get Ecosia Token Shortcut](https://www.icloud.com/shortcuts/ab84483a898d42428b1a9be981c37854)
 
 You have to execute this Shortcut from the Share-Menu in Safari while you are on Ecosia.org.

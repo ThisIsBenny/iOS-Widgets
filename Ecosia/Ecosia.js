@@ -3,7 +3,7 @@
 // icon-color: brown; icon-glyph: magic;
 // Version 1.1.3
 
-// You can use this shortcut to get the needed Token via Safari Share Menu while you are on Ecosia.org: https://www.icloud.com/shortcuts/77b82210c35e4db79695fb00990eef88
+// You can use this shortcut to get the needed Token via Safari Share Menu while you are on Ecosia.org: https://www.icloud.com/shortcuts/ab84483a898d42428b1a9be981c37854
 // It is important, that you are already logged in with the Safari Browser where you execute Shortcut
 
 let widgetInputRAW = args.widgetParameter;
