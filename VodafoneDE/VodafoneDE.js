@@ -3,9 +3,11 @@
 // icon-color: red; icon-glyph: broadcast-tower;
 
 /**************
-Version 1.2.2
+Version 1.2.3
 
 Changelog:
+  v1.2.3:
+          - Fix typo (thanks @CuzImStantac)
   v1.2.2:
           - Fix remaining Day issue
   v1.2.1:
@@ -380,7 +382,7 @@ if (data !== undefined) {
   if (data.endDate) {
     widget.addSpacer(5)
     let remainingDays = getTimeRemaining(data.endDate).days + 2
-    let remainingDaysText = widget.addText(`${remainingDays} Tage verleibend`)
+    let remainingDaysText = widget.addText(`${remainingDays} Tage verbleibend`)
     remainingDaysText.font = Font.mediumSystemFont(8)
     remainingDaysText.centerAlignText()
     remainingDaysText.textColor = new Color(textColor) 
