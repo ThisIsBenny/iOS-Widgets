@@ -1,7 +1,7 @@
 // Variables used by Scriptable.
 // These must be at the very top of the file. Do not edit.
 // icon-color: brown; icon-glyph: magic;
-// Version 1.1.0
+// Version 1.1.1
 
 let widgetInputRAW = args.widgetParameter;
 let token;
@@ -43,7 +43,7 @@ async function getLogo() {
     return fm.readImage(pathLogo)
   } else {
     try {
-      let req = new Request('https://uc948e7ad6c396973f81d540ee4f.dl.dropboxusercontent.com/cd/0/get/BCSgEaIvDEkR-T7KEmiGl3_qHREwC9xuXRJpUM61i27BB3_qczSDa8yH6wlK5CoRtSKikI6G-iGN7AdM-xRpFO9g5ahznpU7kfJVEy7SGvR2Gw/file?_download_id=9234590427327855751170888564094591338853848773569417305635998585&_notify_domain=www.dropbox.com&dl=1')
+      let req = new Request('https://raw.githubusercontent.com/ThisIsBenny/iOS-Widgets/main/Ecosia/logo.png')
       let logo = await req.loadImage()
       fm.writeImage(pathLogo, logo)
       return logo
