@@ -1,7 +1,7 @@
 // Variables used by Scriptable.
 // These must be at the very top of the file. Do not edit.
 // icon-color: brown; icon-glyph: magic;
-// Version 1.1.2
+// Version 1.1.3
 
 let widgetInputRAW = args.widgetParameter;
 let token;
@@ -30,9 +30,14 @@ if (Device.isUsingDarkAppearance()) {
 }
 ////////////////////////////////////////////////////////////////////////////////
 async function getTreeCounter(token) {
-  let req = new Request("https://api.ecosia.org/v1/accounts/personalcounter?token=" + token)
-  let res = await req.loadJSON()
-  return parseInt(res.counterValue)
+  try {
+    const url = "https://api.ecosia.org/v1/accounts/personalcounter?token=" + token
+    let req = new Request(url)
+    let res = await req.loadJSON()
+    return parseInt(res.counterValue)
+  } catch (error) {
+    throw new Error('An error occurred when loading data from the Ecosia API. Please check the entered token.')
+  }
 }
 
 async function getLogo() {
