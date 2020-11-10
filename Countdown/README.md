@@ -15,3 +15,7 @@ Set the date in ISO8601 format (YYYY-MM-DD) to the Widget Parameter.
 Define an emoji for your widget by adding the desired emoji behind the date and separating both values with a ";". Like this:
 
 ![Countdown Widget setup](https://raw.githubusercontent.com/ThisIsBenny/iOS-Widgets/main/Countdown/setup.jpeg)
+
+If you want to see the entered date also in the widget, you can enter a `true` as third value in the widget parameter like this:
+
+![Countdown Widget setup 2](https://raw.githubusercontent.com/ThisIsBenny/iOS-Widgets/main/Countdown/setup2.jpeg)
