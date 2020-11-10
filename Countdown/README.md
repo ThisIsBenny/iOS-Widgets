@@ -11,6 +11,7 @@ Simple Countdown widget which shows the remaining days to a specified date. Supp
 ## Setup
 Set the date in ISO8601 format (YYYY-MM-DD) to the Widget Parameter.
 
-Optional: Define an emoji for your widget by adding the desired emoji behind the date and separating both values with a ";". Like this:
+#### Optional
+Define an emoji for your widget by adding the desired emoji behind the date and separating both values with a ";". Like this:
 
 ![Countdown Widget setup](https://raw.githubusercontent.com/ThisIsBenny/iOS-Widgets/main/Countdown/setup.jpeg)
