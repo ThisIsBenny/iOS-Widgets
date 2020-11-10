@@ -1,10 +1,11 @@
 // Variables used by Scriptable.
 // These must be at the very top of the file. Do not edit.
 // icon-color: orange; icon-glyph: hourglass-half;
-// Version 1.1.0
+// Version 1.2.0
 
 let dateForCountdown = ''
 let icon = ''
+let showDate = false
 
 let widgetInputRAW = args.widgetParameter;
 let widgetInput = null;
@@ -16,6 +17,9 @@ if (widgetInputRAW !== null) {
   }
   dateForCountdown = widgetInput[0].trim()
   icon = widgetInput[1] || '⏳';
+  if (widgetInput[2] && widgetInput[2].toLowerCase() === 'true') {
+    showDate = true
+  }
 } else {
   throw new Error('No Date set! Please set a Date via Widget parameter like 2020-12-31')
 }
@@ -86,10 +90,10 @@ textStack.layoutHorizontally()
 textStack.addSpacer()
 textStack.centerAlignContent()
 
-let dayText = textStack.addText(`${remainingDays}`)
-dayText.font = Font.regularSystemFont(50)
-dayText.textColor = new Color(textColor);
-dayText.minimumScaleFactor = 0.5;
+let daysText = textStack.addText(`${remainingDays}`)
+daysText.font = Font.regularSystemFont(50)
+daysText.textColor = new Color(textColor);
+daysText.minimumScaleFactor = 0.5;
 
 textStack.addSpacer(5)
 
@@ -108,6 +112,14 @@ postfixText.textColor = new Color(textColor);
 textStack.addSpacer()
 
 widget.addSpacer()
+
+if(showDate) {
+  const dateText = widget.addDate(new Date(dateForCountdown))
+  dateText.font = Font.lightSystemFont(10)
+  dateText.textColor = new Color(textColor);
+  dateText.centerAlignText()
+  widget.addSpacer(5) 
+}
 
 if(!config.runsInWidget) {
   await widget.presentSmall()
