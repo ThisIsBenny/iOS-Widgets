@@ -4,7 +4,7 @@
 ![Countdown Widget Preview light](https://raw.githubusercontent.com/ThisIsBenny/iOS-Widgets/main/Countdown/previewLight2.jpeg)
 ![Countdown Widget Preview dark](https://raw.githubusercontent.com/ThisIsBenny/iOS-Widgets/main/Countdown/previewDark2.jpeg)
 
-Simple Countdown widget which shows the remaining days to a specified date.
+Simple Countdown widget which shows the remaining days to a specified date. Supported languages: en (default), de, fr, es, it.
 
 [[Download]](https://raw.githubusercontent.com/ThisIsBenny/iOS-Widgets/main/Countdown/Countdown.js)
 
