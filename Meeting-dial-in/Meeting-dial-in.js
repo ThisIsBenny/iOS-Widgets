@@ -1,7 +1,7 @@
 // Variables used by Scriptable.
 // These must be at the very top of the file. Do not edit.
 // icon-color: light-brown; icon-glyph: magic;
-// Version 0.1.2 Beta-Version
+// Version 0.2.1 Beta-Version
 
 /****************************
 Notice
@@ -60,6 +60,14 @@ const matchPatterns = {
   msteams: {
     online: [
       /<(https:\/\/teams\.microsoft\.com\/l\/meetup-join\/.+)>/
+    ]
+  },
+  zoom: {
+    online: [
+      /(https:\/\/.*\.zoom\.us\/j\/[^<>]+)/
+    ],
+    phone: [
+      { number: /Dial by your location[\r\n]*(\+49[0-9\s]+)/, pin: /Meeting ID: ([0-9\s]+)/ }
     ]
   }
 }

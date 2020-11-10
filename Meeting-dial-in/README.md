@@ -9,6 +9,7 @@ The following services are currently supported:
 * Skype (de)
 * Circuit
 * MS Team (url only)
+* Zoom (url only)
 
 [[Download]](https://raw.githubusercontent.com/ThisIsBenny/iOS-Widgets/main/Meeting-dial-in/Meeting-dial-in.js)
 
