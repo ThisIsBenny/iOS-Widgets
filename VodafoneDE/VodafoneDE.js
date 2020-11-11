@@ -3,9 +3,11 @@
 // icon-color: red; icon-glyph: broadcast-tower;
 
 /**************
-Version 1.2.3
+Version 1.2.4
 
 Changelog:
+  v1.2.4:
+          - use color.dynamic
   v1.2.3:
           - Fix typo (thanks @CuzImStantac)
   v1.2.2:
@@ -46,12 +48,6 @@ const containerList = ['Daten', 'D_EU_DATA', 'C_DIY_Data_National']
 const codeList = ['-1', '45500', '40100']
 
 ////////////////////////////////////////////////////////////////////////////////
-let backColor; //Widget background color
-let backColor2; //Widget background color
-let textColor; //Widget text color
-let fillColor;
-let strokeColor;
-
 let widgetInputRAW = args.widgetParameter;
 let widgetInput = null;
 
@@ -59,28 +55,20 @@ let user, pass, number
 
 if (widgetInputRAW !== null) {
   [user, pass, number] = widgetInputRAW.toString().split("|");
-  
-  if(!user || !pass || !number) {
-    throw new Error("Invalid Widget parameter. Expected format: username|password|phonenumber") 
+
+  if (!user || !pass || !number) {
+    throw new Error("Invalid Widget parameter. Expected format: username|password|phonenumber")
   }
-  if(/^49[\d]{5,}/.test(number) === false) {
-    throw new Error("Invalid phonenumber format. Expected format: 491721234567") 
+  if (/^49[\d]{5,}/.test(number) === false) {
+    throw new Error("Invalid phonenumber format. Expected format: 491721234567")
   }
 }
 
-if (Device.isUsingDarkAppearance()) {
-  backColor = '111111';
-  backColor2 = '222222';
-  textColor = 'EDEDED';
-  fillColor = 'EDEDED';
-  strokeColor = '121212';
-} else {
-  backColor = 'D32D1F';
-  backColor2 = '76150C';
-  textColor = 'EDEDED';
-  fillColor = 'EDEDED';
-  strokeColor = 'B0B0B0';
-}
+const backColor = Color.dynamic(new Color('D32D1F'), new Color('111111'));
+const backColor2 = Color.dynamic(new Color('76150C'), new Color('222222'));
+const textColor = Color.dynamic(new Color('EDEDED'), new Color('EDEDED'));
+const fillColor = Color.dynamic(new Color('EDEDED'), new Color('EDEDED'));
+const strokeColor = Color.dynamic(new Color('B0B0B0'), new Color('121212'));
 
 const canvas = new DrawContext();
 const canvSize = 200;
@@ -107,8 +95,8 @@ function drawArc(ctr, rad, w, deg) {
   bgd = 2 * rad;
   bgr = new Rect(bgx, bgy, bgd, bgd);
 
-  canvas.setFillColor(new Color(fillColor));
-  canvas.setStrokeColor(new Color(strokeColor));
+  canvas.setFillColor(fillColor);
+  canvas.setStrokeColor(strokeColor);
   canvas.setLineWidth(w);
   canvas.strokeEllipse(bgr);
 
@@ -120,12 +108,12 @@ function drawArc(ctr, rad, w, deg) {
   }
 }
 
-function getTimeRemaining(endtime){
+function getTimeRemaining(endtime) {
   const total = Date.parse(endtime) - Date.parse(new Date());
-  const seconds = Math.floor( (total/1000) % 60 );
-  const minutes = Math.floor( (total/1000/60) % 60 );
-  const hours = Math.floor( (total/(1000*60*60)) % 24 );
-  const days = Math.floor( total/(1000*60*60*24) );
+  const seconds = Math.floor((total / 1000) % 60);
+  const minutes = Math.floor((total / 1000 / 60) % 60);
+  const hours = Math.floor((total / (1000 * 60 * 60)) % 24);
+  const days = Math.floor(total / (1000 * 60 * 60 * 24));
 
   return {
     total,
@@ -154,7 +142,7 @@ async function getSessionCookiesViaNetworkLogin() {
   })
   try {
     let res = await req.loadJSON()
-    return { cookies: req.response.cookies, msisdn: res.msisdn}
+    return { cookies: req.response.cookies, msisdn: res.msisdn }
   } catch (e) {
     console.log("Login failed! Please check if Wifi is disabled.")
     throw new Error(`Login failed with HTTP-Status-Code ${req.response.statusCode}`)
@@ -177,7 +165,7 @@ async function getSessionCookiesViaMeinVodafoneLogin(u, p) {
   })
   try {
     let res = await req.loadJSON()
-    return { cookies: req.response.cookies}
+    return { cookies: req.response.cookies }
   } catch (e) {
     console.log("Login failed!")
     throw new Error(`Login failed with HTTP-Status-Code ${req.response.statusCode}`)
@@ -188,7 +176,7 @@ async function getUsage(user, pass, number) {
   let cookies, msisdn;
   if (user && pass && number) {
     console.log("Login via MeinVodafone")
-    let { cookies: c }= await getSessionCookiesViaMeinVodafoneLogin(user, pass);
+    let { cookies: c } = await getSessionCookiesViaMeinVodafoneLogin(user, pass);
     cookies = c;
     msisdn = number;
   } else {
@@ -197,7 +185,7 @@ async function getUsage(user, pass, number) {
     cookies = c;
     msisdn = m;
   }
-  let CookieValues = cookies.map(function(v){
+  let CookieValues = cookies.map(function (v) {
     return v.name + "=" + v.value
   })
   let req;
@@ -211,10 +199,10 @@ async function getUsage(user, pass, number) {
   try {
     let res = await req.loadJSON()
     console.log("unbilled-usage loaded")
-    let datenContainer = res['serviceUsageVBO']['usageAccounts'][0]['usageGroup'].find(function(v){
+    let datenContainer = res['serviceUsageVBO']['usageAccounts'][0]['usageGroup'].find(function (v) {
       return containerList.includes(v.container)
     })
-    
+
     if (datenContainer === undefined) {
       const ErrorMsg = "Can't find usageGroup with supported Container: " + containerList.join(', ') + ".";
       console.log(ErrorMsg)
@@ -225,7 +213,7 @@ async function getUsage(user, pass, number) {
       console.log("Please check the following list to find the correct container name for your case and adjust the list of container names at the beginnging: " + listOfContainerNamesInResponse.join(", "))
       throw new Error(ErrorMsg)
     }
-    
+
     let datenvolumen;
     if (datenContainer.usage.length == 1) {
       datenvolumen = datenContainer.usage[0]
@@ -234,24 +222,24 @@ async function getUsage(user, pass, number) {
         return codeList.includes(v.code)
       })
     }
-    
+
     if (datenvolumen === undefined) {
       const ErrorMsg = "Can't find Usage with supported Codes: " + codeList.join(', ') + ".";
       console.log(ErrorMsg)
 
-      const listOfCodeInResponse = datenContainer.usage.map(function(v) {
+      const listOfCodeInResponse = datenContainer.usage.map(function (v) {
         return `Code: "${v.code}" for "${v.description}"`;
       })
       console.log("Please check the following list to find the correct code for your case and adjust the list of codes at the beginnging: " + listOfCodeInResponse.join(", "))
       throw new Error(ErrorMsg)
     }
-    
-    
+
+
     let endDate = datenvolumen.endDate;
     if (endDate == null) {
-      endDate = res['serviceUsageVBO']['billDetails']['billCycleEndDate'] || null
+      endDate = res['serviceUsageVBO']['billDetails']['billCycleEndDate'] || null
     }
-    
+
     return {
       total: datenvolumen.total,
       used: datenvolumen.used,
@@ -279,7 +267,7 @@ let data;
 let lastUpdate
 try {
   // If cache exists and it's been less than 30 minutes since last request, use cached data.
-  if (cacheExists&& (today.getTime() - cacheDate.getTime()) < (cacheMinutes * 60 * 1000)) {
+  if (cacheExists && (today.getTime() - cacheDate.getTime()) < (cacheMinutes * 60 * 1000)) {
     console.log("Get from Cache")
     data = JSON.parse(files.readString(cachePath))
     lastUpdate = cacheDate
@@ -289,7 +277,7 @@ try {
     console.log("Write Data to Cache")
     try {
       files.writeString(cachePath, JSON.stringify(data))
-    } catch(e) {
+    } catch (e) {
       console.log("Creating Cache failed!")
       console.log(e)
     }
@@ -298,7 +286,7 @@ try {
   }
 } catch (e) {
   console.error(e)
-  if (cacheExists) { 
+  if (cacheExists) {
     console.log("Get from Cache")
     data = JSON.parse(files.readString(cachePath))
     lastUpdate = cacheDate
@@ -317,36 +305,36 @@ if (data !== undefined) {
   const gradient = new LinearGradient()
   gradient.locations = [0, 1]
   gradient.colors = [
-    new Color(backColor),
-    new Color(backColor2)
+    backColor,
+    backColor2
   ]
   widget.backgroundGradient = gradient
-  
+
   let firstLineStack = widget.addStack()
-  
+
   let provider = firstLineStack.addText("Vodafone")
   provider.font = Font.mediumSystemFont(12)
-  provider.textColor = new Color(textColor)
-  
+  provider.textColor = textColor
+
   // Last Update
   firstLineStack.addSpacer()
   let lastUpdateText = firstLineStack.addDate(lastUpdate)
   lastUpdateText.font = Font.mediumSystemFont(8)
   lastUpdateText.rightAlignText()
   lastUpdateText.applyTimeStyle()
-  lastUpdateText.textColor = Color.lightGray() 
-  
+  lastUpdateText.textColor = Color.lightGray()
+
   widget.addSpacer()
-  
+
   let remainingPercentage = (100 / data.total * data.remaining).toFixed(0);
-  
+
   drawArc(
     new Point(canvSize / 2, canvSize / 2),
     canvRadius,
     canvWidth,
     Math.floor(remainingPercentage * 3.6)
   );
-  
+
   const canvTextRect = new Rect(
     0,
     100 - canvTextSize / 2,
@@ -354,16 +342,16 @@ if (data !== undefined) {
     canvTextSize
   );
   canvas.setTextAlignedCenter();
-  canvas.setTextColor(new Color(textColor));
+  canvas.setTextColor(textColor);
   canvas.setFont(Font.boldSystemFont(canvTextSize));
   canvas.drawTextInRect(`${remainingPercentage}%`, canvTextRect);
-  
+
   const canvImage = canvas.getImage();
   let image = widget.addImage(canvImage);
   image.centerAlignImage()
-  
+
   widget.addSpacer()
-  
+
   // Total Values
   let totalValues;
   if (parseInt(data.total) < 1000) {
@@ -376,8 +364,8 @@ if (data !== undefined) {
   let totalValuesText = widget.addText(totalValues)
   totalValuesText.font = Font.mediumSystemFont(12)
   totalValuesText.centerAlignText()
-  totalValuesText.textColor = new Color(textColor)  
-  
+  totalValuesText.textColor = textColor
+
   // Remaining Days    
   if (data.endDate) {
     widget.addSpacer(5)
@@ -385,16 +373,16 @@ if (data !== undefined) {
     let remainingDaysText = widget.addText(`${remainingDays} Tage verbleibend`)
     remainingDaysText.font = Font.mediumSystemFont(8)
     remainingDaysText.centerAlignText()
-    remainingDaysText.textColor = new Color(textColor) 
+    remainingDaysText.textColor = textColor
   }
- 
+
 } else {
   let fallbackText = widget.addText("Es ist ein Fehler aufgetreten! Bitte prüfen Sie die Logs direkt in der App.")
   fallbackText.font = Font.mediumSystemFont(12)
-  fallbackText.textColor = new Color(textColor)
+  fallbackText.textColor = textColor
 }
 
-if(!config.runsInWidget) {
+if (!config.runsInWidget) {
   await widget.presentSmall()
 } else {
   // Tell the system to show the widget.
