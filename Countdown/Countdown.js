@@ -1,7 +1,7 @@
 // Variables used by Scriptable.
 // These must be at the very top of the file. Do not edit.
 // icon-color: orange; icon-glyph: hourglass-half;
-// Version 1.2.0
+// Version 1.2.1
 
 let dateForCountdown = ''
 let icon = ''
@@ -97,7 +97,7 @@ daysText.minimumScaleFactor = 0.5;
 
 textStack.addSpacer(5)
 
-const languageCode = Device.language().match(/^[\a-z]{2}/)
+const languageCode = Device.preferredLanguages()[0].match(/^[\a-z]{2}/)
 const t = (localeText[languageCode]) ? localeText[languageCode] : localeText.default
 let postfixText;
 if (remainingDays === 1) {
