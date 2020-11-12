@@ -1,7 +1,7 @@
 // Variables used by Scriptable.
 // These must be at the very top of the file. Do not edit.
 // icon-color: deep-blue; icon-glyph: shopping-cart;
-// Version 1.0.1
+// Version 1.0.2
 
 const cacheMinutes = 60 * 2
 const today = new Date()
@@ -252,7 +252,7 @@ if (!orderDetails) {
 
   widget.addSpacer()
 
-  const languageCode = Device.language().match(/^[\a-z]{2}/)
+  const languageCode = Device.preferredLanguages()[0].match(/^[\a-z]{2}/)
   const t = (localeText[languageCode]) ? localeText[languageCode] : localeText.default
   let postFix = (remainingDays === 1) ? t[0] : t[1]
 
