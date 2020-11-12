@@ -1,4 +1,5 @@
 # Apple Store Order Status
+![Apple Store Order Status Widget Preview light](https://raw.githubusercontent.com/ThisIsBenny/iOS-Widgets/main/Apple-Order-Status/previewLight.jpeg)
 
 This widget shows you the status of your Apple Store order. It shows the remaining days until delivery, the product name, product image, order date and delivery date.
 

@@ -10,6 +10,10 @@ All widgets can be easily installed via [Widget Hub](https://widget-hub.app/):
 ## Widget collection
 <table>
   <tr>
+    <td><img height="100px" src="https://raw.githubusercontent.com/ThisIsBenny/iOS-Widgets/main/Apple-Order-Status/previewLight.jpeg" /></td>
+    <td><a href="https://github.com/ThisIsBenny/iOS-Widgets/blob/main/Apple-Order-Status">Apple Store Order Status</a></td>
+  </tr>
+  <tr>
     <td><img height="100px" src="https://raw.githubusercontent.com/ThisIsBenny/iOS-Widgets/main/Countdown/previewLight.jpeg" /></td>
     <td><img height="100px" src="https://raw.githubusercontent.com/ThisIsBenny/iOS-Widgets/main/Countdown/previewDark.jpeg" /></td>
     <td><a href="https://github.com/ThisIsBenny/iOS-Widgets/blob/main/Countdown">Countdown</a></td>
