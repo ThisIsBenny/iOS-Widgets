@@ -1,7 +1,7 @@
 // Variables used by Scriptable.
 // These must be at the very top of the file. Do not edit.
 // icon-color: deep-blue; icon-glyph: shopping-cart;
-// Version 1.0.2
+// Version 1.0.3
 
 const cacheMinutes = 60 * 2
 const today = new Date()
@@ -12,7 +12,7 @@ const debug = false
 if (config.widgetFamily === 'small') {
   width = 100
 } else {
-  width = 200
+  width = 300
 }
 
 ////////////////////////////////////////////////////////////
@@ -30,7 +30,7 @@ if (widgetInputRAW !== null) {
 ////////////////////////////////////////////////////////////
 const files = FileManager.local()
 
-const path = files.joinPath(files.cacheDirectory(), "widget-apple-store-order")
+const path = files.joinPath(files.cacheDirectory(), "widget-apple-store-order-" + widgetInput[0])
 
 const cacheExists = files.fileExists(path)
 
@@ -233,6 +233,7 @@ if (!orderDetails) {
   const headlineText = widget.addText(' Order Status')
   headlineText.font = Font.regularSystemFont(14)
   headlineText.textColor = Color.black()
+  headlineText.centerAlignText()
 
   widget.addSpacer()
 
@@ -240,15 +241,22 @@ if (!orderDetails) {
   productStack.layoutHorizontally()
 
   itemImageElement = productStack.addImage(itemImage)
-  itemImageElement.imageSize = new Size(30, 30)
+  itemImageElement.imageSize = new Size(35, 35)
+  itemImageElement.applyFillingContentMode()
 
-  productStack.addSpacer(10)
+  productStack.addSpacer(20)
 
-  const itemNameText = productStack.addText(itemName)
-  itemNameText.font = Font.regularSystemFont(16)
+  rightProductStack = productStack.addStack()
+  rightProductStack.layoutVertically()
+  rightProductStack.addSpacer()
+
+  const itemNameText = rightProductStack.addText(itemName)
+  itemNameText.font = Font.regularSystemFont(10)
   itemNameText.textColor = Color.black()
-  itemNameText.minimumScaleFactor = 0.3
+  itemNameText.minimumScaleFactor = 0.5
   itemNameText.lineLimit = 2
+
+  rightProductStack.addSpacer()
 
   widget.addSpacer()
 
@@ -266,22 +274,26 @@ if (!orderDetails) {
   const total = (deliveryDate - orderDate) / (1000 * 60 * 60 * 24)
   const daysGone = total - remainingDays
 
-  widget.addImage(creatProgress(total, daysGone))
+  const progressStack = widget.addStack()
+  progressStack.layoutVertically()
+  progressStack.addImage(creatProgress(total, daysGone))
 
-  widget.addSpacer(5)
+  progressStack.spacing = 2
 
-  const footerStack = widget.addStack()
+  const footerStack = progressStack.addStack()
   footerStack.layoutHorizontally()
 
-  const orderDateText = footerStack.addDate(orderDate)
+  const orderDateText = footerStack.addText(orderDate.toLocaleDateString())
   orderDateText.textColor = Color.black()
-  orderDateText.font = Font.regularSystemFont(8)
+  orderDateText.font = Font.regularSystemFont(10)
+  orderDateText.lineLimit = 1
 
   footerStack.addSpacer()
 
-  const deliveryDateText = footerStack.addDate(deliveryDate)
+  const deliveryDateText = footerStack.addText(deliveryDate.toLocaleDateString())
   deliveryDateText.textColor = Color.black()
-  deliveryDateText.font = Font.regularSystemFont(8)
+  deliveryDateText.font = Font.regularSystemFont(10)
+  deliveryDateText.lineLimit = 1
 }
 
 if (!config.runsInWidget) {
