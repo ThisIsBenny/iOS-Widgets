@@ -1,11 +1,11 @@
 // Variables used by Scriptable.
 // These must be at the very top of the file. Do not edit.
 // icon-color: deep-blue; icon-glyph: shopping-cart;
-// Version 1.0.3
+// Version 1.0.4
 
 const cacheMinutes = 60 * 2
 const today = new Date()
-let width
+let width;
 const h = 5
 const debug = false
 
@@ -14,7 +14,6 @@ if (config.widgetFamily === 'small') {
 } else {
   width = 300
 }
-
 ////////////////////////////////////////////////////////////
 let widgetInputRAW = args.widgetParameter;
 let widgetInput;
@@ -78,7 +77,17 @@ const parseShortDate = (stringDate, orderMonth) => {
     'Nov': 10,
     'Dec': 11
   }
-  const m = stringDate.match(/([\d]{1,2}) ([\w]{3})/)
+  let m
+  m = stringDate.match(/([\d]{1,2}) ([\w]{3})/)
+  if (!m) {
+    m = stringDate.match(/([\w]{3}) ([\d]{1,2})/)
+    if (m) {
+      const t = m[1]
+      m[1] = m[2]
+      m[2] = t
+    }
+  }
+
   let year = new Date().getFullYear()
   if (months[m[2]] < orderMonth) {
     year += 1
@@ -178,6 +187,7 @@ const getOrderdetails = async (ordernumber, email) => {
     console.log(data)
     throw new Error('no orderDetail attribute')
   }
+  data.widgetURL = postResData['head']['data']['url']
   return data
 }
 ////////////////////////////////////////////////////////////
@@ -213,6 +223,11 @@ let widget = new ListWidget();
 if (!orderDetails) {
   widget.addText('No order found')
 } else {
+  // filter on orderItem to remove giveBackOrderItem
+  orderDetails['orderDetail']['orderItems']['c'] = orderDetails['orderDetail']['orderItems']['c'].filter((e) => {
+    return /orderItem-[\d]+/.test(e)
+  })
+
   if (widgetInput[2] && !orderDetails['orderDetail']['orderItems']['c'][widgetInput[2] - 1]) {
     throw new Error(`No Item on position ${widgetInput[2]}`)
   }
@@ -228,7 +243,7 @@ if (!orderDetails) {
 
   widget.setPadding(10, 10, 10, 10)
   widget.backgroundColor = Color.white()
-  widget.url = `https://store.apple.com/xc/de/vieworder/${widgetInput[0]}/${widgetInput[1]}`
+  widget.url = orderDetails.widgetURL
 
   const headlineText = widget.addText(' Order Status')
   headlineText.font = Font.regularSystemFont(14)
