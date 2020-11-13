@@ -1,7 +1,7 @@
 // Variables used by Scriptable.
 // These must be at the very top of the file. Do not edit.
 // icon-color: deep-blue; icon-glyph: shopping-cart;
-// Version 1.0.4
+// Version 1.0.5
 
 const cacheMinutes = 60 * 2
 const today = new Date()
@@ -85,6 +85,8 @@ const parseShortDate = (stringDate, orderMonth) => {
       const t = m[1]
       m[1] = m[2]
       m[2] = t
+    } else {
+      throw new Error('Failed to extract the delivery date from string: ' + stringDate)
     }
   }
 
@@ -235,7 +237,12 @@ if (!orderDetails) {
   const itemPosition = orderDetails['orderDetail']['orderItems']['c'][(widgetInput[2] - 1) || 0]
   const itemDetails = orderDetails['orderDetail']['orderItems'][itemPosition]['orderItemDetails']
   const orderDate = parseLongDate(orderDetails['orderDetail']['orderHeader']['d']['orderPlacedDate'])
-  const deliveryDate = parseShortDate(itemDetails['d']['deliveryDate'], orderDate.getMonth())
+  let deliveryDate = null
+  try {
+    deliveryDate = parseShortDate(itemDetails['d']['deliveryDate'], orderDate.getMonth())
+  } catch (e) {
+    console.error(e)
+  }
   const itemName = itemDetails['d']['productName']
   const itemImageUrl = itemDetails['d']['imageData']['src'].replace(/wid=[\d]+/, 'wid=200').replace(/hei=[\d]+/, 'hei=200')
   const itemImage = await(new Request(itemImageUrl)).loadImage()
@@ -263,7 +270,7 @@ if (!orderDetails) {
 
   rightProductStack = productStack.addStack()
   rightProductStack.layoutVertically()
-  rightProductStack.addSpacer()
+  rightProductStack.addSpacer(5)
 
   const itemNameText = rightProductStack.addText(itemName)
   itemNameText.font = Font.regularSystemFont(10)
@@ -271,44 +278,83 @@ if (!orderDetails) {
   itemNameText.minimumScaleFactor = 0.5
   itemNameText.lineLimit = 2
 
-  rightProductStack.addSpacer()
-
   widget.addSpacer()
 
-  const languageCode = Device.preferredLanguages()[0].match(/^[\a-z]{2}/)
-  const t = (localeText[languageCode]) ? localeText[languageCode] : localeText.default
-  let postFix = (remainingDays === 1) ? t[0] : t[1]
+  if (deliveryDate !== null) {
+    const languageCode = Device.preferredLanguages()[0].match(/^[\a-z]{2}/)
+    const t = (localeText[languageCode]) ? localeText[languageCode] : localeText.default
+    let postFix = (remainingDays === 1) ? t[0] : t[1]
 
-  const remainingDayText = widget.addText(remainingDays + ' ' + postFix)
-  remainingDayText.font = Font.regularSystemFont(28)
-  remainingDayText.textColor = Color.black()
-  remainingDayText.centerAlignText()
+    const remainingDayText = widget.addText(remainingDays + ' ' + postFix)
+    remainingDayText.font = Font.regularSystemFont(28)
+    remainingDayText.textColor = Color.black()
+    remainingDayText.centerAlignText()
 
-  widget.addSpacer()
+    widget.addSpacer()
 
-  const total = (deliveryDate - orderDate) / (1000 * 60 * 60 * 24)
-  const daysGone = total - remainingDays
+    const total = (deliveryDate - orderDate) / (1000 * 60 * 60 * 24)
+    const daysGone = total - remainingDays
 
-  const progressStack = widget.addStack()
-  progressStack.layoutVertically()
-  progressStack.addImage(creatProgress(total, daysGone))
+    const progressStack = widget.addStack()
+    progressStack.layoutVertically()
+    progressStack.addImage(creatProgress(total, daysGone))
 
-  progressStack.spacing = 2
+    progressStack.spacing = 2
 
-  const footerStack = progressStack.addStack()
-  footerStack.layoutHorizontally()
+    const footerStack = progressStack.addStack()
+    footerStack.layoutHorizontally()
 
-  const orderDateText = footerStack.addText(orderDate.toLocaleDateString())
-  orderDateText.textColor = Color.black()
-  orderDateText.font = Font.regularSystemFont(10)
-  orderDateText.lineLimit = 1
+    const orderDateText = footerStack.addText(orderDate.toLocaleDateString())
+    orderDateText.textColor = Color.black()
+    orderDateText.font = Font.regularSystemFont(10)
+    orderDateText.lineLimit = 1
 
-  footerStack.addSpacer()
+    footerStack.addSpacer()
 
-  const deliveryDateText = footerStack.addText(deliveryDate.toLocaleDateString())
-  deliveryDateText.textColor = Color.black()
-  deliveryDateText.font = Font.regularSystemFont(10)
-  deliveryDateText.lineLimit = 1
+    const deliveryDateText = footerStack.addText(deliveryDate.toLocaleDateString())
+    deliveryDateText.textColor = Color.black()
+    deliveryDateText.font = Font.regularSystemFont(10)
+    deliveryDateText.lineLimit = 1
+  } else {
+    widget.addSpacer()
+
+    fallbackStack = widget.addStack()
+    fallbackStack.layoutHorizontally()
+    fallbackStack.addSpacer()
+
+    let icon = false
+    if (itemDetails['d']['deliveryDate'] === 'Out for Delivery') {
+      icon = SFSymbol.named('shippingbox')
+    }
+    if (icon !== false) {
+      const iconStack = fallbackStack.addStack()
+      iconStack.layoutVertically()
+      iconStack.addSpacer()
+
+      const iconElement = iconStack.addImage(icon.image)
+      iconElement.imageSize = new Size(15, 15)
+
+      iconStack.addSpacer()
+      fallbackStack.addSpacer(5)
+    }
+
+    const fallbackTextStack = fallbackStack.addStack()
+    fallbackTextStack.layoutVertically()
+    fallbackTextStack.centerAlignContent()
+    fallbackTextStack.addSpacer()
+
+    const fallbackText = fallbackTextStack.addText(itemDetails['d']['deliveryDate'])
+    fallbackText.font = Font.regularSystemFont(14)
+    fallbackText.textColor = Color.black()
+    fallbackText.minimumScaleFactor = 0.5
+    fallbackText.lineLimit = 1
+
+    fallbackTextStack.addSpacer()
+
+    fallbackStack.addSpacer()
+
+    widget.addSpacer()
+  }
 }
 
 if (!config.runsInWidget) {
