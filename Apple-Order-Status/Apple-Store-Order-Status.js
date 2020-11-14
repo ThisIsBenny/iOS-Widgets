@@ -1,7 +1,7 @@
 // Variables used by Scriptable.
 // These must be at the very top of the file. Do not edit.
 // icon-color: deep-blue; icon-glyph: shopping-cart;
-// Version 1.0.6
+// Version 1.0.7
 
 const cacheMinutes = 60 * 2
 const today = new Date()
