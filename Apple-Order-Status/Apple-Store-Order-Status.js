@@ -304,7 +304,7 @@ if (!orderDetails) {
     if (itemStatusTracker['d']['currentStatus']) {
       const statusText = progressStack.addText(`STATUS: ${itemStatusTracker['d']['currentStatus']}`)
       statusText.textColor = Color.black()
-      statusText.font = Font.regularSystemFont(8)
+      statusText.font = Font.thinSystemFont(8)
     }
 
     progressStack.addImage(creatProgress(total, daysGone))
@@ -314,14 +314,14 @@ if (!orderDetails) {
 
     const orderDateText = footerStack.addText(orderDate.toLocaleDateString())
     orderDateText.textColor = Color.black()
-    orderDateText.font = Font.regularSystemFont(8)
+    orderDateText.font = Font.thinSystemFont(8)
     orderDateText.lineLimit = 1
 
     footerStack.addSpacer()
 
     const deliveryDateText = footerStack.addText(deliveryDate.toLocaleDateString())
     deliveryDateText.textColor = Color.black()
-    deliveryDateText.font = Font.regularSystemFont(8)
+    deliveryDateText.font = Font.thinSystemFont(8)
     deliveryDateText.lineLimit = 1
   } else {
     widget.addSpacer()
