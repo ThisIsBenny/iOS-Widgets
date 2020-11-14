@@ -1,7 +1,7 @@
 // Variables used by Scriptable.
 // These must be at the very top of the file. Do not edit.
 // icon-color: deep-blue; icon-glyph: shopping-cart;
-// Version 1.0.5
+// Version 1.0.6
 
 const cacheMinutes = 60 * 2
 const today = new Date()
@@ -236,6 +236,7 @@ if (!orderDetails) {
 
   const itemPosition = orderDetails['orderDetail']['orderItems']['c'][(widgetInput[2] - 1) || 0]
   const itemDetails = orderDetails['orderDetail']['orderItems'][itemPosition]['orderItemDetails']
+  const itemStatusTracker = orderDetails['orderDetail']['orderItems'][itemPosition]['orderItemStatusTracker']
   const orderDate = parseLongDate(orderDetails['orderDetail']['orderHeader']['d']['orderPlacedDate'])
   let deliveryDate = null
   try {
@@ -257,13 +258,13 @@ if (!orderDetails) {
   headlineText.textColor = Color.black()
   headlineText.centerAlignText()
 
-  widget.addSpacer()
+  widget.addSpacer(5)
 
   const productStack = widget.addStack()
   productStack.layoutHorizontally()
 
   itemImageElement = productStack.addImage(itemImage)
-  itemImageElement.imageSize = new Size(35, 35)
+  itemImageElement.imageSize = new Size(30, 30)
   itemImageElement.applyFillingContentMode()
 
   productStack.addSpacer(20)
@@ -286,9 +287,10 @@ if (!orderDetails) {
     let postFix = (remainingDays === 1) ? t[0] : t[1]
 
     const remainingDayText = widget.addText(remainingDays + ' ' + postFix)
-    remainingDayText.font = Font.regularSystemFont(28)
+    remainingDayText.font = Font.regularSystemFont(26)
     remainingDayText.textColor = Color.black()
     remainingDayText.centerAlignText()
+    remainingDayText.minimumScaleFactor = 0.5
 
     widget.addSpacer()
 
@@ -297,23 +299,29 @@ if (!orderDetails) {
 
     const progressStack = widget.addStack()
     progressStack.layoutVertically()
-    progressStack.addImage(creatProgress(total, daysGone))
+    progressStack.spacing = 3
 
-    progressStack.spacing = 2
+    if (itemStatusTracker['d']['currentStatus']) {
+      const statusText = progressStack.addText(`STATUS: ${itemStatusTracker['d']['currentStatus']}`)
+      statusText.textColor = Color.black()
+      statusText.font = Font.regularSystemFont(8)
+    }
+
+    progressStack.addImage(creatProgress(total, daysGone))
 
     const footerStack = progressStack.addStack()
     footerStack.layoutHorizontally()
 
     const orderDateText = footerStack.addText(orderDate.toLocaleDateString())
     orderDateText.textColor = Color.black()
-    orderDateText.font = Font.regularSystemFont(10)
+    orderDateText.font = Font.regularSystemFont(8)
     orderDateText.lineLimit = 1
 
     footerStack.addSpacer()
 
     const deliveryDateText = footerStack.addText(deliveryDate.toLocaleDateString())
     deliveryDateText.textColor = Color.black()
-    deliveryDateText.font = Font.regularSystemFont(10)
+    deliveryDateText.font = Font.regularSystemFont(8)
     deliveryDateText.lineLimit = 1
   } else {
     widget.addSpacer()
