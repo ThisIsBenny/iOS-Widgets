@@ -1,7 +1,7 @@
 // Variables used by Scriptable.
 // These must be at the very top of the file. Do not edit.
 // icon-color: deep-blue; icon-glyph: shopping-cart;
-// Version 1.1.0
+// Version 1.1.1
 
 const cacheMinutes = 60 * 2
 const today = new Date()
@@ -300,8 +300,7 @@ if (!orderDetails) {
   productStack.layoutHorizontally()
 
   itemImageElement = productStack.addImage(itemImage)
-  itemImageElement.imageSize = new Size(30, 30)
-  itemImageElement.applyFillingContentMode()
+  itemImageElement.imageSize = new Size(35, 35)
 
   productStack.addSpacer(20)
 
