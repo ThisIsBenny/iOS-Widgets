@@ -1,7 +1,7 @@
 // Variables used by Scriptable.
 // These must be at the very top of the file. Do not edit.
 // icon-color: deep-blue; icon-glyph: shopping-cart;
-// Version 1.0.7
+// Version 1.1.0
 
 const cacheMinutes = 60 * 2
 const today = new Date()
@@ -36,12 +36,48 @@ const cacheExists = files.fileExists(path)
 const cacheDate = cacheExists ? files.modificationDate(path) : 0
 ////////////////////////////////////////////////////////////
 const localeText = {
-  default: ['Day', 'Days'],
-  en: ['Day', 'Days'],
-  de: ['Tag', 'Tage'],
-  fr: ['Jour', 'Jours'],
-  es: ['día', 'días'],
-  it: ['giorno', 'giorni']
+  default: ['Day', 'Days', {
+    'PLACED': 'Order Placed',
+    'PROCESSING': 'Processing',
+    'PREPARED_FOR_SHIPPMENT': 'Preparing for Ship',
+    'SHIPPED': 'Shipped',
+    'DELIVERED': 'Delivered'
+  }],
+  en: ['Day', 'Days', {
+    'PLACED': 'Order Placed',
+    'PROCESSING': 'Processing',
+    'PREPARED_FOR_SHIPPMENT': 'Preparing for Ship',
+    'SHIPPED': 'Shipped',
+    'DELIVERED': 'Delivered'
+  }],
+  de: ['Tag', 'Tage', {
+    'PLACED': 'Bestellung aufgegeben',
+    'PROCESSING': 'Vorgang läuft',
+    'PREPARED_FOR_SHIPPMENT': 'Versand wird vorbereitet',
+    'SHIPPED': 'Bestellung versandt',
+    'DELIVERED': 'Geliefert'
+  }],
+  fr: ['Jour', 'Jours', {
+    'PLACED': 'Commande enregistrée',
+    'PROCESSING': 'Traitement',
+    'PREPARED_FOR_SHIPPMENT': 'En cours de préparation pour expédition',
+    'SHIPPED': 'Expédiée',
+    'DELIVERED': 'Livrée'
+  }],
+  es: ['día', 'días', {
+    'PLACED': 'Pedido recibido',
+    'PROCESSING': 'Procesando',
+    'PREPARED_FOR_SHIPPMENT': 'Preparando envío',
+    'SHIPPED': 'Enviado',
+    'DELIVERED': 'Entregado'
+  }],
+  it: ['giorno', 'giorni', {
+    'PLACED': 'Ordine inoltrato',
+    'PROCESSING': 'ElaborazioneIn',
+    'PREPARED_FOR_SHIPPMENT': 'Spedizione in preparazione',
+    'SHIPPED': 'Spedito',
+    'DELIVERED': 'ConsegnatoIncompleto'
+  }]
 }
 ////////////////////////////////////////////////////////////
 const parseLongDate = (stringDate) => {
@@ -283,6 +319,7 @@ if (!orderDetails) {
 
   if (deliveryDate !== null) {
     const languageCode = Device.preferredLanguages()[0].match(/^[\a-z]{2}/)
+
     const t = (localeText[languageCode]) ? localeText[languageCode] : localeText.default
     let postFix = (remainingDays === 1) ? t[0] : t[1]
 
@@ -302,7 +339,14 @@ if (!orderDetails) {
     progressStack.spacing = 3
 
     if (itemStatusTracker['d']['currentStatus']) {
-      const statusText = progressStack.addText(`${itemStatusTracker['d']['currentStatus'].replace(/_/g, ' ')}`)
+      let statusText
+      try {
+        const localeStatusText = (localeText[languageCode] && localeText[languageCode][2]) ? localeText[languageCode][2] : localeText.default[2]
+        statusText = progressStack.addText(localeStatusText[itemStatusTracker['d']['currentStatus']])
+      } catch (e) {
+        console.error(e)
+        statusText = progressStack.addText(itemStatusTracker['d']['currentStatus'])
+      }
       statusText.textColor = Color.black()
       statusText.font = Font.regularSystemFont(8)
     }
