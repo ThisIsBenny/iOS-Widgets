@@ -1,3 +1,5 @@
+1.1.0
+  - status text translation added for en, de, fr, it, es
 1.0.7
   - Fix issue with underscore in status
 1.0.6
