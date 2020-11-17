@@ -1,7 +1,7 @@
 // Variables used by Scriptable.
 // These must be at the very top of the file. Do not edit.
 // icon-color: deep-blue; icon-glyph: shopping-cart;
-// Version 1.1.1
+// Version 1.1.2
 
 const cacheMinutes = 60 * 2
 const today = new Date()
@@ -116,9 +116,9 @@ const parseShortDate = (stringDate, orderMonth) => {
   let m
   m = stringDate.match(/([\d]{1,2}) ([\w]{3})/)
   if (!m) {
-    m = stringDate.match(/([\w]{3}) ([\d]{1,2})/)
+    m = stringDate.match(/([\w]+),? ([\d]{1,2})/)
     if (m) {
-      const t = m[1]
+      const t = m[1].slice(0, 3)
       m[1] = m[2]
       m[2] = t
     } else {
@@ -269,6 +269,7 @@ if (!orderDetails) {
   if (widgetInput[2] && !orderDetails['orderDetail']['orderItems']['c'][widgetInput[2] - 1]) {
     throw new Error(`No Item on position ${widgetInput[2]}`)
   }
+  const languageCode = Device.preferredLanguages()[0].match(/^[\a-z]{2}/)
 
   const itemPosition = orderDetails['orderDetail']['orderItems']['c'][(widgetInput[2] - 1) || 0]
   const itemDetails = orderDetails['orderDetail']['orderItems'][itemPosition]['orderItemDetails']
@@ -315,10 +316,7 @@ if (!orderDetails) {
   itemNameText.lineLimit = 2
 
   widget.addSpacer()
-
-  if (deliveryDate !== null) {
-    const languageCode = Device.preferredLanguages()[0].match(/^[\a-z]{2}/)
-
+  if (deliveryDate !== null && itemStatusTracker['d']['currentStatus'] !== 'DELIVERED') {
     const t = (localeText[languageCode]) ? localeText[languageCode] : localeText.default
     let postFix = (remainingDays === 1) ? t[0] : t[1]
 
@@ -373,11 +371,20 @@ if (!orderDetails) {
     fallbackStack.layoutHorizontally()
     fallbackStack.addSpacer()
 
-    let icon = false
-    if (itemDetails['d']['deliveryDate'] === 'Out for Delivery') {
+    let icon
+    let text
+    if (itemStatusTracker['d']['currentStatus'] === 'DELIVERED') {
+      icon = SFSymbol.named('house')
+
+      const localeStatusText = (localeText[languageCode] && localeText[languageCode][2]) ? localeText[languageCode][2] : localeText.default[2]
+      text = localeStatusText['DELIVERED']
+    } else if (itemDetails['d']['deliveryDate'] === 'Out for Delivery') {
       icon = SFSymbol.named('shippingbox')
+      text = itemDetails['d']['deliveryDate'] // ToDO: Add translation
+    } else {
+      text = itemDetails['d']['deliveryDate']
     }
-    if (icon !== false) {
+    if (icon) {
       const iconStack = fallbackStack.addStack()
       iconStack.layoutVertically()
       iconStack.addSpacer()
@@ -394,7 +401,7 @@ if (!orderDetails) {
     fallbackTextStack.centerAlignContent()
     fallbackTextStack.addSpacer()
 
-    const fallbackText = fallbackTextStack.addText(itemDetails['d']['deliveryDate'])
+    const fallbackText = fallbackTextStack.addText(text)
     fallbackText.font = Font.regularSystemFont(14)
     fallbackText.textColor = Color.black()
     fallbackText.minimumScaleFactor = 0.5
