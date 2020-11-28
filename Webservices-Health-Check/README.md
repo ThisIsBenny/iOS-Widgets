@@ -1,4 +1,11 @@
 # Health Check of webservices
+![Widget Preview](https://raw.githubusercontent.com/ThisIsBenny/iOS-Widgets/main/Webservices-Health-Check/previewLight.jpeg)
+![Widget Preview](https://raw.githubusercontent.com/ThisIsBenny/iOS-Widgets/main/Webservices-Health-Check/previewDark.jpeg)
+![Widget Preview](https://raw.githubusercontent.com/ThisIsBenny/iOS-Widgets/main/Webservices-Health-Check/previewLight2.jpeg)
+![Widget Preview](https://raw.githubusercontent.com/ThisIsBenny/iOS-Widgets/main/Webservices-Health-Check/previewDark2.jpeg)
+![Widget Preview](https://raw.githubusercontent.com/ThisIsBenny/iOS-Widgets/main/Webservices-Health-Check/previewLight3.jpeg)
+![Widget Preview](https://raw.githubusercontent.com/ThisIsBenny/iOS-Widgets/main/Webservices-Health-Check/previewDark3.jpeg)
+
 
 This widget checks the status of your webservices.
 
