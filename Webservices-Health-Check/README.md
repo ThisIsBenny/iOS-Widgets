@@ -14,7 +14,7 @@ Feature:
 Run the script from the Scriptable App. After this, you will find an example configuration in your scriptable folder (iCloud or local) with the name 'health-check-settings.example.json'.
 Rename the json file to 'health-check-settings.json' and add your configuration to the json file. Example:
 
-```
+```json
 [
   {
     "name": "Service 1",
