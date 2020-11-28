@@ -1,6 +1,6 @@
-# Health Check
+# Health Check of webservices
 
-This widget checks the status of your web services.
+This widget checks the status of your webservices.
 
 Feature:
 * History
@@ -8,7 +8,7 @@ Feature:
 * Custom Header
 * Custom Timeout Interval
 
-[[Download]](https://raw.githubusercontent.com/ThisIsBenny/iOS-Widgets/main/Health-Check/Health-Check.js)
+[[Download]](https://raw.githubusercontent.com/ThisIsBenny/iOS-Widgets/main/Webservices-Health-Check/Webservices-Health-Check.js)
 
 ## Setup
 Run the script from the Scriptable App. After this, you will find an example configuration in your scriptable folder (iCloud or local) with the name 'health-check-settings.example.json'.
