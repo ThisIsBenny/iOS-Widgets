@@ -15,6 +15,10 @@ Feature:
 * Custom Header
 * Custom Timeout Interval
 
+The small and medium widget will show 4 services at once and the large one 8. If you have defined more service, the list of displayed services will be random.
+
+Notice: The widget will be updated about every 5-10 min. The update interval of the widget is controlled by iOS and can't change.
+
 [[Download]](https://raw.githubusercontent.com/ThisIsBenny/iOS-Widgets/main/Webservices-Health-Check/Webservices-Health-Check.js)
 
 ## Setup
