@@ -1,7 +1,7 @@
 // Variables used by Scriptable.
 // These must be at the very top of the file. Do not edit.
 // icon-color: deep-blue; icon-glyph: shopping-cart;
-// Version 1.1.2
+// Version 1.1.3
 
 const cacheMinutes = 60 * 2
 const today = new Date()
@@ -39,42 +39,42 @@ const localeText = {
   default: ['Day', 'Days', {
     'PLACED': 'Order Placed',
     'PROCESSING': 'Processing',
-    'PREPARED_FOR_SHIPPMENT': 'Preparing for Ship',
+    'PREPARED_FOR_SHIPMENT': 'Preparing for Ship',
     'SHIPPED': 'Shipped',
     'DELIVERED': 'Delivered'
   }],
   en: ['Day', 'Days', {
     'PLACED': 'Order Placed',
     'PROCESSING': 'Processing',
-    'PREPARED_FOR_SHIPPMENT': 'Preparing for Ship',
+    'PREPARED_FOR_SHIPMENT': 'Preparing for Ship',
     'SHIPPED': 'Shipped',
     'DELIVERED': 'Delivered'
   }],
   de: ['Tag', 'Tage', {
     'PLACED': 'Bestellung aufgegeben',
     'PROCESSING': 'Vorgang läuft',
-    'PREPARED_FOR_SHIPPMENT': 'Versand wird vorbereitet',
+    'PREPARED_FOR_SHIPMENT': 'Versand wird vorbereitet',
     'SHIPPED': 'Bestellung versandt',
     'DELIVERED': 'Geliefert'
   }],
   fr: ['Jour', 'Jours', {
     'PLACED': 'Commande enregistrée',
     'PROCESSING': 'Traitement',
-    'PREPARED_FOR_SHIPPMENT': 'En cours de préparation pour expédition',
+    'PREPARED_FOR_SHIPMENT': 'En cours de préparation pour expédition',
     'SHIPPED': 'Expédiée',
     'DELIVERED': 'Livrée'
   }],
   es: ['día', 'días', {
     'PLACED': 'Pedido recibido',
     'PROCESSING': 'Procesando',
-    'PREPARED_FOR_SHIPPMENT': 'Preparando envío',
+    'PREPARED_FOR_SHIPMENT': 'Preparando envío',
     'SHIPPED': 'Enviado',
     'DELIVERED': 'Entregado'
   }],
   it: ['giorno', 'giorni', {
     'PLACED': 'Ordine inoltrato',
     'PROCESSING': 'ElaborazioneIn',
-    'PREPARED_FOR_SHIPPMENT': 'Spedizione in preparazione',
+    'PREPARED_FOR_SHIPMENT': 'Spedizione in preparazione',
     'SHIPPED': 'Spedito',
     'DELIVERED': 'ConsegnatoIncompleto'
   }]
@@ -180,21 +180,19 @@ const getOrderdetails = async (ordernumber, email) => {
   if (!xAosStkMatch) {
     throw new Error('Needed x-aos-stk token not found')
   }
-
-  const postUrl = (reqSession.response.url.replace('/np/', '/npx/')) + '&_a=guestUserOrderLookUp&_m=loginHomeOLSS.orderLookUp'
+  const postUrl = (reqSession.response.url.replace('/orders', '/orderx')) + '&_a=guestUserOrderLookUp&_m=signIn.orderLookUp'
 
   const postReq = new Request(postUrl)
   postReq.headers = {
     'Content-Type': 'application/x-www-form-urlencoded',
     'Referer': reqSession.response.url,
-    'x-aos-model-page': 'sentryLoginOlssNP',
+    'x-aos-model-page': 'olssSignInPage',
     'x-aos-stk': xAosStkMatch[1],
     'X-Requested-With': 'XMLHttpRequest',
     'Cookie': CookieValues.join('; ')
   }
   postReq.method = "POST";
-  postReq.addParameterToMultipart('loginHomeOLSS.orderLookUp.orderNumber', ordernumber)
-  postReq.addParameterToMultipart('loginHomeOLSS.orderLookUp.emailAddress', email)
+  postReq.body = `signIn.orderLookUp.orderNumber=${ordernumber}&signIn.orderLookUp.emailAddress=${email}`
 
   const resPostReq = await postReq.loadString()
 
@@ -210,13 +208,12 @@ const getOrderdetails = async (ordernumber, email) => {
   }
 
   if (postResData['head']['status'] !== 302) {
-    console.log(resPostReq)
     throw new Error('Fetching the data failed. Got unexpected response. Please try it later.')
   }
 
   const req = new Request(postResData['head']['data']['url'])
   const res = await req.loadString()
-  const rawJSON = res.match(/<script id="init_data" type="application\/json">(.*)<\/script>/)
+  const rawJSON = res.match(/<script id="init_data" type="application\/json">[\s]+(.*)[\s]+<\/script>/)
   if (!rawJSON) {
     return null
   }
