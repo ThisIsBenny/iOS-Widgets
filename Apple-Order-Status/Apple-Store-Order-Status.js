@@ -245,7 +245,7 @@ if (cacheExists && (today.getTime() - cacheDate.getTime()) < (cacheMinutes * 60 
       console.warn('Fallback to Cache')
       orderDetails = JSON.parse(files.readString(path))
     } else {
-      throw new Error('Fetching the data failed. Now data to show.')
+      throw new Error('Fetching the data failed. No data to show.')
     }
   }
 }
