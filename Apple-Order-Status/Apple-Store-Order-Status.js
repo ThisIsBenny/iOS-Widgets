@@ -1,7 +1,7 @@
 // Variables used by Scriptable.
 // These must be at the very top of the file. Do not edit.
 // icon-color: deep-blue; icon-glyph: shopping-cart;
-// Version 1.1.3
+// Version 1.1.4
 
 const cacheMinutes = 60 * 2
 const today = new Date()
@@ -10,16 +10,19 @@ const h = 5
 const debug = false
 
 if (config.widgetFamily === 'small') {
-  width = 100
+  width = 200
 } else {
-  width = 300
+  width = 400
 }
 ////////////////////////////////////////////////////////////
 let widgetInputRAW = args.widgetParameter;
 let widgetInput;
 if (widgetInputRAW !== null) {
-  widgetInput = widgetInputRAW.toString().trim().split(';')
-
+  widgetInput = widgetInputRAW.toString().trim().split(';').map(v => v.trim())
+  
+  if (!/^[A-Za-z][0-9]+/.test(widgetInput[0])) {
+     throw new Error('Invalid ordernumber format: "' + widgetInput[0] + '"') 
+  }
   if (widgetInput[2] && !/^[\d]+$/.test(widgetInput[2])) {
     throw new Error('Third parameter has to be a number')
   }
