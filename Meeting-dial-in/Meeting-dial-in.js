@@ -1,7 +1,7 @@
 // Variables used by Scriptable.
 // These must be at the very top of the file. Do not edit.
 // icon-color: light-brown; icon-glyph: magic;
-// Version 0.2.1 Beta-Version
+// Version 0.2.2 Beta-Version
 
 /****************************
 Notice
@@ -60,6 +60,11 @@ const matchPatterns = {
   msteams: {
     online: [
       /<(https:\/\/teams\.microsoft\.com\/l\/meetup-join\/.+)>/
+    ]
+  },
+  webex: {
+    online: [
+      /(https:\/\/.*\.webex\.com\/meet\/[A-Za-z0-9_-]+)/
     ]
   },
   zoom: {
