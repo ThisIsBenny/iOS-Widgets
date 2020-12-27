@@ -4,7 +4,7 @@
 // Version 1.2.0
 
 let startDate = ''
-let widgetInputRAW = args.widgetParameter || '2020-12-14';
+let widgetInputRAW = args.widgetParameter;
 let widgetInput = null;
 
 if (widgetInputRAW !== null) {
