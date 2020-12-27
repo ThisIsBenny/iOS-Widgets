@@ -7,12 +7,12 @@ Version 2.0.0
 
 Changelog:  
   v2.0.0:
-          - Disable "Dark Mode Support"
-          - Medium Widget Support
-          - Switch between used and remaining volume
-          - Use MSISDN for Cache-Name
-          - Show amount for prepaid cards
-          - Show remaining days as progress-bar
+          - Disable Dark Modus Support
+          - Medium & large Widget Support
+          - switch between used and remaining volume
+          - use MSISDN for Cache-Name
+          - show amount for prepaid cards
+          - show remaining days as progress-bar
   v1.2.4:
           - use color.dynamic
   v1.2.3:
@@ -47,6 +47,10 @@ Credits:
   - Chaeimg@Github (https://github.com/chaeimg/battCircle)
 **************/
 
+////////////////////////////////////////////////////////////////////////////////
+//////////////////////////         User-Config         /////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
 // How many minutes should the cache be valid
 const cacheMinutes = 60
 
@@ -63,11 +67,21 @@ const showRemainingDaysAsProgressbar = true
 const containerList = ['Daten', 'D_EU_DATA', 'C_DIY_Data_National']
 const codeList = ['-1', '-5' ,'45500', '40100']
 
-// Dev Settings
-const debug = false
-config.widgetFamily = config.widgetFamily || 'small'
+
 ////////////////////////////////////////////////////////////////////////////////
+//////////////////////////         Dev Settings         ////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+const debug = false
+config.widgetFamily = config.widgetFamily || 'medium'
+
+////////////////////////////////////////////////////////////////////////////////
+//////////////////////////         System-Config         ///////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+// Input
 let widgetInputRAW = args.widgetParameter;
+
 let widgetInput = null;
 let user, pass, number
 if (widgetInputRAW !== null) {
@@ -81,6 +95,19 @@ if (widgetInputRAW !== null) {
   }
 }
 
+// Text sizes
+const fontSizeData = 11
+const lineNumberData = 1
+const minimumScaleFactor = 1.0 // Value between 1.0 and 0.1
+
+// Number of data by Size
+const numberOfDisplayedDataBySize = {  
+  small: 1,
+  medium: 2,
+  large: 4
+}
+
+// Progressbar
 const h = 5
 let width
 if (config.widgetFamily === 'small') {
@@ -89,6 +116,7 @@ if (config.widgetFamily === 'small') {
   width = 400
 }
 
+// Colors
 let backColor = new Color('D32D1F')
 let backColor2 = new Color('93291E')
 let textColor = new Color('EDEDED')
@@ -102,6 +130,7 @@ if (darkModeSupport) {
   fillColor = Color.dynamic(fillColor, new Color('EDEDED'))
   strokeColor = Color.dynamic(strokeColor, new Color('121212'))
 }
+////////////////////////////////////////////////////////////////////////////////
 
 function creatProgress(total, havegone) {
   const context = new DrawContext()
@@ -223,7 +252,7 @@ async function getSessionCookiesViaNetworkLogin() {
     console.log("Login failed! Please check if Wifi is disabled.")
     throw new Error(`Login failed with HTTP-Status-Code ${req.response.statusCode}`)
   }
-}
+};
 
 async function getSessionCookiesViaMeinVodafoneLogin(u, p) {
   let req;
@@ -246,7 +275,7 @@ async function getSessionCookiesViaMeinVodafoneLogin(u, p) {
     console.log("Login failed!")
     throw new Error(`Login failed with HTTP-Status-Code ${req.response.statusCode}`)
   }
-}
+};
 
 async function getUsage(user, pass, number) {
   let cookies, msisdn
@@ -344,7 +373,7 @@ async function getUsage(user, pass, number) {
     console.log("Loading usage data failed")
     throw e
   }
-}
+};
 
 var today = new Date()
 
@@ -432,9 +461,16 @@ if (data !== undefined) {
   
   const stack = widget.addStack()
   stack.layoutHorizontally()
-    
-  data.usage.slice(0, (config.widgetFamily === 'small' ? 1 : 2)).forEach((v) => {
-    const column = stack.addStack()
+  
+  let i = 0
+  let row
+  data.usage.slice(0, numberOfDisplayedDataBySize[config.widgetFamily]).forEach((v) => {
+    if (++i % 2 == 1) {
+      row = widget.addStack()
+      row.layoutHorizontally()
+      widget.addSpacer(5)
+    }
+    column = row.addStack()
     column.layoutVertically()
     column.centerAlignContent()
     
@@ -461,8 +497,9 @@ if (data !== undefined) {
     textStack.layoutHorizontally()
     textStack.addSpacer()
     let diagramText = textStack.addText(totalValues)
-    diagramText.font = Font.mediumSystemFont(11)
-    diagramText.lineLimit = 1
+    diagramText.font = Font.mediumSystemFont(fontSizeData)
+    diagramText.minimumScaleFactor = minimumScaleFactor
+    diagramText.lineLimit = lineNumberData
     diagramText.centerAlignText()
     diagramText.textColor = textColor
     textStack.addSpacer()
@@ -471,7 +508,8 @@ if (data !== undefined) {
     nameStack.layoutHorizontally()
     nameStack.addSpacer()
     let diagramName = nameStack.addText(v.name.replace('Inland & EU', '').trim())
-    diagramName.font = Font.systemFont(10)
+    diagramName.font = Font.systemFont(fontSizeData - 1)
+    diagramName.minimumScaleFactor = minimumScaleFactor
     diagramName.lineLimit = 1
     diagramName.centerAlignText()
     diagramName.textColor = textColor
