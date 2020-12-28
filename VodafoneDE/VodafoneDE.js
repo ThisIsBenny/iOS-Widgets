@@ -55,18 +55,17 @@ Credits:
 const cacheMinutes = 60
 
 // Set to false if the widget should display always in red
-const darkModeSupport = true
+let darkModeSupport = true
 
 // Switch between remaining and used contingent. If you want show the used contingent, then change the value from true to false
-const showRemainingContingent = true
+let showRemainingContingent = true
 
 // To disable the progressbar for the remaining days, you have to change the value from true to false
-const showRemainingDaysAsProgressbar = true
+let showRemainingDaysAsProgressbar = true
 
 // Please add additional values to these list, in case that your contract/tarif isn't supported by these default values.
-const containerList = ['Daten', 'D_EU_DATA', 'C_DIY_Data_National']
-const codeList = ['-1', '-5' ,'45500', '40100']
-
+let containerList = ['Daten', 'D_EU_DATA', 'C_DIY_Data_National']
+let codeList = ['-1', '-5' ,'45500', '40100']
 
 ////////////////////////////////////////////////////////////////////////////////
 //////////////////////////         Dev Settings         ////////////////////////
@@ -83,16 +82,44 @@ config.widgetFamily = config.widgetFamily || 'small'
 let widgetInputRAW = args.widgetParameter;
 
 let widgetInput = null;
-let user, pass, number
+let user, pass, number, json
 if (widgetInputRAW !== null) {
-  [user, pass, number] = widgetInputRAW.toString().split("|");
+  const parameter = widgetInputRAW.toString().split("|")
+  if(parameter.length > 1) {
+    [user, pass, number, json] = parameter;
 
-  if (!user || !pass || !number) {
-    throw new Error("Invalid Widget parameter. Expected format: username|password|phonenumber")
+    if (!user || !pass || !number) {
+      throw new Error("Invalid Widget parameter. Expected format: username|password|phonenumber")
+    }
+    if (/^49[\d]{5,}/.test(number) === false) {
+      throw new Error("Invalid phonenumber format. Expected format: 491721234567")
+    }
+  } else {
+    json = parameter
   }
-  if (/^49[\d]{5,}/.test(number) === false) {
-    throw new Error("Invalid phonenumber format. Expected format: 491721234567")
+  if (json) {
+    try {
+      const c = JSON.parse(json)
+      
+      containerList = c.containerList || containerList
+      codeList = c.codeList || codeList
+      darkModeSupport = c.darkModeSupport !== undefined ? c.darkModeSupport : darkModeSupport
+      showRemainingContingent = c.showRemainingContingent !== undefined ? c.showRemainingContingent : showRemainingContingent  
+      showRemainingDaysAsProgressbar = c.showRemainingDaysAsProgressbar !== undefined ? c.showRemainingDaysAsProgressbar : showRemainingDaysAsProgressbar
+    } catch (error) {
+      console.log('Faild to extract JSON-config. Fallback to default config')
+    }
   }
+} else if (!config.runsInWidget && config.runsInApp) {  
+  const prompt = new Alert()
+  prompt.message = 'Möchtest du den Setup Assistant starten?'
+  prompt.addAction('Ja')
+  prompt.addCancelAction('Nein')
+  
+  if (await prompt.presentAlert() === 0) {
+    await setupAssistant()
+  }
+  return Script.complete()
 }
 
 // Text sizes
@@ -135,6 +162,170 @@ if (darkModeSupport) {
   fillColorProgressbar = Color.dynamic(fillColorProgressbar, new Color('111111'))
 }
 ////////////////////////////////////////////////////////////////////////////////
+
+async function setupAssistant () {
+  let parameter = ''
+  
+  const promptLoginType = new Alert()
+  promptLoginType.message = 'Welche Login-Methode möchtest du verwenden?'
+  promptLoginType.addAction('Netzwerk-Login')
+  promptLoginType.addAction('MeinVodafone-Login')    
+  
+  let cookies, msisdn
+  if (await promptLoginType.presentAlert()  === 0) {
+    const promptWlanNotice = new Alert()
+    promptWlanNotice.title = 'Hinweis'
+    promptWlanNotice.message = 'Für diese Login-Methode muss das WLAN deaktiviert sein.'
+    promptWlanNotice.addAction('WLAN ist deaktiviert')
+    await promptWlanNotice.presentAlert()
+    
+    try {
+      let { cookies: c, msisdn: m } = await getSessionCookiesViaNetworkLogin()
+      cookies = c
+      msisdn = m
+    } catch (error) {
+      const promptError = new Alert()
+      promptError.title = 'Login fehlgeschlagen'
+      promptError.message = 'Der Login ist fehlgeschlagen. Bitte prüfe ob eine Mobilfunk-Verbindung vorhanden ist. Weitere Details findest du in den Logs.'  
+      promptError.addAction('Schließen')
+      await promptError.present()  
+
+      throw error
+    }
+  } else {
+    const promptCredentails = new Alert()
+    promptCredentails.title = 'Zugangsdaten'
+    promptCredentails.message = 'Bitte gebe deine MeinVodafone-Zugangsdaten und deine Rufnummer ein:'  
+    promptCredentails.addTextField('Benutzernamen')
+    promptCredentails.addSecureTextField('Passwort')
+    promptCredentails.addTextField('Rufnummer')
+    promptCredentails.addAction('Weiter')
+    
+    
+    await promptCredentails.present()
+    const user = promptCredentails.textFieldValue(0).trim()
+    const pass = promptCredentails.textFieldValue(1).trim()
+    const number = promptCredentails.textFieldValue(2).replace(/^0/, '49').trim()
+    try {
+      let { cookies: c } = await getSessionCookiesViaMeinVodafoneLogin(user, pass)
+      cookies = c
+      msisdn = number
+    } catch (error) {
+      console.error(error)
+    }
+    parameter = `${user}|${pass}|${msisdn}`
+  }
+  let CookieValues = cookies.map(function (v) {
+    return v.name + "=" + v.value
+  })
+  let req
+  req = new Request(`https://www.vodafone.de/api/enterprise-resources/core/bss/sub-nil/mobile/payment/service-usages/subscriptions/${msisdn}/unbilled-usage`)
+  req.headers = {
+    'x-vf-api': '1499082775305',
+    'Referer': 'https://www.vodafone.de/meinvodafone/services/',
+    'Accept': 'application/json',
+    'Cookies': CookieValues.join(';')
+  }
+  let res, data
+  try {
+    res = await req.loadJSON()
+    if(!res['serviceUsageVBO'] || !res['serviceUsageVBO']['usageAccounts'] || !res['serviceUsageVBO']['usageAccounts'][0] || !res['serviceUsageVBO']['usageAccounts'][0]['usageGroup']) {
+      throw new Error('invalid response: ' + JSON.stringify(res))
+    }
+    data = res['serviceUsageVBO']['usageAccounts'][0]['usageGroup']
+  } catch (error) {
+      const promptError = new Alert()
+      promptError.title = 'Laden der Daten fehlgeschlagen'
+      promptError.message = 'Das Laden der Vertragsdaten ist fehlgeschlagen. Dies kann verschiedene Gründe haben. Bitte prüfen die Logs für weitere Informationen'  
+      promptError.addAction('Schließen')
+      await promptError.present()
+      throw error
+  }
+  
+  const list = data.map(function (o) {
+    return o.usage.map(function(i) {
+      i.container = o.container || null
+      i.selected = false
+      return i
+    }).filter(x => x.code)
+  }).flat()
+  
+  const promptBeforeTable = new Alert()
+  promptBeforeTable.title = 'Hinweis'
+  promptBeforeTable.message = 'Dein Vertrag wurde analysiert. Bitte wähle im nachfolgenden Dialog die Daten aus, die du im Widget anzeigen möchtest.'
+  promptBeforeTable.addAction('Weiter')
+  await promptBeforeTable.present()
+  
+  const table = new UITable()
+  table.showSeparators = true
+  
+  function populateTable() {
+    table.removeAllRows()
+    
+    for (i = 0; i < list.length; i++) {
+      let row = new UITableRow()
+      row.dismissOnSelect = false
+      
+      let selectedCell = row.addText((list[i].selected)? "✓" : "")  
+      selectedCell.widthWeight = 5
+      
+      let textCell = row.addText(list[i].name)
+      textCell.widthWeight = 70
+      
+      row.onSelect = (number) => {
+        list[number].selected = !list[number].selected
+        populateTable()
+        table.reload()
+      }
+      table.addRow(row)
+    }
+  }
+  populateTable()
+  await QuickLook.present(table)
+  
+  const selectedList = list.filter(x => x.selected)
+  const containerList = [...new Set(selectedList.map(x => x.container))]
+  const codeList = [...new Set(selectedList.map(x => x.code))]
+  
+  const options = {
+    containerList,
+    codeList
+  }
+  
+  const promptDarkMode = new Alert()
+  promptDarkMode.title = 'Dark Mode Unterstützung'
+  promptDarkMode.message = 'Möchtest du die Dark Mode Unterstützung aktivieren oder deaktivieren? Wenn die Dark Mode Unterstützung deaktiviert ist, bleibt das Widget immer rot.'  
+  promptDarkMode.addAction('Aktivieren')
+  promptDarkMode.addDestructiveAction('Deaktivieren')
+  
+  options.darkModeSupport = await promptDarkMode.present() === 0 ? true : false
+  
+  const promptRemainingContingent = new Alert()
+  promptRemainingContingent.title = 'Anzeige Option'
+  promptRemainingContingent.message = 'Möchtest du das verbleibende oder verwendte Kontigent angezeigt bekommen?'  
+  promptRemainingContingent.addAction('verbleibende Kontigent')
+  promptRemainingContingent.addAction('verwendte Kontigent')
+  
+  options.showRemainingContingent = await promptRemainingContingent.present() === 0 ? true : false
+  
+  const promptRemainingDaysAsProgressbar = new Alert()
+  promptRemainingDaysAsProgressbar.title = 'Fortschrittsbalken für verbleibenden Tage'
+  promptRemainingDaysAsProgressbar.message = 'Möchtest du dass ein Fortschrittsbalken für die verbleibenden Tage angezeigt wird?'  
+  promptRemainingDaysAsProgressbar.addAction('Anzeigen')
+  promptRemainingDaysAsProgressbar.addDestructiveAction('Nicht anzeigen')
+  
+  options.showRemainingDaysAsProgressbar = await promptRemainingDaysAsProgressbar.present() === 0 ? true : false
+  
+  parameter += `|${JSON.stringify(options)}`
+  parameter = parameter.replace(/^\|/, '')
+  console.log('Config: ' + parameter)
+  Pasteboard.copy(parameter)
+  const promptSuccess = new Alert()
+  promptSuccess.title = 'Setup abgeschlossen'
+  promptSuccess.message = 'Die für dich passende Konfiguration wurde generiert und in die Zwischenablage kopiert.\nFüge diese nun in das Feld "Parameter" in den Widget Einstellungen ein.'
+  promptSuccess.addAction('Schließen')
+  await promptSuccess.present()
+} 
 
 function creatProgress(total, havegone) {
   const context = new DrawContext()
