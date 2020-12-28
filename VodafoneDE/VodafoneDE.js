@@ -13,6 +13,7 @@ Changelog:
           - use MSISDN for Cache-Name
           - show amount for prepaid cards
           - show remaining days as progress-bar
+          - Setup assistent
   v1.2.4:
           - use color.dynamic
   v1.2.3:
@@ -82,7 +83,7 @@ config.widgetFamily = config.widgetFamily || 'small'
 let widgetInputRAW = args.widgetParameter;
 
 let widgetInput = null;
-let user, pass, number, json
+let user, pass, number, json, cacheUUID
 if (widgetInputRAW !== null) {
   const parameter = widgetInputRAW.toString().split("|")
   if(parameter.length > 1) {
@@ -100,7 +101,7 @@ if (widgetInputRAW !== null) {
   if (json) {
     try {
       const c = JSON.parse(json)
-      
+      cacheUUID = c.uuid || null
       containerList = c.containerList || containerList
       codeList = c.codeList || codeList
       darkModeSupport = c.darkModeSupport !== undefined ? c.darkModeSupport : darkModeSupport
@@ -288,6 +289,7 @@ async function setupAssistant () {
   const codeList = [...new Set(selectedList.map(x => x.code))]
   
   const options = {
+    uuid: UUID.string(),
     containerList,
     codeList
   }
@@ -576,7 +578,7 @@ var today = new Date()
 const files = FileManager.local()
 
 // Set up cache
-const cacheNamePostfix = (number) ? number.substr(number.length - 4) : 'networkLogin'
+const cacheNamePostfix = ((number) ? number.substr(number.length - 4) : 'networkLogin') + ( cacheUUID ? `-${cacheUUID}` : '')
 const cachePath = files.joinPath(files.documentsDirectory(), "widget-vodafone-" + cacheNamePostfix)
 const cacheExists = files.fileExists(cachePath)
 const cacheDate = cacheExists ? files.modificationDate(cachePath) : 0
