@@ -73,7 +73,7 @@ const codeList = ['-1', '-5' ,'45500', '40100']
 ////////////////////////////////////////////////////////////////////////////////
 
 const debug = false
-config.widgetFamily = config.widgetFamily || 'medium'
+config.widgetFamily = config.widgetFamily || 'small'
 
 ////////////////////////////////////////////////////////////////////////////////
 //////////////////////////         System-Config         ///////////////////////
@@ -98,7 +98,7 @@ if (widgetInputRAW !== null) {
 // Text sizes
 const fontSizeData = 11
 const lineNumberData = 1
-const minimumScaleFactor = 1.0 // Value between 1.0 and 0.1
+const minimumScaleFactor = 0.8 // Value between 1.0 and 0.1
 
 // Number of data by Size
 const numberOfDisplayedDataBySize = {  
@@ -120,15 +120,15 @@ if (config.widgetFamily === 'small') {
 let backColor = new Color('D32D1F')
 let backColor2 = new Color('93291E')
 let textColor = new Color('EDEDED')
-let fillColor = new Color('EDEDED')
-let strokeColor = new Color('B0B0B0')
+let strokeColor = new Color('EDEDED')
+let fillColor = new Color('B0B0B0')
 
 if (darkModeSupport) {  
   backColor = Color.dynamic(backColor, new Color('111111'))
   backColor2 = Color.dynamic(backColor2, new Color('222222'))
   textColor = Color.dynamic(textColor, new Color('EDEDED'))
-  fillColor = Color.dynamic(fillColor, new Color('EDEDED'))
-  strokeColor = Color.dynamic(strokeColor, new Color('121212'))
+  strokeColor = Color.dynamic(strokeColor, new Color('EDEDED'))
+  fillColor = Color.dynamic(fillColor, new Color('111111'))
 }
 ////////////////////////////////////////////////////////////////////////////////
 
