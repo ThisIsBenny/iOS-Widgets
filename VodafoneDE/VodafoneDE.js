@@ -120,15 +120,19 @@ if (config.widgetFamily === 'small') {
 let backColor = new Color('D32D1F')
 let backColor2 = new Color('93291E')
 let textColor = new Color('EDEDED')
-let strokeColor = new Color('EDEDED')
-let fillColor = new Color('B0B0B0')
+let strokeColor = new Color('B0B0B0')
+let fillColor = new Color('EDEDED')
+let strokeColorProgressbar = new Color('EDEDED')
+let fillColorProgressbar = new Color('B0B0B0')
 
 if (darkModeSupport) {  
   backColor = Color.dynamic(backColor, new Color('111111'))
   backColor2 = Color.dynamic(backColor2, new Color('222222'))
   textColor = Color.dynamic(textColor, new Color('EDEDED'))
-  strokeColor = Color.dynamic(strokeColor, new Color('EDEDED'))
-  fillColor = Color.dynamic(fillColor, new Color('111111'))
+  strokeColor = Color.dynamic(strokeColor, new Color('111111'))
+  fillColor = Color.dynamic(fillColor, new Color('EDEDED'))
+  strokeColorProgressbar = Color.dynamic(strokeColorProgressbar, new Color('EDEDED'))
+  fillColorProgressbar = Color.dynamic(fillColorProgressbar, new Color('111111'))
 }
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -139,14 +143,14 @@ function creatProgress(total, havegone) {
   context.respectScreenScale = false
   
   // Background Path
-  context.setFillColor(fillColor)
+  context.setFillColor(fillColorProgressbar)
   const path = new Path()
   path.addRoundedRect(new Rect(0, 0, width, h), 3, 2)
   context.addPath(path)
   context.fillPath()
   
   // Progress Path
-  context.setFillColor(strokeColor)  
+  context.setFillColor(strokeColorProgressbar)  
   const path1 = new Path()
   const path1width = (width * (havegone / total) > width) ? width : width * (havegone / total)
   path1.addRoundedRect(new Rect(0, 0, path1width, h), 3, 2)
