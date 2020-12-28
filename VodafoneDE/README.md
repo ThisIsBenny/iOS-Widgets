@@ -7,20 +7,14 @@ After the first usage, the informations are cached and will be used in case of a
 
 [[Download]](https://raw.githubusercontent.com/ThisIsBenny/iOS-Widgets/main/VodafoneDE/VodafoneDE.js)
 
-## Options
-### Use MeinVodafone Login
-It is possible to set the MeinVodafone Credentails via widget parameter, which allows the widget to update itself even with active WIFI connection or to show data usage of a different mobile contract.
-Add your Credentails in this format to your widget parameters: `username|password|mobile-number`. the mobile-number has to start with 49 instead of 0.
+## Custom Config
+If the default config or the network login isn't working for you, you can use the setup assistant to adjust the config:
+* Use Mein Vodafone Login with Username + Password instead of Network Login
+* Select the Data you want to show in the Widget
+* Disable functions like Dark Mode Support
+* Switch from remaining data volume to used data volume
 
-Example: `JohnSmith|TopSecretPassword!|491721234567`
-
-_Remark:_ If your password contains a | character, you have to adapt the script and use a different divider.
-
-## Roadmap
-* Add Medium Widget Support to display GigaDepot usage
-
-## Contributors
-* [Necriso](https://github.com/Necriso)
+Run the script in the scriptable app to start the setup assistant
 
 ## Credits
 * Sillium for the inspiration https://gist.github.com/Sillium/f904fb89444bc8dde12cfc07b8fa8728
