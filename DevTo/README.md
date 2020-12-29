@@ -1,4 +1,4 @@
-# Dev.to
+# Dev.to articles
 ![Preview light](https://raw.githubusercontent.com/ThisIsBenny/iOS-Widgets/main/DevTo/previewLight.jpeg)
 ![Preview dark](https://raw.githubusercontent.com/ThisIsBenny/iOS-Widgets/main/DevTo/previewDark.jpeg)
 ![Preview light](https://raw.githubusercontent.com/ThisIsBenny/iOS-Widgets/main/DevTo/previewLight2.jpeg)
