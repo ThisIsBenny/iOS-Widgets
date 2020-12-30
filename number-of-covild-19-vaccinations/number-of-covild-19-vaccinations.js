@@ -1,7 +1,15 @@
 // Variables used by Scriptable.
 // These must be at the very top of the file. Do not edit.
 // icon-color: red; icon-glyph: syringe;
-// Version 1.0.0
+
+/**************
+Version 1.0.1
+
+Changelog:
+  v1.0.1:
+          - fix sorting issue
+
+/**************/
 
 ////////////////////////////////////////////////////////////////////////////////
 //////////////////////////         User-Config         /////////////////////////
@@ -223,7 +231,7 @@ if (config.widgetFamily === 'large') {
   const stack = widget.addStack()
   stack.layoutVertically()
   stack.spacing = spacing
-  for (const [key, value] of Object.entries(result.states)) {
+  for (const [key, value] of Object.entries(result.states).sort((a, b) => a[0].localeCompare(b[0]))) {
     const row = stack.addStack()
     row.layoutHorizontally()
     const stateText = row.addText(key)
