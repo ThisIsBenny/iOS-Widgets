@@ -136,12 +136,12 @@ const numberOfDisplayedDataBySize = {
 }
 
 // Progressbar
-const h = 5
+const h = 2
 let width
 if (config.widgetFamily === 'small') {
-  width = 200
+  width = 120
 } else {
-  width = 400
+  width = 300
 }
 
 // Colors
@@ -162,6 +162,8 @@ if (darkModeSupport) {
   strokeColorProgressbar = Color.dynamic(strokeColorProgressbar, new Color('EDEDED'))
   fillColorProgressbar = Color.dynamic(fillColorProgressbar, new Color('111111'))
 }
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
 async function setupAssistant () {
@@ -333,7 +335,7 @@ function creatProgress(total, havegone) {
   const context = new DrawContext()
   context.size = new Size(width, h)
   context.opaque = false
-  context.respectScreenScale = false
+  context.respectScreenScale = true
   
   // Background Path
   context.setFillColor(fillColorProgressbar)
@@ -579,7 +581,7 @@ const files = FileManager.local()
 
 // Set up cache
 const cacheNamePostfix = ((number) ? number.substr(number.length - 4) : 'networkLogin') + ( cacheUUID ? `-${cacheUUID}` : '')
-const cachePath = files.joinPath(files.documentsDirectory(), "widget-vodafone-" + cacheNamePostfix)
+const cachePath = files.joinPath(files.cacheDirectory(), "widget-vodafone-" + cacheNamePostfix)
 const cacheExists = files.fileExists(cachePath)
 const cacheDate = cacheExists ? files.modificationDate(cachePath) : 0
 
@@ -729,6 +731,7 @@ if (data !== undefined) {
       progressBarStack.addSpacer()
       
       const progressBar = progressBarStack.addImage(creatProgress(total, total - remainingDays))
+      progressBar.imageSize = new Size(width, h)
       progressBarStack.addSpacer()
       widget.addSpacer(4)
     }
