@@ -3,9 +3,11 @@
 // icon-color: red; icon-glyph: broadcast-tower;
 
 /**************
-Version 2.1.0
+Version 2.2.0
 
 Changelog:   
+  v2.2.0:
+          - description mapping enhanced
   v2.1.0:
           - description mapping added
   v2.0.0:
@@ -693,7 +695,7 @@ if (data !== undefined) {
     // Total Values
     let totalValues;
     if (v.unitOfMeasure !== 'MB') {
-      totalValues = `${(showRemainingContingent ? v.remaining : v.used)} ${v.unitOfMeasure} von ${v.total} ${v.unitOfMeasure}`
+      totalValues = `${(showRemainingContingent ? v.remaining : v.used)} ${descriptionMapping[v.unitOfMeasure] ? descriptionMapping[v.unitOfMeasure] : v.unitOfMeasure} von ${v.total} ${descriptionMapping[v.unitOfMeasure] ? descriptionMapping[v.unitOfMeasure] : v.unitOfMeasure}`
     } else if (parseInt(v.total) < 1000) {
       totalValues = `${(showRemainingContingent ? v.remaining : v.used)} MB von ${v.total} MB`
     } else {
