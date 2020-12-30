@@ -1,7 +1,7 @@
 // Variables used by Scriptable.
 // These must be at the very top of the file. Do not edit.
 // icon-color: green; icon-glyph: newspaper;
-// Version 1.0.0
+// Version 1.0.1
 
 ////////////////////////////////////////////////////////////////////////////////
 //////////////////////////         User-Config         /////////////////////////
@@ -141,11 +141,15 @@ if (config.widgetFamily !== 'small') {
   widget.backgroundImage = (await imageReq.loadImage())
   
   const stack = widget.addStack()
+  stack.layoutHorizontally()
+  stack.addSpacer()
   stack.setPadding(10, 10, 10, 10)
   stack.backgroundColor = Color.dynamic(new Color('EDEDED', 0.7), new Color('111111', 0.7))
   
   const text = stack.addText(article.title)
   text.font = Font.boldSystemFont(12)
+  stack.addSpacer()
+  
   widget.url = `https://dev.to${article.path}`
   widget.addSpacer(0)
 }
