@@ -3,9 +3,11 @@
 // icon-color: red; icon-glyph: broadcast-tower;
 
 /**************
-Version 2.0.0
+Version 2.1.0
 
-Changelog:  
+Changelog:   
+  v2.1.0:
+          - description mapping added
   v2.0.0:
           - Disable Dark Modus Support
           - Medium & large Widget Support
@@ -67,6 +69,13 @@ let showRemainingDaysAsProgressbar = true
 // Please add additional values to these list, in case that your contract/tarif isn't supported by these default values.
 let containerList = ['Daten', 'D_EU_DATA', 'C_DIY_Data_National']
 let codeList = ['-1', '-5' ,'45500', '40100']
+
+// Please add additional values if you see technical descriptions like D_EU_DATA in your widget
+const descriptionMapping = {  
+  'Datenvolumen Inland & EU' : 'Datenvolumen',
+  'GigaDepot-Datenvolumen Inland & EU' : 'GigaDepot-Datenvolumen',
+  'D_EU_DATA': 'Datenvolumen'
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 //////////////////////////         Dev Settings         ////////////////////////
@@ -706,7 +715,7 @@ if (data !== undefined) {
     nameStack = column.addStack()
     nameStack.layoutHorizontally()
     nameStack.addSpacer()
-    let diagramName = nameStack.addText(v.name.replace('Inland & EU', '').trim())
+    let diagramName = nameStack.addText(descriptionMapping[v.name] ? descriptionMapping[v.name] : v.name)
     diagramName.font = Font.systemFont(fontSizeData - 1)
     diagramName.minimumScaleFactor = minimumScaleFactor
     diagramName.lineLimit = 1
