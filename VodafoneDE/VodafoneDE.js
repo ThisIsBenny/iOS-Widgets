@@ -3,9 +3,17 @@
 // icon-color: red; icon-glyph: broadcast-tower;
 
 /**************
-Version 1.2.4
+Version 2.0.0
 
-Changelog:
+Changelog:  
+  v2.0.0:
+          - Disable Dark Modus Support
+          - Medium & large Widget Support
+          - switch between used and remaining volume
+          - use MSISDN for Cache-Name
+          - show amount for prepaid cards
+          - show remaining days as progress-bar
+          - Setup assistent
   v1.2.4:
           - use color.dynamic
   v1.2.3:
@@ -40,80 +48,376 @@ Credits:
   - Chaeimg@Github (https://github.com/chaeimg/battCircle)
 **************/
 
+////////////////////////////////////////////////////////////////////////////////
+//////////////////////////         User-Config         /////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
 // How many minutes should the cache be valid
-let cacheMinutes = 60;
+const cacheMinutes = 60
+
+// Set to false if the widget should display always in red
+let darkModeSupport = true
+
+// Switch between remaining and used contingent. If you want show the used contingent, then change the value from true to false
+let showRemainingContingent = true
+
+// To disable the progressbar for the remaining days, you have to change the value from true to false
+let showRemainingDaysAsProgressbar = true
 
 // Please add additional values to these list, in case that your contract/tarif isn't supported by these default values.
-const containerList = ['Daten', 'D_EU_DATA', 'C_DIY_Data_National']
-const codeList = ['-1', '45500', '40100']
+let containerList = ['Daten', 'D_EU_DATA', 'C_DIY_Data_National']
+let codeList = ['-1', '-5' ,'45500', '40100']
 
 ////////////////////////////////////////////////////////////////////////////////
+//////////////////////////         Dev Settings         ////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+const debug = false
+config.widgetFamily = config.widgetFamily || 'small'
+
+////////////////////////////////////////////////////////////////////////////////
+//////////////////////////         System-Config         ///////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+// Input
 let widgetInputRAW = args.widgetParameter;
+
 let widgetInput = null;
-
-let user, pass, number
-
+let user, pass, number, json, cacheUUID
 if (widgetInputRAW !== null) {
-  [user, pass, number] = widgetInputRAW.toString().split("|");
+  const parameter = widgetInputRAW.toString().split("|")
+  if(parameter.length > 1) {
+    [user, pass, number, json] = parameter;
 
-  if (!user || !pass || !number) {
-    throw new Error("Invalid Widget parameter. Expected format: username|password|phonenumber")
+    if (!user || !pass || !number) {
+      throw new Error("Invalid Widget parameter. Expected format: username|password|phonenumber")
+    }
+    if (/^49[\d]{5,}/.test(number) === false) {
+      throw new Error("Invalid phonenumber format. Expected format: 491721234567")
+    }
+  } else {
+    json = parameter
   }
-  if (/^49[\d]{5,}/.test(number) === false) {
-    throw new Error("Invalid phonenumber format. Expected format: 491721234567")
+  if (json) {
+    try {
+      const c = JSON.parse(json)
+      cacheUUID = c.uuid || null
+      containerList = c.containerList || containerList
+      codeList = c.codeList || codeList
+      darkModeSupport = c.darkModeSupport !== undefined ? c.darkModeSupport : darkModeSupport
+      showRemainingContingent = c.showRemainingContingent !== undefined ? c.showRemainingContingent : showRemainingContingent  
+      showRemainingDaysAsProgressbar = c.showRemainingDaysAsProgressbar !== undefined ? c.showRemainingDaysAsProgressbar : showRemainingDaysAsProgressbar
+    } catch (error) {
+      console.log('Faild to extract JSON-config. Fallback to default config')
+    }
   }
+} else if (!config.runsInWidget && config.runsInApp) {  
+  const prompt = new Alert()
+  prompt.message = 'Möchtest du den Setup Assistant starten?'
+  prompt.addAction('Ja')
+  prompt.addCancelAction('Nein')
+  
+  if (await prompt.presentAlert() === 0) {
+    await setupAssistant()
+  }
+  return Script.complete()
 }
 
-const backColor = Color.dynamic(new Color('D32D1F'), new Color('111111'));
-const backColor2 = Color.dynamic(new Color('76150C'), new Color('222222'));
-const textColor = Color.dynamic(new Color('EDEDED'), new Color('EDEDED'));
-const fillColor = Color.dynamic(new Color('EDEDED'), new Color('EDEDED'));
-const strokeColor = Color.dynamic(new Color('B0B0B0'), new Color('121212'));
+// Text sizes
+const fontSizeData = 11
+const lineNumberData = 1
+const minimumScaleFactor = 0.8 // Value between 1.0 and 0.1
 
-const canvas = new DrawContext();
-const canvSize = 200;
-const canvTextSize = 36;
-
-const canvWidth = 22;
-const canvRadius = 80;
-
-canvas.opaque = false
-canvas.size = new Size(canvSize, canvSize);
-canvas.respectScreenScale = true;
-
-function sinDeg(deg) {
-  return Math.sin((deg * Math.PI) / 180);
+// Number of data by Size
+const numberOfDisplayedDataBySize = {  
+  small: 1,
+  medium: 2,
+  large: 4
 }
 
-function cosDeg(deg) {
-  return Math.cos((deg * Math.PI) / 180);
+// Progressbar
+const h = 2
+let width
+if (config.widgetFamily === 'small') {
+  width = 120
+} else {
+  width = 300
 }
 
-function drawArc(ctr, rad, w, deg) {
-  bgx = ctr.x - rad;
-  bgy = ctr.y - rad;
-  bgd = 2 * rad;
-  bgr = new Rect(bgx, bgy, bgd, bgd);
+// Colors
+let backColor = new Color('D32D1F')
+let backColor2 = new Color('93291E')
+let textColor = new Color('EDEDED')
+let strokeColor = new Color('B0B0B0')
+let fillColor = new Color('EDEDED')
+let strokeColorProgressbar = new Color('EDEDED')
+let fillColorProgressbar = new Color('B0B0B0')
 
-  canvas.setFillColor(fillColor);
-  canvas.setStrokeColor(strokeColor);
-  canvas.setLineWidth(w);
-  canvas.strokeEllipse(bgr);
+if (darkModeSupport) {  
+  backColor = Color.dynamic(backColor, new Color('111111'))
+  backColor2 = Color.dynamic(backColor2, new Color('222222'))
+  textColor = Color.dynamic(textColor, new Color('EDEDED'))
+  strokeColor = Color.dynamic(strokeColor, new Color('111111'))
+  fillColor = Color.dynamic(fillColor, new Color('EDEDED'))
+  strokeColorProgressbar = Color.dynamic(strokeColorProgressbar, new Color('EDEDED'))
+  fillColorProgressbar = Color.dynamic(fillColorProgressbar, new Color('111111'))
+}
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
-  for (t = 0; t < deg; t++) {
-    rect_x = ctr.x + rad * sinDeg(t) - w / 2;
-    rect_y = ctr.y - rad * cosDeg(t) - w / 2;
-    rect_r = new Rect(rect_x, rect_y, w, w);
-    canvas.fillEllipse(rect_r);
+async function setupAssistant () {
+  let parameter = ''
+  
+  const promptLoginType = new Alert()
+  promptLoginType.message = 'Welche Login-Methode möchtest du verwenden?'
+  promptLoginType.addAction('Netzwerk-Login')
+  promptLoginType.addAction('MeinVodafone-Login')    
+  
+  let cookies, msisdn
+  if (await promptLoginType.presentAlert()  === 0) {
+    const promptWlanNotice = new Alert()
+    promptWlanNotice.title = 'Hinweis'
+    promptWlanNotice.message = 'Für diese Login-Methode muss das WLAN deaktiviert sein.'
+    promptWlanNotice.addAction('WLAN ist deaktiviert')
+    await promptWlanNotice.presentAlert()
+    
+    try {
+      let { cookies: c, msisdn: m } = await getSessionCookiesViaNetworkLogin()
+      cookies = c
+      msisdn = m
+    } catch (error) {
+      const promptError = new Alert()
+      promptError.title = 'Login fehlgeschlagen'
+      promptError.message = 'Der Login ist fehlgeschlagen. Bitte prüfe ob eine Mobilfunk-Verbindung vorhanden ist. Weitere Details findest du in den Logs.'  
+      promptError.addAction('Schließen')
+      await promptError.present()  
+
+      throw error
+    }
+  } else {
+    const promptCredentails = new Alert()
+    promptCredentails.title = 'Zugangsdaten'
+    promptCredentails.message = 'Bitte gebe deine MeinVodafone-Zugangsdaten und deine Rufnummer ein:'  
+    promptCredentails.addTextField('Benutzernamen')
+    promptCredentails.addSecureTextField('Passwort')
+    promptCredentails.addTextField('Rufnummer')
+    promptCredentails.addAction('Weiter')
+    
+    
+    await promptCredentails.present()
+    const user = promptCredentails.textFieldValue(0).trim()
+    const pass = promptCredentails.textFieldValue(1).trim()
+    const number = promptCredentails.textFieldValue(2).replace(/^0/, '49').trim()
+    try {
+      let { cookies: c } = await getSessionCookiesViaMeinVodafoneLogin(user, pass)
+      cookies = c
+      msisdn = number
+    } catch (error) {
+      console.error(error)
+    }
+    parameter = `${user}|${pass}|${msisdn}`
   }
+  let CookieValues = cookies.map(function (v) {
+    return v.name + "=" + v.value
+  })
+  let req
+  req = new Request(`https://www.vodafone.de/api/enterprise-resources/core/bss/sub-nil/mobile/payment/service-usages/subscriptions/${msisdn}/unbilled-usage`)
+  req.headers = {
+    'x-vf-api': '1499082775305',
+    'Referer': 'https://www.vodafone.de/meinvodafone/services/',
+    'Accept': 'application/json',
+    'Cookies': CookieValues.join(';')
+  }
+  let res, data
+  try {
+    res = await req.loadJSON()
+    if(!res['serviceUsageVBO'] || !res['serviceUsageVBO']['usageAccounts'] || !res['serviceUsageVBO']['usageAccounts'][0] || !res['serviceUsageVBO']['usageAccounts'][0]['usageGroup']) {
+      throw new Error('invalid response: ' + JSON.stringify(res))
+    }
+    data = res['serviceUsageVBO']['usageAccounts'][0]['usageGroup']
+  } catch (error) {
+      const promptError = new Alert()
+      promptError.title = 'Laden der Daten fehlgeschlagen'
+      promptError.message = 'Das Laden der Vertragsdaten ist fehlgeschlagen. Dies kann verschiedene Gründe haben. Bitte prüfen die Logs für weitere Informationen'  
+      promptError.addAction('Schließen')
+      await promptError.present()
+      throw error
+  }
+  
+  const list = data.map(function (o) {
+    return o.usage.map(function(i) {
+      i.container = o.container || null
+      i.selected = false
+      return i
+    }).filter(x => x.code)
+  }).flat()
+  
+  const promptBeforeTable = new Alert()
+  promptBeforeTable.title = 'Hinweis'
+  promptBeforeTable.message = 'Dein Vertrag wurde analysiert. Bitte wähle im nachfolgenden Dialog die Daten aus, die du im Widget anzeigen möchtest.'
+  promptBeforeTable.addAction('Weiter')
+  await promptBeforeTable.present()
+  
+  const table = new UITable()
+  table.showSeparators = true
+  
+  function populateTable() {
+    table.removeAllRows()
+    
+    for (i = 0; i < list.length; i++) {
+      let row = new UITableRow()
+      row.dismissOnSelect = false
+      
+      let selectedCell = row.addText((list[i].selected)? "✓" : "")  
+      selectedCell.widthWeight = 5
+      
+      let textCell = row.addText(list[i].name)
+      textCell.widthWeight = 70
+      
+      row.onSelect = (number) => {
+        list[number].selected = !list[number].selected
+        populateTable()
+        table.reload()
+      }
+      table.addRow(row)
+    }
+  }
+  populateTable()
+  await QuickLook.present(table)
+  
+  const selectedList = list.filter(x => x.selected)
+  const containerList = [...new Set(selectedList.map(x => x.container))]
+  const codeList = [...new Set(selectedList.map(x => x.code))]
+  
+  const options = {
+    uuid: UUID.string(),
+    containerList,
+    codeList
+  }
+  
+  const promptDarkMode = new Alert()
+  promptDarkMode.title = 'Dark Mode Unterstützung'
+  promptDarkMode.message = 'Möchtest du die Dark Mode Unterstützung aktivieren oder deaktivieren? Wenn die Dark Mode Unterstützung deaktiviert ist, bleibt das Widget immer rot.'  
+  promptDarkMode.addAction('Aktivieren')
+  promptDarkMode.addDestructiveAction('Deaktivieren')
+  
+  options.darkModeSupport = await promptDarkMode.present() === 0 ? true : false
+  
+  const promptRemainingContingent = new Alert()
+  promptRemainingContingent.title = 'Anzeige Option'
+  promptRemainingContingent.message = 'Möchtest du das verbleibende oder verwendte Kontigent angezeigt bekommen?'  
+  promptRemainingContingent.addAction('verbleibende Kontigent')
+  promptRemainingContingent.addAction('verwendte Kontigent')
+  
+  options.showRemainingContingent = await promptRemainingContingent.present() === 0 ? true : false
+  
+  const promptRemainingDaysAsProgressbar = new Alert()
+  promptRemainingDaysAsProgressbar.title = 'Fortschrittsbalken für verbleibenden Tage'
+  promptRemainingDaysAsProgressbar.message = 'Möchtest du dass ein Fortschrittsbalken für die verbleibenden Tage angezeigt wird?'  
+  promptRemainingDaysAsProgressbar.addAction('Anzeigen')
+  promptRemainingDaysAsProgressbar.addDestructiveAction('Nicht anzeigen')
+  
+  options.showRemainingDaysAsProgressbar = await promptRemainingDaysAsProgressbar.present() === 0 ? true : false
+  
+  parameter += `|${JSON.stringify(options)}`
+  parameter = parameter.replace(/^\|/, '')
+  console.log('Config: ' + parameter)
+  Pasteboard.copy(parameter)
+  const promptSuccess = new Alert()
+  promptSuccess.title = 'Setup abgeschlossen'
+  promptSuccess.message = 'Die für dich passende Konfiguration wurde generiert und in die Zwischenablage kopiert.\nFüge diese nun in das Feld "Parameter" in den Widget Einstellungen ein.'
+  promptSuccess.addAction('Schließen')
+  await promptSuccess.present()
+} 
+
+function creatProgress(total, havegone) {
+  const context = new DrawContext()
+  context.size = new Size(width, h)
+  context.opaque = false
+  context.respectScreenScale = true
+  
+  // Background Path
+  context.setFillColor(fillColorProgressbar)
+  const path = new Path()
+  path.addRoundedRect(new Rect(0, 0, width, h), 3, 2)
+  context.addPath(path)
+  context.fillPath()
+  
+  // Progress Path
+  context.setFillColor(strokeColorProgressbar)  
+  const path1 = new Path()
+  const path1width = (width * (havegone / total) > width) ? width : width * (havegone / total)
+  path1.addRoundedRect(new Rect(0, 0, path1width, h), 3, 2)
+  context.addPath(path1)
+  context.fillPath()
+  return context.getImage()
+}
+
+function getDiagram(percentage) {
+  function drawArc(ctr, rad, w, deg) {
+    bgx = ctr.x - rad
+    bgy = ctr.y - rad
+    bgd = 2 * rad
+    bgr = new Rect(bgx, bgy, bgd, bgd)
+  
+    canvas.setFillColor(fillColor)
+    canvas.setStrokeColor(strokeColor)
+    canvas.setLineWidth(w)
+    canvas.strokeEllipse(bgr)
+  
+    for (t = 0; t < deg; t++) {
+      rect_x = ctr.x + rad * sinDeg(t) - w / 2
+      rect_y = ctr.y - rad * cosDeg(t) - w / 2
+      rect_r = new Rect(rect_x, rect_y, w, w)
+      canvas.fillEllipse(rect_r)
+    }
+  }
+  function sinDeg(deg) {
+    return Math.sin((deg * Math.PI) / 180)
+  }
+  
+  function cosDeg(deg) {
+    return Math.cos((deg * Math.PI) / 180)
+  }
+  const canvas = new DrawContext()
+  const canvSize = 200
+  const canvTextSize = 36
+  
+  const canvWidth = 10
+  const canvRadius = 80
+  
+  canvas.opaque = false  
+  canvas.size = new Size(canvSize, canvSize)
+  canvas.respectScreenScale = true
+    
+  drawArc(
+    new Point(canvSize / 2, canvSize / 2),
+    canvRadius,
+    canvWidth,
+    Math.floor(percentage * 3.6)
+  )
+
+  const canvTextRect = new Rect(
+    0,
+    100 - canvTextSize / 2,
+    canvSize,
+    canvTextSize
+  )
+  canvas.setTextAlignedCenter()
+  canvas.setTextColor(textColor)
+  canvas.setFont(Font.boldSystemFont(canvTextSize))
+  canvas.drawTextInRect(`${percentage}%`, canvTextRect)
+
+  return canvas.getImage()
 }
 
 function getTimeRemaining(endtime) {
-  const total = Date.parse(endtime) - Date.parse(new Date());
-  const seconds = Math.floor((total / 1000) % 60);
-  const minutes = Math.floor((total / 1000 / 60) % 60);
-  const hours = Math.floor((total / (1000 * 60 * 60)) % 24);
-  const days = Math.floor(total / (1000 * 60 * 60 * 24));
+  const total = Date.parse(endtime) - Date.parse(new Date())
+  const seconds = Math.floor((total / 1000) % 60)
+  const minutes = Math.floor((total / 1000 / 60) % 60)
+  const hours = Math.floor((total / (1000 * 60 * 60)) % 24)
+  const days = Math.floor(total / (1000 * 60 * 60 * 24))
 
   return {
     total,
@@ -121,7 +425,7 @@ function getTimeRemaining(endtime) {
     hours,
     minutes,
     seconds
-  };
+  }
 }
 
 async function getSessionCookiesViaNetworkLogin() {
@@ -173,22 +477,22 @@ async function getSessionCookiesViaMeinVodafoneLogin(u, p) {
 };
 
 async function getUsage(user, pass, number) {
-  let cookies, msisdn;
+  let cookies, msisdn
   if (user && pass && number) {
     console.log("Login via MeinVodafone")
-    let { cookies: c } = await getSessionCookiesViaMeinVodafoneLogin(user, pass);
-    cookies = c;
-    msisdn = number;
+    let { cookies: c } = await getSessionCookiesViaMeinVodafoneLogin(user, pass)
+    cookies = c
+    msisdn = number
   } else {
     console.log("Login via Network")
-    let { cookies: c, msisdn: m } = await getSessionCookiesViaNetworkLogin();
-    cookies = c;
-    msisdn = m;
+    let { cookies: c, msisdn: m } = await getSessionCookiesViaNetworkLogin()
+    cookies = c
+    msisdn = m
   }
   let CookieValues = cookies.map(function (v) {
     return v.name + "=" + v.value
   })
-  let req;
+  let req
   req = new Request(`https://www.vodafone.de/api/enterprise-resources/core/bss/sub-nil/mobile/payment/service-usages/subscriptions/${msisdn}/unbilled-usage`)
   req.headers = {
     'x-vf-api': '1499082775305',
@@ -198,53 +502,71 @@ async function getUsage(user, pass, number) {
   }
   try {
     let res = await req.loadJSON()
+    if(!res['serviceUsageVBO'] || !res['serviceUsageVBO']['usageAccounts'] || !res['serviceUsageVBO']['usageAccounts'][0]) {
+      if (debug) {
+        console.log(JSON.stringify(res, null, 2))
+      }
+      
+    }
     console.log("unbilled-usage loaded")
-    let datenContainer = res['serviceUsageVBO']['usageAccounts'][0]['usageGroup'].find(function (v) {
+    if (debug) {
+      console.log(JSON.stringify(res['serviceUsageVBO']['usageAccounts'][0], null, 2))
+    }
+    const marketCode = res['serviceUsageVBO']['usageAccounts'][0]['details']['marketCode']
+    const billDate = res['serviceUsageVBO']['usageAccounts'][0]['details']['billDate']
+    const amount = res['serviceUsageVBO']['usageAccounts'][0]['details']['amount']
+    
+    let usage = []
+    
+    // Get Main Container
+    let container = res['serviceUsageVBO']['usageAccounts'][0]['usageGroup'].filter(function (v) {
       return containerList.includes(v.container)
-    })
+    })  
 
-    if (datenContainer === undefined) {
+    if (container.length === 0) {
       const ErrorMsg = "Can't find usageGroup with supported Container: " + containerList.join(', ') + ".";
       console.log(ErrorMsg)
 
       const listOfContainerNamesInResponse = res['serviceUsageVBO']['usageAccounts'][0]['usageGroup'].map(function (v) {
-        return v.container;
+        return v.container
       })
-      console.log("Please check the following list to find the correct container name for your case and adjust the list of container names at the beginnging: " + listOfContainerNamesInResponse.join(", "))
+      console.log("Please check the following list to find the correct container name for your case and adjust the list of container names at the beginnging: " + listOfContainerNamesInResponse.join(",  "))
       throw new Error(ErrorMsg)
     }
 
-    let datenvolumen;
-    if (datenContainer.usage.length == 1) {
-      datenvolumen = datenContainer.usage[0]
-    } else {
-      datenvolumen = datenContainer.usage.find(function (v) {
-        return codeList.includes(v.code)
-      })
+  
+    for(let i = 0; i < container.length; i++) {
+      for (let j = 0; j < container[i]['usage'].length; j++) {
+        if (codeList.includes(container[i]['usage'][j]['code'])) {
+          usage.push(container[i]['usage'][j])
+        }
+      }
     }
-
-    if (datenvolumen === undefined) {
+    if (usage.length === 0) {
       const ErrorMsg = "Can't find Usage with supported Codes: " + codeList.join(', ') + ".";
-      console.log(ErrorMsg)
-
-      const listOfCodeInResponse = datenContainer.usage.map(function (v) {
-        return `Code: "${v.code}" for "${v.description}"`;
-      })
+      console.log(ErrorMsg)  
+       
+      const listOfCodeInResponse = []
+      for(let i = 0; i < container.length; i++) {
+        for (let j = 0; j < container[i]['usage'].length; j++) {
+          listOfCodeInResponse.push(`Code: "${container[i]['usage'][j].code}" for "${container[i]['usage'][j].description}"`)
+        }
+      }
       console.log("Please check the following list to find the correct code for your case and adjust the list of codes at the beginnging: " + listOfCodeInResponse.join(", "))
       throw new Error(ErrorMsg)
     }
-
-
-    let endDate = datenvolumen.endDate;
+    
+    let endDate = usage[0].endDate
     if (endDate == null) {
       endDate = res['serviceUsageVBO']['billDetails']['billCycleEndDate'] || null
     }
-
+    
     return {
-      total: datenvolumen.total,
-      used: datenvolumen.used,
-      remaining: datenvolumen.remaining,
-      endDate
+      billDate,
+      endDate,
+      amount,
+      marketCode,
+      usage
     }
   } catch (e) {
     console.log("Loading usage data failed")
@@ -252,18 +574,19 @@ async function getUsage(user, pass, number) {
   }
 };
 
-var today = new Date();
+var today = new Date()
 
 // Set up the file manager.
 const files = FileManager.local()
 
-// Set up cache .
-const cachePath = files.joinPath(files.documentsDirectory(), "widget-vodafone")
+// Set up cache
+const cacheNamePostfix = ((number) ? number.substr(number.length - 4) : 'networkLogin') + ( cacheUUID ? `-${cacheUUID}` : '')
+const cachePath = files.joinPath(files.cacheDirectory(), "widget-vodafone-" + cacheNamePostfix)
 const cacheExists = files.fileExists(cachePath)
 const cacheDate = cacheExists ? files.modificationDate(cachePath) : 0
 
 // Get Data
-let data;
+let data
 let lastUpdate
 try {
   // If cache exists and it's been less than 30 minutes since last request, use cached data.
@@ -301,7 +624,9 @@ let widget = new ListWidget();
 widget.setPadding(10, 10, 10, 10)
 
 if (data !== undefined) {
-  console.log(data)
+  if(debug) {
+      console.log(JSON.stringify(data, null, 2))
+  }
   const gradient = new LinearGradient()
   gradient.locations = [0, 1]
   gradient.colors = [
@@ -315,63 +640,104 @@ if (data !== undefined) {
   let provider = firstLineStack.addText("Vodafone")
   provider.font = Font.mediumSystemFont(12)
   provider.textColor = textColor
+  
+  if (data.marketCode === 'MMO') {
+    widget.addSpacer(2)
+    const amount = widget.addText(`Guthaben: ${data.amount.replace('.', ',')} €`)
+    amount.font = Font.systemFont(8)
+    amount.textColor = textColor
+  }
 
   // Last Update
   firstLineStack.addSpacer()
   let lastUpdateText = firstLineStack.addDate(lastUpdate)
-  lastUpdateText.font = Font.mediumSystemFont(8)
+  lastUpdateText.font = Font.systemFont(8)
   lastUpdateText.rightAlignText()
   lastUpdateText.applyTimeStyle()
   lastUpdateText.textColor = Color.lightGray()
 
   widget.addSpacer()
-
-  let remainingPercentage = (100 / data.total * data.remaining).toFixed(0);
-
-  drawArc(
-    new Point(canvSize / 2, canvSize / 2),
-    canvRadius,
-    canvWidth,
-    Math.floor(remainingPercentage * 3.6)
-  );
-
-  const canvTextRect = new Rect(
-    0,
-    100 - canvTextSize / 2,
-    canvSize,
-    canvTextSize
-  );
-  canvas.setTextAlignedCenter();
-  canvas.setTextColor(textColor);
-  canvas.setFont(Font.boldSystemFont(canvTextSize));
-  canvas.drawTextInRect(`${remainingPercentage}%`, canvTextRect);
-
-  const canvImage = canvas.getImage();
-  let image = widget.addImage(canvImage);
-  image.centerAlignImage()
-
+  
+  const stack = widget.addStack()
+  stack.layoutHorizontally()
+  
+  let i = 0
+  let row
+  data.usage.slice(0, numberOfDisplayedDataBySize[config.widgetFamily]).forEach((v) => {
+    if (++i % 2 == 1) {
+      row = widget.addStack()
+      row.layoutHorizontally()
+      widget.addSpacer(5)
+    }
+    column = row.addStack()
+    column.layoutVertically()
+    column.centerAlignContent()
+    
+    const percentage = (100 / v.total * (showRemainingContingent ? v.remaining : v.used)).toFixed(0);
+    const imageStack = column.addStack()
+    imageStack.layoutHorizontally()
+    imageStack.addSpacer()
+    imageStack.addImage(getDiagram(percentage));
+    imageStack.addSpacer()
+    column.addSpacer(2)
+    
+    // Total Values
+    let totalValues;
+    if (v.unitOfMeasure !== 'MB') {
+      totalValues = `${(showRemainingContingent ? v.remaining : v.used)} ${v.unitOfMeasure} von ${v.total} ${v.unitOfMeasure}`
+    } else if (parseInt(v.total) < 1000) {
+      totalValues = `${(showRemainingContingent ? v.remaining : v.used)} MB von ${v.total} MB`
+    } else {
+      let GB = ((showRemainingContingent ? v.remaining : v.used) / 1024).toFixed(2)
+      let totalGB = (v.total / 1024).toFixed(2)
+      totalValues = `${GB} GB von ${totalGB} GB`
+    }
+    textStack = column.addStack()
+    textStack.layoutHorizontally()
+    textStack.addSpacer()
+    let diagramText = textStack.addText(totalValues)
+    diagramText.font = Font.mediumSystemFont(fontSizeData)
+    diagramText.minimumScaleFactor = minimumScaleFactor
+    diagramText.lineLimit = lineNumberData
+    diagramText.centerAlignText()
+    diagramText.textColor = textColor
+    textStack.addSpacer()
+    
+    nameStack = column.addStack()
+    nameStack.layoutHorizontally()
+    nameStack.addSpacer()
+    let diagramName = nameStack.addText(v.name.replace('Inland & EU', '').trim())
+    diagramName.font = Font.systemFont(fontSizeData - 1)
+    diagramName.minimumScaleFactor = minimumScaleFactor
+    diagramName.lineLimit = 1
+    diagramName.centerAlignText()
+    diagramName.textColor = textColor
+    nameStack.addSpacer()
+  })
+  
   widget.addSpacer()
 
-  // Total Values
-  let totalValues;
-  if (parseInt(data.total) < 1000) {
-    totalValues = `${data.remaining} MB von ${data.total} MB`
-  } else {
-    let remainingGB = (data.remaining / 1024).toFixed(2)
-    let totalGB = (data.total / 1024).toFixed(0)
-    totalValues = `${remainingGB} GB von ${totalGB} GB`
-  }
-  let totalValuesText = widget.addText(totalValues)
-  totalValuesText.font = Font.mediumSystemFont(12)
-  totalValuesText.centerAlignText()
-  totalValuesText.textColor = textColor
-
-  // Remaining Days    
+  // Remaining Days
   if (data.endDate) {
     widget.addSpacer(5)
     let remainingDays = getTimeRemaining(data.endDate).days + 2
+    if(data.billDate && showRemainingDaysAsProgressbar) {
+      const startDate = new Date(data.billDate)
+      const endDate = new Date(data.endDate)
+      const total = (endDate - startDate) / (1000 * 60 * 60 * 24)
+      
+      const progressBarStack = widget.addStack()
+      progressBarStack.layoutHorizontally()
+      progressBarStack.addSpacer()
+      
+      const progressBar = progressBarStack.addImage(creatProgress(total, total - remainingDays))
+      progressBar.imageSize = new Size(width, h)
+      progressBarStack.addSpacer()
+      widget.addSpacer(4)
+    }
+
     let remainingDaysText = widget.addText(`${remainingDays} Tage verbleibend`)
-    remainingDaysText.font = Font.mediumSystemFont(8)
+    remainingDaysText.font = Font.systemFont(8)
     remainingDaysText.centerAlignText()
     remainingDaysText.textColor = textColor
   }
@@ -383,7 +749,12 @@ if (data !== undefined) {
 }
 
 if (!config.runsInWidget) {
-  await widget.presentSmall()
+  switch (config.widgetFamily) {
+    case 'small': await widget.presentSmall(); break;
+    case 'medium': await widget.presentMedium(); break;
+    case 'large': await widget.presentLarge(); break;
+  }
+  
 } else {
   // Tell the system to show the widget.
   Script.setWidget(widget)
