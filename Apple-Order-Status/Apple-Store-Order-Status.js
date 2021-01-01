@@ -1,7 +1,7 @@
 // Variables used by Scriptable.
 // These must be at the very top of the file. Do not edit.
 // icon-color: deep-blue; icon-glyph: shopping-cart;
-// Version 1.1.4
+// Version 1.1.5
 
 const cacheMinutes = 60 * 2
 const today = new Date()
@@ -101,7 +101,7 @@ const parseLongDate = (stringDate) => {
   const m = stringDate.match(/([\w]+)[\s]([\d]{1,2}),[\s]([0-9]{4})/)
   return new Date(m[3], months[m[1]], m[2])
 }
-const parseShortDate = (stringDate, orderMonth) => {
+const parseShortDate = (stringDate, orderDate) => {
   const months = {
     'Jan': 0,
     'Feb': 1,
@@ -129,11 +129,11 @@ const parseShortDate = (stringDate, orderMonth) => {
     }
   }
 
-  let year = new Date().getFullYear()
-  if (months[m[2]] < orderMonth) {
-    year += 1
+  let deliveryDate = new Date((new Date().getFullYear()), months[m[2]], m[1])
+  if (deliveryDate < orderDate) {
+    deliveryDate.setFullYear(deliveryDate.getFullYear() + 1)
   }
-  return new Date(year, months[m[2]], m[1])
+  return deliveryDate
 }
 ////////////////////////////////////////////////////////////
 function creatProgress(total, havegone) {
@@ -277,7 +277,7 @@ if (!orderDetails) {
   const orderDate = parseLongDate(orderDetails['orderDetail']['orderHeader']['d']['orderPlacedDate'])
   let deliveryDate = null
   try {
-    deliveryDate = parseShortDate(itemDetails['d']['deliveryDate'], orderDate.getMonth())
+    deliveryDate = parseShortDate(itemDetails['d']['deliveryDate'], orderDate)
   } catch (e) {
     console.error(e)
   }
