@@ -156,7 +156,7 @@ function getDiagram(percentage) {
     canvTextSize
   )
   canvas.setTextAlignedCenter()
-  canvas.setTextColor(Color.dynamic(Color.black(), Color.white()))
+  canvas.setTextColor(Color.gray())
   canvas.setFont(Font.boldSystemFont(canvTextSize))
   canvas.drawTextInRect(`${percentage}%`, canvTextRect)
 
