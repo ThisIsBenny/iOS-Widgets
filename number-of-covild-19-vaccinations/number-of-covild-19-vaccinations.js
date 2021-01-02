@@ -153,12 +153,12 @@ function getDiagram(percentage) {
     0,
     100 - canvTextSize / 2,
     canvSize,
-    canvTextSize
+    canvTextSize * 1.4 // X-height "* 1.4" so e.g. commas aren't cut off
   )
   canvas.setTextAlignedCenter()
   canvas.setTextColor(Color.gray())
   canvas.setFont(Font.boldSystemFont(canvTextSize))
-  canvas.drawTextInRect(`${percentage}%`, canvTextRect)
+  canvas.drawTextInRect(`${percentage.toLocaleString(Device.language())}%`, canvTextRect)
 
   return canvas.getImage()
 }
@@ -291,13 +291,13 @@ if (config.widgetFamily === 'large') {
     let total1unit = " Tsd."
     // if total is a million or more, format as millions and not thousands
     if ( result.states[selectedState].total > 999999 ){
-      total1 =  (result.states[selectedState].total / 1000000).toLocaleString('de', {maximumFractionDigits: 1})
+      total1 =  (result.states[selectedState].total / 1000000).toLocaleString(Device.language(), {maximumFractionDigits: 1})
       total1unit = " Mio."
     }
     let vaccinated1
     let vaccinated1unit = ""
     if ( result.states[selectedState].vaccinated > 999999){
-      vaccinated1 =  (result.states[selectedState].vaccinated / 1000000).toLocaleString('de', {maximumFractionDigits: 2})
+      vaccinated1 =  (result.states[selectedState].vaccinated / 1000000).toLocaleString(Device.language(), {maximumFractionDigits: 2})
       vaccinated1unit = " Mio."
     }
     else if ( result.states[selectedState].vaccinated > 999 ) {
@@ -341,13 +341,13 @@ if (config.widgetFamily === 'large') {
     let total2unit = " Tsd."
     // if total is a million or more, format as millions and not thousands
     if ( result.total > 999999 ){
-    	total2 = (result.total / 1000000).toLocaleString('de', {maximumFractionDigits: 1})
+    	total2 = (result.total / 1000000).toLocaleString(Device.language(), {maximumFractionDigits: 1})
     	total2unit = " Mio."
     }
     let vaccinated2 = (result.vaccinated / 1000).toFixed(0)
     let vaccinated2unit = " Tsd."
     if ( result.vaccinated > 999999 ){
-    	vaccinated2 = (result.vaccinated / 1000000).toLocaleString('de', {maximumFractionDigits: 2})
+    	vaccinated2 = (result.vaccinated / 1000000).toLocaleString(Device.language(), {maximumFractionDigits: 2})
     	vaccinated2unit = " Mio."
     }
     
