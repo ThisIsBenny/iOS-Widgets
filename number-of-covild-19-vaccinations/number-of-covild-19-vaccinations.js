@@ -1,7 +1,3 @@
-// Home: https://github.com/ThisIsBenny/iOS-Widgets/tree/main/number-of-covild-19-vaccinations
-// Variables used by Scriptable.
-// These must be at the very top of the file. Do not edit.
-// icon-color: red; icon-glyph: syringe;
 // Variables used by Scriptable.
 // These must be at the very top of the file. Do not edit.
 // icon-color: red; icon-glyph: syringe;
@@ -12,7 +8,8 @@ Version 1.0.2
 Changelog:
   v1.0.2
           - prevent error if user deletes Widget-"Parameter"
-          - format numbers with more readable units and their correct abbreviation
+          - optionally format numbers with more readable units and their correct abbreviation
+            add ",1" to the widget "Parameter" to enable.
           
   v1.0.1:
           - fix sorting issue
@@ -30,6 +27,7 @@ const cacheMinutes = 6 * 60
 //////////////////////////         Dev Settings         ////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
+let altUnits = false
 const debug = true
 config.widgetFamily = config.widgetFamily || 'large'
 
@@ -37,9 +35,14 @@ config.widgetFamily = config.widgetFamily || 'large'
 //////////////////////////         System Settings         /////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-let widgetInputRAW = args.widgetParameter;
+let widgetInputRAW = args.widgetParameter
 let selectedState
 
+if ( widgetInputRAW && widgetInputRAW.toString().indexOf(",") !== -1 ){
+  // multiple args
+  altUnits = widgetInputRAW.toString().split(",")[1] == "1" ? true : false
+  widgetInputRAW = widgetInputRAW.split(",")[0]
+}
 if (widgetInputRAW !== null && widgetInputRAW !== "" ) {
   if (/^Baden-Württemberg|Bayern|Berlin|Brandenburg|Bremen|Hamburg|Hessen|Mecklenburg-Vorpommern|Niedersachsen|Nordrhein-Westfalen|Rheinland-Pfalz|Saarland|Sachsen|Sachsen-Anhalt|Schleswig-Holstein|Thüringen$/.test(widgetInputRAW.toString().trim()) === false) {
      throw new Error('Kein gültiges Bundesland. Bitte prüfen Sie die Eingabe.') 
@@ -288,21 +291,26 @@ if (config.widgetFamily === 'large') {
     column.addSpacer(2)
     
     let total1 = (result.states[selectedState].total / 1000).toFixed(0)
-    let total1unit = " Tsd."
+    let total1unit = "t"
+    if ( altUnits ){
+      total1unit = " Tsd."
+    }
     // if total is a million or more, format as millions and not thousands
-    if ( result.states[selectedState].total > 999999 ){
+    if ( altUnits && result.states[selectedState].total > 999999 ){
       total1 =  (result.states[selectedState].total / 1000000).toLocaleString(Device.language(), {maximumFractionDigits: 1})
       total1unit = " Mio."
     }
     let vaccinated1
-    let vaccinated1unit = ""
-    if ( result.states[selectedState].vaccinated > 999999){
+    let vaccinated1unit = "t"
+    if ( altUnits && result.states[selectedState].vaccinated > 999999){
       vaccinated1 =  (result.states[selectedState].vaccinated / 1000000).toLocaleString(Device.language(), {maximumFractionDigits: 2})
       vaccinated1unit = " Mio."
     }
     else if ( result.states[selectedState].vaccinated > 999 ) {
       vaccinated1 =  (result.states[selectedState].vaccinated / 1000).toFixed(0)
-      vaccinated1unit = " Tsd."
+      if ( altUnits ){
+      	vaccinated1unit = " Tsd."
+      }
     } else {
       vaccinated1 = result.states[selectedState].vaccinated
       
@@ -338,15 +346,21 @@ if (config.widgetFamily === 'large') {
     imageStack2.addSpacer()
     
     let total2 = (result.total / 1000).toFixed(0)
-    let total2unit = " Tsd."
+    let total2unit = "t"
+    if ( altUnits ){
+      total2unit = " Tsd."
+    }
     // if total is a million or more, format as millions and not thousands
-    if ( result.total > 999999 ){
+    if ( altUnits && result.total > 999999 ){
     	total2 = (result.total / 1000000).toLocaleString(Device.language(), {maximumFractionDigits: 1})
     	total2unit = " Mio."
     }
     let vaccinated2 = (result.vaccinated / 1000).toFixed(0)
-    let vaccinated2unit = " Tsd."
-    if ( result.vaccinated > 999999 ){
+    let vaccinated2unit = "t"
+    if ( altUnits ){
+      vaccinated2unit = " Tsd."
+    }
+    if ( altUnits && result.vaccinated > 999999 ){
     	vaccinated2 = (result.vaccinated / 1000000).toLocaleString(Device.language(), {maximumFractionDigits: 2})
     	vaccinated2unit = " Mio."
     }
