@@ -3,9 +3,14 @@
 // icon-color: red; icon-glyph: syringe;
 
 /**************
-Version 1.0.1
+Version 1.0.2
 
 Changelog:
+  v1.0.2
+          - prevent error if user deletes Widget-"Parameter"
+          - optionally format numbers with more readable units and their correct abbreviation
+            add ",1" to the widget "Parameter" to enable.
+          
   v1.0.1:
           - fix sorting issue
 
@@ -22,6 +27,7 @@ const cacheMinutes = 6 * 60
 //////////////////////////         Dev Settings         ////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
+let altUnits = false
 const debug = true
 config.widgetFamily = config.widgetFamily || 'large'
 
@@ -29,10 +35,15 @@ config.widgetFamily = config.widgetFamily || 'large'
 //////////////////////////         System Settings         /////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-let widgetInputRAW = args.widgetParameter;
+let widgetInputRAW = args.widgetParameter
 let selectedState
 
-if (widgetInputRAW !== null) {
+if ( widgetInputRAW && widgetInputRAW.toString().indexOf(",") !== -1 ){
+  // multiple args
+  altUnits = widgetInputRAW.toString().split(",")[1] == "1" ? true : false
+  widgetInputRAW = widgetInputRAW.split(",")[0]
+}
+if (widgetInputRAW !== null && widgetInputRAW !== "" ) {
   if (/^Baden-Württemberg|Bayern|Berlin|Brandenburg|Bremen|Hamburg|Hessen|Mecklenburg-Vorpommern|Niedersachsen|Nordrhein-Westfalen|Rheinland-Pfalz|Saarland|Sachsen|Sachsen-Anhalt|Schleswig-Holstein|Thüringen$/.test(widgetInputRAW.toString().trim()) === false) {
      throw new Error('Kein gültiges Bundesland. Bitte prüfen Sie die Eingabe.') 
   }
@@ -145,12 +156,12 @@ function getDiagram(percentage) {
     0,
     100 - canvTextSize / 2,
     canvSize,
-    canvTextSize
+    canvTextSize * 1.4 // X-height "* 1.4" so e.g. commas aren't cut off
   )
   canvas.setTextAlignedCenter()
-  canvas.setTextColor(Color.dynamic(Color.black(), Color.white()))
+  canvas.setTextColor(Color.gray())
   canvas.setFont(Font.boldSystemFont(canvTextSize))
-  canvas.drawTextInRect(`${percentage}%`, canvTextRect)
+  canvas.drawTextInRect(`${percentage.toLocaleString(Device.language())}%`, canvTextRect)
 
   return canvas.getImage()
 }
@@ -279,19 +290,37 @@ if (config.widgetFamily === 'large') {
     imageStack1.addSpacer()
     column.addSpacer(2)
     
-    const total1 = parseInt((result.states[selectedState].total / 1000).toFixed(0)).toLocaleString('de')
+    let total1 = (result.states[selectedState].total / 1000).toFixed(0)
+    let total1unit = "t"
+    if ( altUnits ){
+      total1unit = " Tsd."
+    }
+    // if total is a million or more, format as millions and not thousands
+    if ( altUnits && result.states[selectedState].total > 999999 ){
+      total1 =  (result.states[selectedState].total / 1000000).toLocaleString(Device.language(), {maximumFractionDigits: 1})
+      total1unit = " Mio."
+    }
     let vaccinated1
-    if (result.states[selectedState].vaccinated > 999) {
-      vaccinated1 = parseInt((result.states[selectedState].vaccinated / 1000).toFixed(0)).toLocaleString('de') + 't'
+    let vaccinated1unit = "t"
+    if ( altUnits && result.states[selectedState].vaccinated > 999999){
+      vaccinated1 =  (result.states[selectedState].vaccinated / 1000000).toLocaleString(Device.language(), {maximumFractionDigits: 2})
+      vaccinated1unit = " Mio."
+    }
+    else if ( result.states[selectedState].vaccinated > 999 ) {
+      vaccinated1 =  (result.states[selectedState].vaccinated / 1000).toFixed(0)
+      if ( altUnits ){
+      	vaccinated1unit = " Tsd."
+      }
     } else {
       vaccinated1 = result.states[selectedState].vaccinated
+      
     }
     
     const numbersText1Stack = column.addStack()
     numbersText1Stack.layoutHorizontally()
     numbersText1Stack.addSpacer()
     
-    const numbersText1 = numbersText1Stack.addText(`${vaccinated1} von ${total1}t`)  
+    const numbersText1 = numbersText1Stack.addText(`${vaccinated1}${vaccinated1unit} von ${total1}${total1unit}`)  
     numbersText1.font = Font.systemFont(fontSize2)
     numbersText1Stack.addSpacer()
     
@@ -316,14 +345,31 @@ if (config.widgetFamily === 'large') {
     imageStack2.addImage(getDiagram(result.quote));
     imageStack2.addSpacer()
     
-    const total2 = parseInt((result.total / 1000).toFixed(0)).toLocaleString('de')
-    let vaccinated2 = parseInt((result.vaccinated / 1000).toFixed(0)).toLocaleString('de')
+    let total2 = (result.total / 1000).toFixed(0)
+    let total2unit = "t"
+    if ( altUnits ){
+      total2unit = " Tsd."
+    }
+    // if total is a million or more, format as millions and not thousands
+    if ( altUnits && result.total > 999999 ){
+    	total2 = (result.total / 1000000).toLocaleString(Device.language(), {maximumFractionDigits: 1})
+    	total2unit = " Mio."
+    }
+    let vaccinated2 = (result.vaccinated / 1000).toFixed(0)
+    let vaccinated2unit = "t"
+    if ( altUnits ){
+      vaccinated2unit = " Tsd."
+    }
+    if ( altUnits && result.vaccinated > 999999 ){
+    	vaccinated2 = (result.vaccinated / 1000000).toLocaleString(Device.language(), {maximumFractionDigits: 2})
+    	vaccinated2unit = " Mio."
+    }
     
     const numbersText2Stack = column2.addStack()
     numbersText2Stack.layoutHorizontally()
     numbersText2Stack.addSpacer()
     
-    const numbersText2 = numbersText2Stack.addText(`${vaccinated2}t von ${total2}t`)  
+    const numbersText2 = numbersText2Stack.addText(`${vaccinated2}${vaccinated2unit} von ${total2}${total2unit}`)  
     numbersText2.font = Font.systemFont(fontSize2)
     numbersText2Stack.addSpacer()
     
