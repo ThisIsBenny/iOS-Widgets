@@ -3,9 +3,11 @@
 // icon-color: red; icon-glyph: syringe;
 
 /**************
-Version 1.1.1
+Version 1.2.0
 
 Changelog:  
+  v1.2.0
+          - Large Widget: write percentage to the bar and show total numbers
   v1.1.1
           - Cache path changed
           - Allow force Update of the data
@@ -29,15 +31,12 @@ Changelog:
 // How many minutes should the cache be valid
 let cacheMinutes = 4 * 60
 
-// Set to true to show total numbers in the large widget
-const showTotalInLargeWidget = false
-
 ////////////////////////////////////////////////////////////////////////////////
 //////////////////////////         Dev Settings         ////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
 const debug = false
-config.widgetFamily = config.widgetFamily || 'medium'
+config.widgetFamily = config.widgetFamily || 'large'
 
 ////////////////////////////////////////////////////////////////////////////////
 //////////////////////////         System Settings         /////////////////////
@@ -91,7 +90,8 @@ function creatProgress(percentage) {
   // Background Path
   context.setFillColor(Color.gray())
   const path = new Path()
-  path.addRect(new Rect(0, 0, width, h))
+  const backgroundReact = new Rect(0, 0, width, h)
+  path.addRect(backgroundReact)
   context.addPath(path)
   context.fillPath()
   
@@ -111,6 +111,11 @@ function creatProgress(percentage) {
   path1.addRect(new Rect(0, 0, path1width, h))
   context.addPath(path1)
   context.fillPath()
+  
+  context.setTextAlignedCenter()
+  context.setTextColor(Color.white())
+  context.setFont(Font.systemFont(fontSize - 1))
+  context.drawTextInRect(`${percentage.toLocaleString(Device.language())}%`, backgroundReact)
   
   return context.getImage()
 }
@@ -266,8 +271,7 @@ if (config.widgetFamily === 'large') {
     stateText.lineLimit = 1
     
     row.addSpacer()
-    const totalText = showTotalInLargeWidget ? `${parseInt(value.vaccinated).toLocaleString(Device.language())} / ` : ''
-    const quoteText = row.addText(`${totalText}${value.quote.toString().replace('.', ',')} %`)
+    const quoteText = row.addText(`${parseInt(value.vaccinated).toLocaleString(Device.language())}`)
     quoteText.font = Font.systemFont(fontSize)
     
     row.addSpacer(4)
@@ -283,8 +287,7 @@ if (config.widgetFamily === 'large') {
   stateText.font = Font.boldSystemFont(fontSize + 1)
     
   row.addSpacer()
-  const totalText = showTotalInLargeWidget ? `${parseInt(result.vaccinated).toLocaleString(Device.language())} / ` : ''
-  const quoteText = row.addText(`${totalText}${result.quote.toString().replace('.', ',')} %`)
+  const quoteText = row.addText(`${parseInt(result.vaccinated).toLocaleString(Device.language())}`)
   quoteText.font = Font.boldSystemFont(fontSize + 1)
     
   row.addSpacer(4)
