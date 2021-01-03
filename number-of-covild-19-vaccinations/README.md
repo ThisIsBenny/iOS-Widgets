@@ -22,3 +22,6 @@ Enter the name of you state in the Widget-Parameter:
 Source of the data is the RKI: https://www.rki.de/DE/Content/InfAZ/N/Neuartiges_Coronavirus/Daten/Impfquoten-Tab.html
 
 The Excel provided by the RKI is accessible via an API for the widget: https://github.com/ThisIsBenny/rki-vaccination-data
+
+## Contributors
+- [Seiz](https://github.com/Seiz)
