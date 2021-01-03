@@ -8,6 +8,7 @@ Version 1.2.0
 Changelog:  
   v1.2.0
           - Large Widget: write percentage to the bar and show total numbers
+          - Allow to change sorting my add a field namen into sortBy variable
   v1.1.1
           - Cache path changed
           - Allow force Update of the data
@@ -30,6 +31,10 @@ Changelog:
 
 // How many minutes should the cache be valid
 let cacheMinutes = 4 * 60
+
+// enter the name of the field which shoul be used for sorting in the large widget list.
+// e.g. 'quote' or 'vaccinated'. Default: State name
+const sortBy = ''
 
 ////////////////////////////////////////////////////////////////////////////////
 //////////////////////////         Dev Settings         ////////////////////////
@@ -263,7 +268,18 @@ if (config.widgetFamily === 'large') {
   const stack = widget.addStack()
   stack.layoutVertically()
   stack.spacing = spacing
-  for (const [key, value] of Object.entries(result.states).sort((a, b) => a[0].localeCompare(b[0]))) {
+  
+  let list = Object.entries(result.states)
+  
+  list = list.sort((a, b) => {
+    if(sortBy && a[1][sortBy] !== undefined && b[1][sortBy] !== undefined) {
+      return a[1][sortBy] > b[1][sortBy]
+    } else {
+      return a[0].localeCompare(b[0])
+    }
+  })
+  
+  for (const [key, value] of list) {
     const row = stack.addStack()
     row.layoutHorizontally()
     const stateText = row.addText(key)
