@@ -8,7 +8,7 @@ Version 1.2.0
 Changelog:  
   v1.2.0
           - Large Widget: write percentage to the bar and show total numbers
-          - Allow to change sorting my add a field namen into sortBy variable
+          - Allow to change sorting my add a field namen into sortBy variable: quote, vaccinated, total
   v1.1.1
           - Cache path changed
           - Allow force Update of the data
