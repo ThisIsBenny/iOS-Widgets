@@ -269,9 +269,7 @@ if (config.widgetFamily === 'large') {
   stack.layoutVertically()
   stack.spacing = spacing
   
-  let list = Object.entries(result.states)
-  
-  list = list.sort((a, b) => {
+  const list = Object.entries(result.states).sort((a, b) => {
     if(sortBy && a[1][sortBy] !== undefined && b[1][sortBy] !== undefined) {
       return a[1][sortBy] > b[1][sortBy]
     } else {
