@@ -3,9 +3,12 @@
 // icon-color: red; icon-glyph: syringe;
 
 /**************
-Version 1.1.0
+Version 1.1.1
 
 Changelog:  
+  v1.1.1
+          - Cache path changed
+          - Allow force Update of the data
   v1.1.0
           - Cache TTL changed to 4 hours
           - Show total numbers in large widget
@@ -24,7 +27,7 @@ Changelog:
 ////////////////////////////////////////////////////////////////////////////////
 
 // How many minutes should the cache be valid
-const cacheMinutes = 4 * 60
+let cacheMinutes = 4 * 60
 
 // Set to true to show total numbers in the large widget
 const showTotalInLargeWidget = false
@@ -34,7 +37,7 @@ const showTotalInLargeWidget = false
 ////////////////////////////////////////////////////////////////////////////////
 
 const debug = false
-config.widgetFamily = config.widgetFamily || 'large'
+config.widgetFamily = config.widgetFamily || 'medium'
 
 ////////////////////////////////////////////////////////////////////////////////
 //////////////////////////         System Settings         /////////////////////
@@ -69,6 +72,10 @@ const h = 9
 const thresholds = {  
   amber: 59,
   green: 79
+}
+
+if (args.queryParameters.forceUpdate) {    
+  cacheMinutes = 0
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -181,7 +188,7 @@ var today = new Date()
 const files = FileManager.local()
 
 // Set up cache
-const cachePath = files.joinPath(files.cacheDirectory(), "widget-vaccination-" + config.widgetFamily)
+const cachePath = files.joinPath(files.cacheDirectory(), "widget-vaccination")
 const cacheExists = files.fileExists(cachePath)
 const cacheDate = cacheExists ? files.modificationDate(cachePath) : 0
 

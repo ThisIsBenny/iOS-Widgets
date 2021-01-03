@@ -9,7 +9,7 @@
 This widget displays the number of Covid 19 vaccinations. In the small and medium widet, the total number for all states is displayed by default. By entering the state name in the widget parameters, you can switch to the number for the state in the small widget. In the medium widget, by entering the state name, the numbers of the state are displayed next to those of the whole Germany.
 The large widget shows all 16 states and the total.
 
-_The widget is using a cache for 6 hours to protect the server from too much load. Since the data is updated by the RKI itself only once a day, this should be sufficient._
+_The widget is using a cache for 4 hours to protect the server from too much load. Since the data is updated by the RKI itself only once a day, this should be sufficient. If you like to perform a force update, you can use this URL: `scriptable:///run/number-of-covild-19-vaccinations?forceUpdate=true` or click [here](https://open.scriptable.app/run/number-of-covild-19-vaccinations?forceUpdate=true)_
 
 [[Download]](https://raw.githubusercontent.com/ThisIsBenny/iOS-Widgets/main/number-of-covild-19-vaccinations/number-of-covild-19-vaccinations.js)
 
