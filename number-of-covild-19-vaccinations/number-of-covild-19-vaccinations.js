@@ -3,9 +3,12 @@
 // icon-color: red; icon-glyph: syringe;
 
 /**************
-Version 1.0.2
+Version 1.1.0
 
-Changelog:
+Changelog:  
+  v1.1.0
+          - Cache TTL changed to 4 hours
+          - Show total numbers in large widget
   v1.0.2
           - prevent error if user deletes Widget-"Parameter"
           - optionally format numbers with more readable units and their correct abbreviation
@@ -21,7 +24,10 @@ Changelog:
 ////////////////////////////////////////////////////////////////////////////////
 
 // How many minutes should the cache be valid
-const cacheMinutes = 6 * 60
+const cacheMinutes = 4 * 60
+
+// Set to true to show total numbers in the large widget
+const showTotalInLargeWidget = false
 
 ////////////////////////////////////////////////////////////////////////////////
 //////////////////////////         Dev Settings         ////////////////////////
@@ -250,9 +256,11 @@ if (config.widgetFamily === 'large') {
     row.layoutHorizontally()
     const stateText = row.addText(key)
     stateText.font = Font.mediumSystemFont(fontSize)
+    stateText.lineLimit = 1
     
     row.addSpacer()
-    const quoteText = row.addText(`${value.quote} %`.replace('.', ','))
+    const totalText = showTotalInLargeWidget ? `${parseInt(value.vaccinated).toLocaleString(Device.language())} / ` : ''
+    const quoteText = row.addText(`${totalText}${value.quote.toString().replace('.', ',')} %`)
     quoteText.font = Font.systemFont(fontSize)
     
     row.addSpacer(4)
@@ -268,7 +276,8 @@ if (config.widgetFamily === 'large') {
   stateText.font = Font.boldSystemFont(fontSize + 1)
     
   row.addSpacer()
-  const quoteText = row.addText(`${result.quote} %`.replace('.', ','))
+  const totalText = showTotalInLargeWidget ? `${parseInt(result.vaccinated).toLocaleString(Device.language())} / ` : ''
+  const quoteText = row.addText(`${totalText}${result.quote.toString().replace('.', ',')} %`)
   quoteText.font = Font.boldSystemFont(fontSize + 1)
     
   row.addSpacer(4)
