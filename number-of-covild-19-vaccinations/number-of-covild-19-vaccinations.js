@@ -27,7 +27,6 @@ const cacheMinutes = 6 * 60
 //////////////////////////         Dev Settings         ////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-let altUnits = false
 const debug = true
 config.widgetFamily = config.widgetFamily || 'large'
 
@@ -36,19 +35,23 @@ config.widgetFamily = config.widgetFamily || 'large'
 ////////////////////////////////////////////////////////////////////////////////
 
 let widgetInputRAW = args.widgetParameter
-let selectedState
+let widgetInput, selectedState, altUnits
 
-if ( widgetInputRAW && widgetInputRAW.toString().indexOf(",") !== -1 ){
-  // multiple args
-  altUnits = widgetInputRAW.toString().split(",")[1] == "1" ? true : false
-  widgetInputRAW = widgetInputRAW.split(",")[0]
-}
-if (widgetInputRAW !== null && widgetInputRAW !== "" ) {
-  if (/^Baden-Württemberg|Bayern|Berlin|Brandenburg|Bremen|Hamburg|Hessen|Mecklenburg-Vorpommern|Niedersachsen|Nordrhein-Westfalen|Rheinland-Pfalz|Saarland|Sachsen|Sachsen-Anhalt|Schleswig-Holstein|Thüringen$/.test(widgetInputRAW.toString().trim()) === false) {
-     throw new Error('Kein gültiges Bundesland. Bitte prüfen Sie die Eingabe.') 
+if (widgetInputRAW !== null && widgetInputRAW !== "") {
+  widgetInput = widgetInputRAW.toString().split(",")
+  if(widgetInput.length === 1 &&  widgetInput[0].trim() === '1') {
+    altUnits = true
+    selectedState = undefined
+  } else {
+    selectedState = widgetInput[0].trim()
+    altUnits = widgetInput[1] ? true : false
   }
-  selectedState = widgetInputRAW.toString()
+  if (/^(Baden-Württemberg|Bayern|Berlin|Brandenburg|Bremen|Hamburg|Hessen|Mecklenburg-Vorpommern|Niedersachsen|Nordrhein-Westfalen|Rheinland-Pfalz|Saarland|Sachsen|Sachsen-Anhalt|Schleswig-Holstein|Thüringen)$/.test(selectedState) === false && selectedState !== '' && selectedState !== undefined) {
+    throw new Error('Kein gültiges Bundesland. Bitte prüfen Sie die Eingabe.') 
+  }
 }
+
+const maximumFractionDigits = altUnits ? 1 : 0
 
 const fontSize = 9
 const fontSize2 = 12
@@ -290,37 +293,50 @@ if (config.widgetFamily === 'large') {
     imageStack1.addSpacer()
     column.addSpacer(2)
     
-    let total1 = (result.states[selectedState].total / 1000).toFixed(0)
-    let total1unit = "t"
-    if ( altUnits ){
-      total1unit = " Tsd."
-    }
+    // Total Numbers
+    let total1 = result.states[selectedState].total / 1000
+    let total1unit = altUnits ? " Tsd." : "t"
     // if total is a million or more, format as millions and not thousands
     if ( altUnits && result.states[selectedState].total > 999999 ){
-      total1 =  (result.states[selectedState].total / 1000000).toLocaleString(Device.language(), {maximumFractionDigits: 1})
+      total1 =  result.states[selectedState].total / 1000000
       total1unit = " Mio."
     }
+    ///////////////////////////////////////////////////////////////////
+    
+    // vaccinated nunbers
     let vaccinated1
-    let vaccinated1unit = "t"
+    let vaccinated1unit = altUnits ? " Tsd." : "t"
+    
     if ( altUnits && result.states[selectedState].vaccinated > 999999){
-      vaccinated1 =  (result.states[selectedState].vaccinated / 1000000).toLocaleString(Device.language(), {maximumFractionDigits: 2})
+      vaccinated1 =  result.states[selectedState].vaccinated / 1000000
       vaccinated1unit = " Mio."
     }
     else if ( result.states[selectedState].vaccinated > 999 ) {
-      vaccinated1 =  (result.states[selectedState].vaccinated / 1000).toFixed(0)
-      if ( altUnits ){
-      	vaccinated1unit = " Tsd."
-      }
+      vaccinated1 =  result.states[selectedState].vaccinated / 1000
     } else {
       vaccinated1 = result.states[selectedState].vaccinated
-      
+      vaccinated1unit = ''
     }
+    ///////////////////////////////////////////////////////////////////
+    if (maximumFractionDigits === 0) {
+      total1 = parseInt(total1)
+      vaccinated1 = parseInt(vaccinated1)
+    }
+    
     
     const numbersText1Stack = column.addStack()
     numbersText1Stack.layoutHorizontally()
     numbersText1Stack.addSpacer()
     
-    const numbersText1 = numbersText1Stack.addText(`${vaccinated1}${vaccinated1unit} von ${total1}${total1unit}`)  
+    
+    const textString1 = `${
+      parseFloat(vaccinated1)
+      .toLocaleString(Device.language(), {maximumFractionDigits: maximumFractionDigits})
+     }${vaccinated1unit} von ${
+      parseFloat(total1)
+      .toLocaleString(Device.language(), {maximumFractionDigits: maximumFractionDigits})
+     }${total1unit}`
+    const numbersText1 = numbersText1Stack.addText(textString1)  
     numbersText1.font = Font.systemFont(fontSize2)
     numbersText1Stack.addSpacer()
     
@@ -345,31 +361,44 @@ if (config.widgetFamily === 'large') {
     imageStack2.addImage(getDiagram(result.quote));
     imageStack2.addSpacer()
     
+    
+    // Total numbers
     let total2 = (result.total / 1000).toFixed(0)
-    let total2unit = "t"
-    if ( altUnits ){
-      total2unit = " Tsd."
-    }
+    let total2unit = altUnits ? " Tsd." : "t"
     // if total is a million or more, format as millions and not thousands
     if ( altUnits && result.total > 999999 ){
-    	total2 = (result.total / 1000000).toLocaleString(Device.language(), {maximumFractionDigits: 1})
+    	total2 = result.total / 1000000
     	total2unit = " Mio."
     }
-    let vaccinated2 = (result.vaccinated / 1000).toFixed(0)
-    let vaccinated2unit = "t"
-    if ( altUnits ){
-      vaccinated2unit = " Tsd."
-    }
+    ///////////////////////////////////////////////////////////////////
+    
+    // vaccinated numbers
+    let vaccinated2 = result.vaccinated / 1000
+    let vaccinated2unit = altUnits ? " Tsd." : "t"
     if ( altUnits && result.vaccinated > 999999 ){
-    	vaccinated2 = (result.vaccinated / 1000000).toLocaleString(Device.language(), {maximumFractionDigits: 2})
+    	vaccinated2 = result.vaccinated / 1000000
     	vaccinated2unit = " Mio."
+    }
+    ///////////////////////////////////////////////////////////////////
+    if (maximumFractionDigits === 0) {
+      total2 = parseInt(total2)
+      vaccinated2 = parseInt(vaccinated2)
     }
     
     const numbersText2Stack = column2.addStack()
     numbersText2Stack.layoutHorizontally()
     numbersText2Stack.addSpacer()
     
-    const numbersText2 = numbersText2Stack.addText(`${vaccinated2}${vaccinated2unit} von ${total2}${total2unit}`)  
+    
+    const textString2 = `${
+      parseFloat(vaccinated2)
+      .toLocaleString(Device.language(), {maximumFractionDigits: maximumFractionDigits})
+     }${vaccinated2unit} von ${
+      parseFloat(total2)
+      .toLocaleString(Device.language(), {maximumFractionDigits: maximumFractionDigits})
+     }${total2unit}`
+    
+    const numbersText2 = numbersText2Stack.addText(textString2)  
     numbersText2.font = Font.systemFont(fontSize2)
     numbersText2Stack.addSpacer()
     
