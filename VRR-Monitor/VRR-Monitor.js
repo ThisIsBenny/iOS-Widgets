@@ -3,9 +3,11 @@
 // icon-color: deep-green; icon-glyph: bus-alt;
 
 /**************
-Version 1.2.2
+Version 1.2.3
 
 Changelog:
+  v1.2.3:
+          - Fix issue with error response, due to new mandatory field
   v1.2.2:
           - Fix issue with empty response
   v1.2.1:
@@ -87,6 +89,7 @@ async function fetchStationdata(Id, linesFilter, distance, transportCodes) {
   req.addParameterToMultipart('table[departure][platformVisibility]', '1')
   req.addParameterToMultipart('table[departure][transport]', transportCodes.join(','))
   req.addParameterToMultipart('table[departure][useAllLines]', '0')
+  req.addParameterToMultipart('table[departure][optimizedForStation]', '0')
   req.addParameterToMultipart('table[departure][linesFilter]', linesFilter)
   req.addParameterToMultipart('table[departure][rowCount]', '7')
   req.addParameterToMultipart('table[departure][distance]', distance)
