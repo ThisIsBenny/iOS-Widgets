@@ -3,9 +3,12 @@
 // icon-color: red; icon-glyph: broadcast-tower;
 
 /**************
-Version 2.2.0
+Version 2.2.1
 
 Changelog:   
+  v2.2.1:
+          - fix empty string mapping issue
+          - fix prepaid progressbar issue
   v2.2.0:
           - description mapping enhanced
   v2.1.0:
@@ -571,6 +574,9 @@ async function getUsage(user, pass, number) {
     if (endDate == null) {
       endDate = res['serviceUsageVBO']['billDetails']['billCycleEndDate'] || null
     }
+    if (billDate === undefined && usage[0].startDate !== undefined) {
+      billDate = usage[0].startDate
+    }
     
     return {
       billDate,
@@ -695,7 +701,7 @@ if (data !== undefined) {
     // Total Values
     let totalValues;
     if (v.unitOfMeasure !== 'MB') {
-      totalValues = `${(showRemainingContingent ? v.remaining : v.used)} ${descriptionMapping[v.unitOfMeasure] ? descriptionMapping[v.unitOfMeasure] : v.unitOfMeasure} von ${v.total} ${descriptionMapping[v.unitOfMeasure] ? descriptionMapping[v.unitOfMeasure] : v.unitOfMeasure}`
+      totalValues = `${(showRemainingContingent ? v.remaining : v.used)} ${descriptionMapping[v.unitOfMeasure] !== undefined ? descriptionMapping[v.unitOfMeasure] : v.unitOfMeasure} von ${v.total} ${descriptionMapping[v.unitOfMeasure] !== undefined ? descriptionMapping[v.unitOfMeasure] : v.unitOfMeasure}`
     } else if (parseInt(v.total) < 1000) {
       totalValues = `${(showRemainingContingent ? v.remaining : v.used)} MB von ${v.total} MB`
     } else {
@@ -717,7 +723,7 @@ if (data !== undefined) {
     nameStack = column.addStack()
     nameStack.layoutHorizontally()
     nameStack.addSpacer()
-    let diagramName = nameStack.addText(descriptionMapping[v.name] ? descriptionMapping[v.name] : v.name)
+    let diagramName = nameStack.addText(descriptionMapping[v.name] !== undefined ? descriptionMapping[v.name] : v.name)
     diagramName.font = Font.systemFont(fontSizeData - 1)
     diagramName.minimumScaleFactor = minimumScaleFactor
     diagramName.lineLimit = 1
