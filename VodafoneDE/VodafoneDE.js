@@ -3,9 +3,11 @@
 // icon-color: red; icon-glyph: broadcast-tower;
 
 /**************
-Version 2.2.1
+Version 2.2.2
 
-Changelog:   
+Changelog:  
+  v2.2.1:
+          - fix const variable issue
   v2.2.1:
           - fix empty string mapping issue
           - fix prepaid progressbar issue
@@ -527,7 +529,7 @@ async function getUsage(user, pass, number) {
       console.log(JSON.stringify(res['serviceUsageVBO']['usageAccounts'][0], null, 2))
     }
     const marketCode = res['serviceUsageVBO']['usageAccounts'][0]['details']['marketCode']
-    const billDate = res['serviceUsageVBO']['usageAccounts'][0]['details']['billDate']
+    let billDate = res['serviceUsageVBO']['usageAccounts'][0]['details']['billDate']
     const amount = res['serviceUsageVBO']['usageAccounts'][0]['details']['amount']
     
     let usage = []
