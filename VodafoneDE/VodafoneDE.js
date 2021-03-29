@@ -6,7 +6,7 @@
 Version 2.2.2
 
 Changelog:  
-  v2.2.1:
+  v2.2.2:
           - fix const variable issue
   v2.2.1:
           - fix empty string mapping issue
