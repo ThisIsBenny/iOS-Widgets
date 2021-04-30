@@ -1,7 +1,7 @@
 // Variables used by Scriptable.
 // These must be at the very top of the file. Do not edit.
 // icon-color: brown; icon-glyph: magic;
-// Version 1.1.3
+// Version 1.1.4
 
 // You can use this shortcut to get the needed Token via Safari Share Menu while you are on Ecosia.org: https://www.icloud.com/shortcuts/ab84483a898d42428b1a9be981c37854
 // It is important, that you are already logged in with the Safari Browser where you execute Shortcut
@@ -34,10 +34,10 @@ if (Device.isUsingDarkAppearance()) {
 ////////////////////////////////////////////////////////////////////////////////
 async function getTreeCounter(token) {
   try {
-    const url = "https://api.ecosia.org/v1/accounts/personalcounter?token=" + token
+    const url = "https://api.ecosia.org/v1/accounts/v2/personal_counter?token=" + token
     let req = new Request(url)
     let res = await req.loadJSON()
-    return parseInt(res.counterValue)
+    return parseInt(res.personal_counter)
   } catch (error) {
     throw new Error('An error occurred when loading data from the Ecosia API. Please check the entered token.')
   }
