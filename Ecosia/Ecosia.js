@@ -34,10 +34,10 @@ if (Device.isUsingDarkAppearance()) {
 ////////////////////////////////////////////////////////////////////////////////
 async function getTreeCounter(token) {
   try {
-    const url = "https://api.ecosia.org/v1/accounts/personalcounter?token=" + token
+    const url = "https://api.ecosia.org/v1/accounts/v2/personal_counter?token=" + token
     let req = new Request(url)
     let res = await req.loadJSON()
-    return parseInt(res.counterValue)
+    return parseInt(res.personal_counter)
   } catch (error) {
     throw new Error('An error occurred when loading data from the Ecosia API. Please check the entered token.')
   }
