@@ -1,7 +1,7 @@
 // Variables used by Scriptable.
 // These must be at the very top of the file. Do not edit.
 // icon-color: deep-blue; icon-glyph: shopping-cart;
-// Version 1.1.5
+// Version 1.1.7
 
 const cacheMinutes = 60 * 2
 const today = new Date()
@@ -179,7 +179,7 @@ const getOrderdetails = async (ordernumber, email) => {
     return v.name + "=" + v.value
   })
 
-  const xAosStkMatch = resSession.match(/"x-aos-stk":"([\w]+)"/)
+  const xAosStkMatch = resSession.match(/"x-aos-stk":"([\w-_]+)"/)
   if (!xAosStkMatch) {
     throw new Error('Needed x-aos-stk token not found')
   }
