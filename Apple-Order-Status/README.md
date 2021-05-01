@@ -6,7 +6,7 @@ This widget shows you the status of your Apple Store order. It shows the remaini
 [[Download]](https://raw.githubusercontent.com/ThisIsBenny/iOS-Widgets/main/Apple-Order-Status/Apple-Store-Order-Status.js)
 
 ## Setup
-Set the Order-Number and your E-Mail Adress, separated by `;` to the Widget Parameter.
+Set the Order-Number and your E-Mail Adress, separated by `;` to the Widget Parameter (Third field in the widget settings).
 
 Example: `W1234567;jon@snow.com`
 
