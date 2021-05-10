@@ -8,6 +8,8 @@ const today = new Date()
 let width;
 const h = 5
 const debug = false
+const backgroundColor = Color.dynamic(Color.white(), new Color('#222', 1.0))
+const textColor = Color.dynamic(Color.black(), Color.white())
 
 if (config.widgetFamily === 'small') {
   width = 200
@@ -287,12 +289,12 @@ if (!orderDetails) {
   const remainingDays = getTimeRemaining(deliveryDate).days + 1;
 
   widget.setPadding(10, 10, 10, 10)
-  widget.backgroundColor = Color.white()
+  widget.backgroundColor = backgroundColor
   widget.url = orderDetails.widgetURL
 
   const headlineText = widget.addText(' Order Status')
   headlineText.font = Font.regularSystemFont(14)
-  headlineText.textColor = Color.black()
+  headlineText.textColor = textColor
   headlineText.centerAlignText()
 
   widget.addSpacer(5)
@@ -311,7 +313,7 @@ if (!orderDetails) {
 
   const itemNameText = rightProductStack.addText(itemName)
   itemNameText.font = Font.regularSystemFont(10)
-  itemNameText.textColor = Color.black()
+  itemNameText.textColor = textColor
   itemNameText.minimumScaleFactor = 0.5
   itemNameText.lineLimit = 2
 
@@ -322,7 +324,7 @@ if (!orderDetails) {
 
     const remainingDayText = widget.addText(remainingDays + ' ' + postFix)
     remainingDayText.font = Font.regularSystemFont(26)
-    remainingDayText.textColor = Color.black()
+    remainingDayText.textColor = textColor
     remainingDayText.centerAlignText()
     remainingDayText.minimumScaleFactor = 0.5
 
@@ -344,7 +346,7 @@ if (!orderDetails) {
         console.error(e)
         statusText = progressStack.addText(itemStatusTracker['d']['currentStatus'])
       }
-      statusText.textColor = Color.black()
+      statusText.textColor = textColor
       statusText.font = Font.regularSystemFont(8)
     }
 
@@ -354,14 +356,14 @@ if (!orderDetails) {
     footerStack.layoutHorizontally()
 
     const orderDateText = footerStack.addText(orderDate.toLocaleDateString())
-    orderDateText.textColor = Color.black()
+    orderDateText.textColor = textColor
     orderDateText.font = Font.regularSystemFont(8)
     orderDateText.lineLimit = 1
 
     footerStack.addSpacer()
 
     const deliveryDateText = footerStack.addText(deliveryDate.toLocaleDateString())
-    deliveryDateText.textColor = Color.black()
+    deliveryDateText.textColor = textColor
     deliveryDateText.font = Font.regularSystemFont(8)
     deliveryDateText.lineLimit = 1
   } else {
@@ -403,7 +405,7 @@ if (!orderDetails) {
 
     const fallbackText = fallbackTextStack.addText(text)
     fallbackText.font = Font.regularSystemFont(14)
-    fallbackText.textColor = Color.black()
+    fallbackText.textColor = textColor
     fallbackText.minimumScaleFactor = 0.5
     fallbackText.lineLimit = 1
 
