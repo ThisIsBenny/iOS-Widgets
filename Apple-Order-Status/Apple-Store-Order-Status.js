@@ -1,7 +1,7 @@
 // Variables used by Scriptable.
 // These must be at the very top of the file. Do not edit.
 // icon-color: deep-blue; icon-glyph: shopping-cart;
-// Version 1.1.7
+// Version 1.2.0
 
 /// Used by enums
 const enumValue = (name) => Object.freeze({toString: () => name})
