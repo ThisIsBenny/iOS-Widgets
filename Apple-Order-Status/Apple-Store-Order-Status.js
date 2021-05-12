@@ -1,24 +1,150 @@
 // Variables used by Scriptable.
 // These must be at the very top of the file. Do not edit.
 // icon-color: deep-blue; icon-glyph: shopping-cart;
-// Version 1.1.7
+// Version 1.2.0
+
+/// Used by enums
+const enumValue = (name) => Object.freeze({toString: () => name})
+
+/// Used by DisplayMode
+
+const lightBackgroundColor = Color.white()
+const darkBackgroundColor = new Color('#222', 1.0)
+const autoBackgroundColor = Color.dynamic(lightBackgroundColor, darkBackgroundColor)
+
+const lightTextColor = Color.black()
+const darkTextColor = Color.white()
+const autoTextColor = Color.dynamic(lightTextColor, darkTextColor)
+
+const lightBackgroundProgressColor = new Color('#D2D2D7', 1.0)
+const darkBackgroundProgressColor = new Color('#707070', 1.0)
+const autoBackgroundProgressColor = Color.dynamic(lightBackgroundProgressColor, darkBackgroundProgressColor)
+
+const lightFillProgressColor = new Color('#008009', 1.0)
+const darkFillProgressColor = new Color('#00A00D', 1.0)
+const autoFillProgressColor = Color.dynamic(lightFillProgressColor, darkFillProgressColor)
+
+/**
+ * Enum for display mode.
+ * @readonly
+ * @enum {{name: string, backgroundColor: Color, textColor: Color}}
+ */
+const DisplayMode = Object.freeze({
+  LIGHT: {
+    name: "light",
+    backgroundColor: lightBackgroundColor,
+    textColor: lightTextColor,
+    backgroundProgressColor: lightBackgroundProgressColor,
+    fillProgressColor: lightFillProgressColor,
+    toString: () => name
+  },
+  DARK: {
+    name: "dark",
+    backgroundColor: darkBackgroundColor,
+    textColor: darkTextColor,
+    backgroundProgressColor: darkBackgroundProgressColor,
+    fillProgressColor: darkFillProgressColor,
+    toString: () => name
+  },
+  AUTO: {
+    name: "auto",
+    backgroundColor: autoBackgroundColor,
+    textColor: autoTextColor,
+    backgroundProgressColor: autoBackgroundProgressColor,
+    fillProgressColor: autoFillProgressColor,
+    toString: () => name
+  }
+})
+
+/**
+ * Enum for widget family.
+ * @readonly
+ * @enum {Symbol}
+ */
+const WidgetFamily = Object.freeze({
+  SMALL: enumValue("small"),
+  MEDIUM: enumValue("medium"),
+  LARGE: enumValue("large")
+})
+
+
+//////////////////// - EDIT ME - ///////////////////////////
+
+/// Display mode
+///
+/// - DisplayMode.LIGHT: Light mode
+/// - DisplayMode.DARK: Dark mode
+/// - DisplayMode.AUTO: Follow system settings
+
+const displayMode = DisplayMode.LIGHT
+
+/// Debug mode: on / off
+const debug = false
+
+/// Debug input, following widget format:
+/// - "<order-number>;<email>"
+/// - "<order-number>;<email>;<item-number>"
+///
+/// ie. const debugInput = "W111111111;tim@apple.com;5"
+const debugInput = null
+
+/// Debug widget size (LARGE, MEDIUM or SMALL)
+const debugWidgetFamily = WidgetFamily.MEDIUM
+
+////////////////////////////////////////////////////////////
+
 
 const cacheMinutes = 60 * 2
 const today = new Date()
 let width;
+let widgetFamily;
 const h = 5
-const debug = false
+const backgroundColor = displayMode.backgroundColor
+const textColor = displayMode.textColor
+const backgroundProgressColor = displayMode.backgroundProgressColor
+const fillProgressColor = displayMode.fillProgressColor
 
-if (config.widgetFamily === 'small') {
-  width = 200
+if (debug && debugWidgetFamily !== null) {
+  widgetFamily = debugWidgetFamily
 } else {
-  width = 400
+  switch (config.widgetFamily) {
+    case 'small':
+      widgetFamily = WidgetFamily.SMALL
+      width = 200
+      break
+    case 'medium':
+      widgetFamily = WidgetFamily.MEDIUM
+      width = 400
+      break
+    case 'large':
+      widgetFamily = WidgetFamily.LARGE
+      width = 400
+      break
+  }
 }
+
+switch (widgetFamily) {
+  case WidgetFamily.SMALL:
+    width = 200
+    break  
+  case WidgetFamily.MEDIUM:  
+    width = 400
+    break  
+  case WidgetFamily.LARGE:
+    width = 400
+    break
+}
+
 ////////////////////////////////////////////////////////////
 let widgetInputRAW = args.widgetParameter;
 let widgetInput;
-if (widgetInputRAW !== null) {
-  widgetInput = widgetInputRAW.toString().trim().split(';').map(v => v.trim())
+if (widgetInputRAW !== null || (debug && debugInput !== null)) {
+  
+  if (widgetInputRAW !== null) {
+    widgetInput = widgetInputRAW.toString().trim().split(';').map(v => v.trim())
+  } else {
+    widgetInput = debugInput.trim().split(';').map(v => v.trim())
+  }
   
   if (!/^[A-Za-z][0-9]+/.test(widgetInput[0])) {
      throw new Error('Invalid ordernumber format: "' + widgetInput[0] + '"') 
@@ -141,12 +267,12 @@ function creatProgress(total, havegone) {
   context.size = new Size(width, h)
   context.opaque = false
   context.respectScreenScale = true
-  context.setFillColor(new Color('#d2d2d7'))
+  context.setFillColor(backgroundProgressColor)
   const path = new Path()
   path.addRoundedRect(new Rect(0, 0, width, h), 3, 2)
   context.addPath(path)
   context.fillPath()
-  context.setFillColor(new Color('#008009'))
+  context.setFillColor(fillProgressColor)
   const path1 = new Path()
   const path1width = (width * havegone / total > width) ? width : width * havegone / total
   path1.addRoundedRect(new Rect(0, 0, path1width, h), 3, 2)
@@ -287,22 +413,30 @@ if (!orderDetails) {
   const remainingDays = getTimeRemaining(deliveryDate).days + 1;
 
   widget.setPadding(10, 10, 10, 10)
-  widget.backgroundColor = Color.white()
+  widget.backgroundColor = backgroundColor
   widget.url = orderDetails.widgetURL
 
   const headlineText = widget.addText(' Order Status')
   headlineText.font = Font.regularSystemFont(14)
-  headlineText.textColor = Color.black()
+  headlineText.textColor = textColor
   headlineText.centerAlignText()
 
   widget.addSpacer(5)
 
   const productStack = widget.addStack()
   productStack.layoutHorizontally()
+  
+  const imageStack = productStack.addStack()
+  
+  imageStack.backgroundColor = Color.white()
+  imageStack.size = new Size(37, 37)
+  imageStack.setPadding(1, 1, 1, 1)
+  imageStack.cornerRadius = 2
 
-  itemImageElement = productStack.addImage(itemImage)
+  itemImageElement = imageStack.addImage(itemImage)
   itemImageElement.imageSize = new Size(35, 35)
-
+  
+  
   productStack.addSpacer(20)
 
   rightProductStack = productStack.addStack()
@@ -311,9 +445,14 @@ if (!orderDetails) {
 
   const itemNameText = rightProductStack.addText(itemName)
   itemNameText.font = Font.regularSystemFont(10)
-  itemNameText.textColor = Color.black()
+  itemNameText.textColor = textColor
   itemNameText.minimumScaleFactor = 0.5
-  itemNameText.lineLimit = 2
+  
+  if (widgetFamily === WidgetFamily.SMALL) {
+    itemNameText.lineLimit = 4
+  } else {
+    itemNameText.lineLimit = 2
+  }
 
   widget.addSpacer()
   if (deliveryDate !== null && itemStatusTracker['d']['currentStatus'] !== 'DELIVERED') {
@@ -322,7 +461,7 @@ if (!orderDetails) {
 
     const remainingDayText = widget.addText(remainingDays + ' ' + postFix)
     remainingDayText.font = Font.regularSystemFont(26)
-    remainingDayText.textColor = Color.black()
+    remainingDayText.textColor = textColor
     remainingDayText.centerAlignText()
     remainingDayText.minimumScaleFactor = 0.5
 
@@ -344,7 +483,7 @@ if (!orderDetails) {
         console.error(e)
         statusText = progressStack.addText(itemStatusTracker['d']['currentStatus'])
       }
-      statusText.textColor = Color.black()
+      statusText.textColor = textColor
       statusText.font = Font.regularSystemFont(8)
     }
 
@@ -354,14 +493,14 @@ if (!orderDetails) {
     footerStack.layoutHorizontally()
 
     const orderDateText = footerStack.addText(orderDate.toLocaleDateString())
-    orderDateText.textColor = Color.black()
+    orderDateText.textColor = textColor
     orderDateText.font = Font.regularSystemFont(8)
     orderDateText.lineLimit = 1
 
     footerStack.addSpacer()
 
     const deliveryDateText = footerStack.addText(deliveryDate.toLocaleDateString())
-    deliveryDateText.textColor = Color.black()
+    deliveryDateText.textColor = textColor
     deliveryDateText.font = Font.regularSystemFont(8)
     deliveryDateText.lineLimit = 1
   } else {
@@ -403,7 +542,7 @@ if (!orderDetails) {
 
     const fallbackText = fallbackTextStack.addText(text)
     fallbackText.font = Font.regularSystemFont(14)
-    fallbackText.textColor = Color.black()
+    fallbackText.textColor = textColor
     fallbackText.minimumScaleFactor = 0.5
     fallbackText.lineLimit = 1
 
@@ -416,7 +555,18 @@ if (!orderDetails) {
 }
 
 if (!config.runsInWidget) {
-  await widget.presentSmall()
+  // Present in debug mode
+  switch (widgetFamily) {
+    case WidgetFamily.SMALL:
+      await widget.presentSmall()
+      break
+     case WidgetFamily.MEDIUM:
+      await widget.presentMedium()
+      break
+     case WidgetFamily.LARGE:
+      await widget.presentLarge()
+      break
+  }
 } else {
   // Tell the system to show the widget.
   Script.setWidget(widget)
