@@ -18,10 +18,6 @@ Enter the name of you state in the Widget-Parameter:
 
 ![Setup](https://raw.githubusercontent.com/ThisIsBenny/iOS-Widgets/main/number-of-covild-19-vaccinations/setup.jpeg)
 
-If you like to show the total values in million instead of thousand, you can add an additional 1 to the Widget-Parameter, which has to be separated by a comma: `Nordrhein-Westfalen,1`. If you do not want to specify a state, you only have to enter a `1`
-
-![Setup](https://raw.githubusercontent.com/ThisIsBenny/iOS-Widgets/main/number-of-covild-19-vaccinations/alternative.jpeg)
-
 ## Notice
 Source of the data is the RKI: https://www.rki.de/DE/Content/InfAZ/N/Neuartiges_Coronavirus/Daten/Impfquoten-Tab.html
 
