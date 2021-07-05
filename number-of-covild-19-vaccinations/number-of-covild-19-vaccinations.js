@@ -3,9 +3,11 @@
 // icon-color: red; icon-glyph: syringe;
 /**************
 
-Version 2.0.0
+Version 2.0.1
 
 Changelog:  
+  v2.0.1
+          - Use different colors for the circules
   v2.0.0
           - Show "at least one" and "fully" vaccination in Medium and small widget
           - Upgrade to v2 of the API
@@ -136,21 +138,12 @@ function creatProgress(percentage) {
 }
 
 function getDiagram(percentage, percentage2) {
-  function drawArc(ctr, rad, w, deg) {
+  function drawArc(ctr, rad, w, deg, color) {
     bgx = ctr.x - rad
     bgy = ctr.y - rad
     bgd = 2 * rad
     bgr = new Rect(bgx, bgy, bgd, bgd)
   
-  
-    let color
-    if (percentage > thresholds.green) {
-      color = Color.green()
-    } else if (percentage > thresholds.amber) {
-      color = Color.orange()
-    } else {
-      color = Color.red()
-    }
     canvas.setFillColor(color)
     canvas.setStrokeColor(Color.gray())
     canvas.setLineWidth(w)
@@ -180,18 +173,35 @@ function getDiagram(percentage, percentage2) {
   canvas.opaque = false  
   canvas.size = new Size(canvSize, canvSize)
   canvas.respectScreenScale = true
-    
+  
+  let color, color2
+  if (percentage > thresholds.green) {
+    color = Color.green()
+  } else if (percentage > thresholds.amber) {
+    color = Color.orange()
+  } else {
+    color = Color.red()
+  }
+  if (percentage2 > thresholds.green) {
+    color2 = Color.green()
+  } else if (percentage > thresholds.amber) {
+    color2 = Color.orange()
+  } else {
+    color2 = Color.red()
+  }
   drawArc(
     new Point(canvSize / 2, canvSize / 2),
     canvRadius,
     canvWidth,
-    Math.floor(percentage * 3.6)
+    Math.floor(percentage * 3.6),
+    color
   )
   drawArc(
     new Point(canvSize / 2, canvSize / 2),
     canvRadius - 15,
     canvWidth,
-    Math.floor(percentage2 * 3.6)
+    Math.floor(percentage2 * 3.6),
+    color2
   )
 
   const canvTextRect = new Rect(
