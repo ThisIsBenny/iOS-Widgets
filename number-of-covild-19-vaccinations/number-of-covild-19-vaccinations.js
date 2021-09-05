@@ -184,7 +184,7 @@ function getDiagram(percentage, percentage2) {
   }
   if (percentage2 > thresholds.green) {
     color2 = Color.green()
-  } else if (percentage > thresholds.amber) {
+  } else if (percentage2 > thresholds.amber) {
     color2 = Color.orange()
   } else {
     color2 = Color.red()
