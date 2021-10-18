@@ -1,7 +1,7 @@
 // Variables used by Scriptable.
 // These must be at the very top of the file. Do not edit.
 // icon-color: deep-blue; icon-glyph: shopping-cart;
-// Version 1.2.0
+// Version 1.2.1
 
 /// Used by enums
 const enumValue = (name) => Object.freeze({toString: () => name})
@@ -239,6 +239,7 @@ const parseShortDate = (stringDate, orderDate) => {
     'Aug': 7,
     'Sep': 8,
     'Oct': 9,
+    'Okt': 9,
     'Nov': 10,
     'Dec': 11
   }
@@ -407,6 +408,7 @@ if (!orderDetails) {
   } catch (e) {
     console.error(e)
   }
+
   const itemName = itemDetails['d']['productName']
   const itemImageUrl = itemDetails['d']['imageData']['src'].replace(/wid=[\d]+/, 'wid=200').replace(/hei=[\d]+/, 'hei=200')
   const itemImage = await(new Request(itemImageUrl)).loadImage()
@@ -422,11 +424,13 @@ if (!orderDetails) {
   headlineText.centerAlignText()
 
   widget.addSpacer(5)
+  
 
   const productStack = widget.addStack()
   productStack.layoutHorizontally()
   
   const imageStack = productStack.addStack()
+
   
   imageStack.backgroundColor = Color.white()
   imageStack.size = new Size(37, 37)
