@@ -241,7 +241,8 @@ const parseShortDate = (stringDate, orderDate) => {
     'Oct': 9,
     'Okt': 9,
     'Nov': 10,
-    'Dec': 11
+    'Dec': 11,
+    'Dez': 11
   }
   let m
   m = stringDate.match(/([\d]{1,2}) ([\w]{3})/)
