@@ -1,7 +1,7 @@
 // Variables used by Scriptable.
 // These must be at the very top of the file. Do not edit.
 // icon-color: orange; icon-glyph: hourglass-half;
-// Version 1.2.1
+// Version 1.2.2
 
 let dateForCountdown = ''
 let icon = ''
@@ -34,19 +34,9 @@ const localeText = {
   it: ['giorno', 'giorni']
 }
 ////////////////////////////////////////////////////////////////////////////////
-let backColor; //Widget background color
-let backColor2; //Widget background color
-let textColor; //Widget text color
-
-if (Device.isUsingDarkAppearance()) {
-  backColor = '111111';
-  backColor2 = '222222';
-  textColor = 'EDEDED';
-} else {
-  backColor = 'A04000';
-  backColor2 = 'DC7633';
-  textColor = 'EDEDED';
-}
+let backColor = Color.dynamic(new Color('A04000'), new Color('111111'))
+let backColor2 = Color.dynamic(new Color('DC7633'), new Color('222222'))
+let textColor = new Color('EDEDED')
 
 function getTimeRemaining(endtime){
   const total = Date.parse(endtime) - Date.parse(new Date());
@@ -73,15 +63,15 @@ widget.setPadding(10, 10, 10, 10)
 const gradient = new LinearGradient()
 gradient.locations = [0, 1]
 gradient.colors = [
-  new Color(backColor),
-  new Color(backColor2)
+  backColor,
+  backColor2
 ]
 widget.backgroundGradient = gradient
 
 
 let provider = widget.addText(icon + " Countdown")
 provider.font = Font.mediumSystemFont(12)
-provider.textColor = new Color(textColor)
+provider.textColor = textColor
 
 widget.addSpacer()
 
@@ -92,7 +82,7 @@ textStack.centerAlignContent()
 
 let daysText = textStack.addText(`${remainingDays}`)
 daysText.font = Font.regularSystemFont(50)
-daysText.textColor = new Color(textColor);
+daysText.textColor = textColor;
 daysText.minimumScaleFactor = 0.5;
 
 textStack.addSpacer(5)
@@ -107,7 +97,7 @@ if (remainingDays === 1) {
   postfixText = textStack.addText(t[1])
 }
 postfixText.font = Font.regularSystemFont(20)
-postfixText.textColor = new Color(textColor);
+postfixText.textColor = textColor;
 
 textStack.addSpacer()
 
@@ -116,7 +106,7 @@ widget.addSpacer()
 if(showDate) {
   const dateText = widget.addDate(new Date(dateForCountdown))
   dateText.font = Font.lightSystemFont(10)
-  dateText.textColor = new Color(textColor);
+  dateText.textColor = textColor;
   dateText.centerAlignText()
   widget.addSpacer(5) 
 }
