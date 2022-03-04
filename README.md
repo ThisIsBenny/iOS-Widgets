@@ -11,3 +11,5 @@ All widgets can be easily installed via [Widget Hub](https://widget-hub.app/):
 You will find the List of Widgets where I'm working on here: [Roadmap](https://github.com/ThisIsBenny/iOS-Widgets/projects/1)
 
 If you have widget ideas, please feel free and share those ideas with me via GitHub Issue. But there is no guarantee that I will realize the widget idea.
+
+[!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/yellow_img.png)](https://www.buymeacoffee.com/hierlDev)
