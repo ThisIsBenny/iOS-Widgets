@@ -17,6 +17,7 @@ if (widgetInputRAW !== null) {
   }
   dateForCountdown = widgetInput[0].trim()
   icon = widgetInput[1] || '⏳';
+  text = widgetInput[3]; // new
   if (widgetInput[2] && widgetInput[2].toLowerCase() === 'true') {
     showDate = true
   }
@@ -69,7 +70,7 @@ gradient.colors = [
 widget.backgroundGradient = gradient
 
 
-let provider = widget.addText(icon + " Countdown")
+let provider = widget.addText(icon + " " + text) // variant
 provider.font = Font.mediumSystemFont(12)
 provider.textColor = textColor
 
