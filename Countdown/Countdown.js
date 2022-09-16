@@ -55,7 +55,7 @@ function getTimeRemaining(endtime){
   };
 }
 let remainingDays = getTimeRemaining(dateForCountdown).days + 1;
-let remainingWeeks = Math.round(remainingDays /7);
+let remainingWeeks = Math.round(remainingDays*10 /7)/10;
 
 // Create Widget
 let widget = new ListWidget();
