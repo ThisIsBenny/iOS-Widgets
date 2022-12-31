@@ -3,9 +3,11 @@
 // icon-color: red; icon-glyph: broadcast-tower;
 
 /**************
-Version 2.2.2
+Version 2.3.0
 
 Changelog:  
+  v2.3.0:
+          - Support for lockscreen widgets added
   v2.2.2:
           - fix const variable issue
   v2.2.1:
@@ -102,8 +104,10 @@ let widgetInput = null;
 let user, pass, number, json, cacheUUID
 if (widgetInputRAW !== null) {
   const parameter = widgetInputRAW.toString().split("|")
+  
   if(parameter.length > 1) {
     [user, pass, number, json] = parameter;
+    
 
     if (!user || !pass || !number) {
       throw new Error("Invalid Widget parameter. Expected format: username|password|phonenumber")
@@ -444,6 +448,20 @@ function getTimeRemaining(endtime) {
   }
 }
 
+function getTotalValues(v) {
+  let totalValues;
+    if (v.unitOfMeasure !== 'MB') {
+      totalValues = `${(showRemainingContingent ? v.remaining : v.used)} ${descriptionMapping[v.unitOfMeasure] !== undefined ? descriptionMapping[v.unitOfMeasure] : v.unitOfMeasure} von ${v.total} ${descriptionMapping[v.unitOfMeasure] !== undefined ? descriptionMapping[v.unitOfMeasure] : v.unitOfMeasure}`
+    } else if (parseInt(v.total) < 1000) {
+      totalValues = `${(showRemainingContingent ? v.remaining : v.used)} MB von ${v.total} MB`
+    } else {
+      let GB = ((showRemainingContingent ? v.remaining : v.used) / 1024).toFixed(2)
+      let totalGB = (v.total / 1024).toFixed(2)
+      totalValues = `${GB} GB von ${totalGB} GB`
+    }
+  return totalValues
+}
+
 async function getSessionCookiesViaNetworkLogin() {
   let req;
   req = new Request("https://www.vodafone.de/mint/rest/session/start")
@@ -522,7 +540,7 @@ async function getUsage(user, pass, number) {
       if (debug) {
         console.log(JSON.stringify(res, null, 2))
       }
-      
+      throw new Error("Invalid Response")
     }
     console.log("unbilled-usage loaded")
     if (debug) {
@@ -637,16 +655,39 @@ try {
   }
 }
 
+const lockscreenWidget = config.widgetFamily.includes('accessory')
+
 // Create Widget
 let widget = new ListWidget();
 
-widget.setPadding(10, 10, 10, 10)
+if(!lockscreenWidget) {
+  widget.setPadding(10, 10, 10, 10)
+}
 
 if (data !== undefined) {
   if(debug) {
       console.log(JSON.stringify(data, null, 2))
   }
-  const gradient = new LinearGradient()
+  if(lockscreenWidget) {
+    let stack = widget.addStack()
+    stack.layoutHorizontally()
+    let v = data.usage[0]
+    if(config.widgetFamily !== "accessoryInline") {
+      const percentage = (100 / v.total * (showRemainingContingent ? v.remaining : v.used)).toFixed(0);  
+stack.addImage(getDiagram(percentage));     
+    }
+    if(config.widgetFamily === "accessoryRectangular"){
+      stack.addSpacer(5)
+      
+    }
+    
+    if(config.widgetFamily !== "accessoryCircular"){
+      const totalValues = getTotalValues(v)
+      stack.centerAlignContent()
+    stack.addText(totalValues)
+    }
+  } else {
+   const gradient = new LinearGradient()
   gradient.locations = [0, 1]
   gradient.colors = [
     backColor,
@@ -701,16 +742,7 @@ if (data !== undefined) {
     column.addSpacer(2)
     
     // Total Values
-    let totalValues;
-    if (v.unitOfMeasure !== 'MB') {
-      totalValues = `${(showRemainingContingent ? v.remaining : v.used)} ${descriptionMapping[v.unitOfMeasure] !== undefined ? descriptionMapping[v.unitOfMeasure] : v.unitOfMeasure} von ${v.total} ${descriptionMapping[v.unitOfMeasure] !== undefined ? descriptionMapping[v.unitOfMeasure] : v.unitOfMeasure}`
-    } else if (parseInt(v.total) < 1000) {
-      totalValues = `${(showRemainingContingent ? v.remaining : v.used)} MB von ${v.total} MB`
-    } else {
-      let GB = ((showRemainingContingent ? v.remaining : v.used) / 1024).toFixed(2)
-      let totalGB = (v.total / 1024).toFixed(2)
-      totalValues = `${GB} GB von ${totalGB} GB`
-    }
+    let totalValues = getTotalValues(v)
     textStack = column.addStack()
     textStack.layoutHorizontally()
     textStack.addSpacer()
@@ -759,8 +791,8 @@ if (data !== undefined) {
     remainingDaysText.font = Font.systemFont(8)
     remainingDaysText.centerAlignText()
     remainingDaysText.textColor = textColor
+  } 
   }
-
 } else {
   let fallbackText = widget.addText("Es ist ein Fehler aufgetreten! Bitte prüfen Sie die Logs direkt in der App.")
   fallbackText.font = Font.mediumSystemFont(12)
@@ -772,6 +804,9 @@ if (!config.runsInWidget) {
     case 'small': await widget.presentSmall(); break;
     case 'medium': await widget.presentMedium(); break;
     case 'large': await widget.presentLarge(); break;
+    case 'accessoryRectangular': await widget.presentAccessoryRectangular(); break;
+    case 'accessoryCircular': await widget.presentAccessoryCircular(); break;
+    case 'accessoryInline': await widget.presentAccessoryInline(); break;
   }
   
 } else {
