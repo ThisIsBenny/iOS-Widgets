@@ -17,6 +17,7 @@ if (widgetInputRAW !== null) {
   }
   dateForCountdown = widgetInput[0].trim()
   icon = widgetInput[1] || '⏳';
+  text = widgetInput[3]; // new
   if (widgetInput[2] && widgetInput[2].toLowerCase() === 'true') {
     showDate = true
   }
@@ -26,9 +27,9 @@ if (widgetInputRAW !== null) {
 
 ////////////////////////////////////////////////////////////////////////////////
 const localeText = {
-  default: ['Day', 'Days'],
-  en: ['Day', 'Days'],
-  de: ['Tag', 'Tage'],
+  default: ['Day', 'Days', 'weeks'],
+  en: ['Day', 'Days', 'Weeks'],
+  de: ['Tag', 'Tage', 'Wochen'],
   fr: ['Jour', 'Jours'],
   es: ['día', 'días'],
   it: ['giorno', 'giorni']
@@ -54,6 +55,7 @@ function getTimeRemaining(endtime){
   };
 }
 let remainingDays = getTimeRemaining(dateForCountdown).days + 1;
+let remainingWeeks = Math.round(remainingDays*10 /7)/10;
 
 // Create Widget
 let widget = new ListWidget();
@@ -69,7 +71,7 @@ gradient.colors = [
 widget.backgroundGradient = gradient
 
 
-let provider = widget.addText(icon + " Countdown")
+let provider = widget.addText(icon + " " + text) // variant
 provider.font = Font.mediumSystemFont(12)
 provider.textColor = textColor
 
@@ -98,6 +100,11 @@ if (remainingDays === 1) {
 }
 postfixText.font = Font.regularSystemFont(20)
 postfixText.textColor = textColor;
+let provider2 = widget.addText(remainingWeeks+ " " + (t[2]))
+provider2.font = Font.mediumSystemFont(16)
+provider2.textColor = textColor
+provider2.centerAlignText()
+textStack.addSpacer()
 
 textStack.addSpacer()
 
