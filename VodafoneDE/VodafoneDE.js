@@ -430,9 +430,9 @@ function getDiagram(percentage, isFlat, widgetType) {
     canvas.setTextColor(textColor)
     canvas.setFont(Font.boldSystemFont(108))
     if (isFlat === true) {
+        const infinitySize = canvSize / 2;
+        canvas.setFont(Font.boldSystemFont(infinitySize));
         if (widgetType === "small" || "medium" || "large" || "extraLarge") {
-            const infinitySize = canvSize / 2;
-            canvas.setFont(Font.boldSystemFont(infinitySize));
             const textRect = new Rect(0, infinitySize / 3, canvSize, canvSize);
             canvas.drawTextInRect(`∞`, textRect);
         } else {
