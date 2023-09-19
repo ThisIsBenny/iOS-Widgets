@@ -3,9 +3,11 @@
 // icon-color: red; icon-glyph: broadcast-tower;
 
 /**************
-Version 2.3.0
+Version 2.4.0
 
 Changelog:  
+  v2.4.0:
+          - added Support for flat tariff like "GigaMobil M mit unbegrenzten GB", "GigaMobil XL mit unbegrenzten GB" or other flat tariffs
   v2.3.0:
           - Support for lockscreen widgets added
   v2.2.2:
@@ -374,7 +376,7 @@ function creatProgress(total, havegone) {
   return context.getImage()
 }
 
-function getDiagram(percentage) {
+function getDiagram(percentage, isFlat) {
   function drawArc(ctr, rad, w, deg) {
     bgx = ctr.x - rad
     bgy = ctr.y - rad
@@ -427,7 +429,21 @@ function getDiagram(percentage) {
   canvas.setTextAlignedCenter()
   canvas.setTextColor(textColor)
   canvas.setFont(Font.boldSystemFont(canvTextSize))
-  canvas.drawTextInRect(`${percentage}%`, canvTextRect)
+  if (isFlat === true) {
+    const infinitySize = canvSize / 2;
+    canvas.setFont(Font.boldSystemFont(infinitySize));
+    if (config.widgetFamily === "small" || "medium" || "large" || "extraLarge") {
+      const textRect = new Rect(0, infinitySize / 3, canvSize, canvSize);
+      canvas.drawTextInRect(`∞`, textRect);
+    } else {
+      const infinitySize = canvSize / 2;
+      canvas.setFont(Font.boldSystemFont(infinitySize));
+      const textRect = new Rect(0, infinitySize / 1, canvSize, canvSize);
+      canvas.drawTextInRect(`∞`, textRect);
+    }
+  } else {
+    canvas.drawTextInRect(`${percentage}%`, canvTextRect);
+  }
 
   return canvas.getImage()
 }
@@ -450,15 +466,26 @@ function getTimeRemaining(endtime) {
 
 function getTotalValues(v) {
   let totalValues;
-    if (v.unitOfMeasure !== 'MB') {
-      totalValues = `${(showRemainingContingent ? v.remaining : v.used)} ${descriptionMapping[v.unitOfMeasure] !== undefined ? descriptionMapping[v.unitOfMeasure] : v.unitOfMeasure} von ${v.total} ${descriptionMapping[v.unitOfMeasure] !== undefined ? descriptionMapping[v.unitOfMeasure] : v.unitOfMeasure}`
-    } else if (parseInt(v.total) < 1000) {
-      totalValues = `${(showRemainingContingent ? v.remaining : v.used)} MB von ${v.total} MB`
+  if (v.unitOfMeasure !== 'MB') {
+    totalValues = `${(showRemainingContingent ? v.remaining : v.used)} ${descriptionMapping[v.unitOfMeasure] !== undefined ? descriptionMapping[v.unitOfMeasure] : v.unitOfMeasure} von ${v.total} ${descriptionMapping[v.unitOfMeasure] !== undefined ? descriptionMapping[v.unitOfMeasure] : v.unitOfMeasure}`
+  } else if (parseInt(v.total) < 1000) {
+    totalValues = `${(showRemainingContingent ? v.remaining : v.used)} MB von ${v.total} MB`
+  } else if (parseInt(v.total) >= 100000000) {
+    if (showRemainingContingent === true) {
+      totalValues = `Flat`
     } else {
-      let GB = ((showRemainingContingent ? v.remaining : v.used) / 1024).toFixed(2)
-      let totalGB = (v.total / 1024).toFixed(2)
-      totalValues = `${GB} GB von ${totalGB} GB`
+      if (v.used <= 1024) {
+        totalValues = `${v.used} MB verbraucht.`
+      } else {
+        let usedGB = (v.used / 1024).toFixed(2)
+        totalValues = `${usedGB} GB verbraucht.`
+      }
     }
+  } else {
+    let GB = ((showRemainingContingent ? v.remaining : v.used) / 1024).toFixed(2)
+    let totalGB = (v.total / 1024).toFixed(2)
+    totalValues = `${GB} GB von ${totalGB} GB`
+  }
   return totalValues
 }
 
@@ -672,9 +699,10 @@ if (data !== undefined) {
     let stack = widget.addStack()
     stack.layoutHorizontally()
     let v = data.usage[0]
-    if(config.widgetFamily !== "accessoryInline") {
-      const percentage = (100 / v.total * (showRemainingContingent ? v.remaining : v.used)).toFixed(0);  
-stack.addImage(getDiagram(percentage));     
+    if (config.widgetFamily !== "accessoryInline") {
+      const percentage = v.total >= 100000000 ? '∞' : (100 / v.total * (showRemainingContingent ? v.remaining : v.used)).toFixed(0);
+      const isFlat = v.total >= 100000000
+      stack.addImage(getDiagram(percentage, isFlat));
     }
     if(config.widgetFamily === "accessoryRectangular"){
       stack.addSpacer(5)
@@ -732,12 +760,13 @@ stack.addImage(getDiagram(percentage));
     column = row.addStack()
     column.layoutVertically()
     column.centerAlignContent()
-    
-    const percentage = (100 / v.total * (showRemainingContingent ? v.remaining : v.used)).toFixed(0);
+
+    const percentage = v.total > 100000000 ? 100 : (100 / v.total * (showRemainingContingent ? v.remaining : v.used)).toFixed(0);
+    const isFlat = v.total >= 100000000
     const imageStack = column.addStack()
     imageStack.layoutHorizontally()
     imageStack.addSpacer()
-    imageStack.addImage(getDiagram(percentage));
+    imageStack.addImage(getDiagram(percentage, isFlat));
     imageStack.addSpacer()
     column.addSpacer(2)
     
