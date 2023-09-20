@@ -432,18 +432,12 @@ function getDiagram(percentage, isFlat) {
   if (isFlat === true) {
     const infinitySize = canvSize / 2;
     canvas.setFont(Font.boldSystemFont(infinitySize));
-    if (config.widgetFamily === "small" || "medium" || "large" || "extraLarge") {
-      const textRect = new Rect(0, infinitySize / 3, canvSize, canvSize);
-      canvas.drawTextInRect(`∞`, textRect);
-    } else {
-      canvas.setFont(Font.boldSystemFont(infinitySize));
-      const textRect = new Rect(0, infinitySize / 1, canvSize, canvSize);
-      canvas.drawTextInRect(`∞`, textRect);
-    }
+    const verticalPosition = config.widgetFamily === "small" || "medium" || "large" || "extraLarge" ? infinitySize / 3 : infinitySize / 1;
+    const textRect = new Rect(0, verticalPosition, canvSize, canvSize);
+    canvas.drawTextInRect(`∞`, textRect);
   } else {
     canvas.drawTextInRect(`${percentage}%`, canvTextRect);
   }
-
   return canvas.getImage()
 }
 
