@@ -429,14 +429,13 @@ function getDiagram(percentage, isFlat) {
   canvas.setTextAlignedCenter()
   canvas.setTextColor(textColor)
   canvas.setFont(Font.boldSystemFont(canvTextSize))
+  const infinitySize = canvSize / 2;
   if (isFlat === true) {
-    const infinitySize = canvSize / 2;
     canvas.setFont(Font.boldSystemFont(infinitySize));
     if (config.widgetFamily === "small" || "medium" || "large" || "extraLarge") {
       const textRect = new Rect(0, infinitySize / 3, canvSize, canvSize);
       canvas.drawTextInRect(`∞`, textRect);
     } else {
-      const infinitySize = canvSize / 2;
       canvas.setFont(Font.boldSystemFont(infinitySize));
       const textRect = new Rect(0, infinitySize / 1, canvSize, canvSize);
       canvas.drawTextInRect(`∞`, textRect);
@@ -475,10 +474,10 @@ function getTotalValues(v) {
       totalValues = `Flat`
     } else {
       if (v.used <= 1024) {
-        totalValues = `${v.used} MB verbraucht.`
+        totalValues = `${v.used} MB verbraucht`
       } else {
         let usedGB = (v.used / 1024).toFixed(2)
-        totalValues = `${usedGB} GB verbraucht.`
+        totalValues = `${usedGB} GB verbraucht`
       }
     }
   } else {
