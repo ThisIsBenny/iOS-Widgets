@@ -429,8 +429,8 @@ function getDiagram(percentage, isFlat) {
   canvas.setTextAlignedCenter()
   canvas.setTextColor(textColor)
   canvas.setFont(Font.boldSystemFont(canvTextSize))
-  const infinitySize = canvSize / 2;
   if (isFlat === true) {
+    const infinitySize = canvSize / 2;
     canvas.setFont(Font.boldSystemFont(infinitySize));
     if (config.widgetFamily === "small" || "medium" || "large" || "extraLarge") {
       const textRect = new Rect(0, infinitySize / 3, canvSize, canvSize);
