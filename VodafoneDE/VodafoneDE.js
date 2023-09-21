@@ -429,7 +429,7 @@ function getDiagram(percentage, isFlat) {
   canvas.setTextAlignedCenter()
   canvas.setTextColor(textColor)
   canvas.setFont(Font.boldSystemFont(canvTextSize))
-  if (isFlat === true) {
+  if (isFlat) {
     const infinitySize = canvSize / 2;
     canvas.setFont(Font.boldSystemFont(infinitySize));
     const verticalPosition = config.widgetFamily === "small" || "medium" || "large" || "extraLarge" ? infinitySize / 3 : infinitySize / 1;
@@ -458,28 +458,24 @@ function getTimeRemaining(endtime) {
 }
 
 function getTotalValues(v) {
-  let totalValues;
-  if (v.unitOfMeasure !== 'MB') {
-    totalValues = `${(showRemainingContingent ? v.remaining : v.used)} ${descriptionMapping[v.unitOfMeasure] !== undefined ? descriptionMapping[v.unitOfMeasure] : v.unitOfMeasure} von ${v.total} ${descriptionMapping[v.unitOfMeasure] !== undefined ? descriptionMapping[v.unitOfMeasure] : v.unitOfMeasure}`
-  } else if (parseInt(v.total) < 1000) {
-    totalValues = `${(showRemainingContingent ? v.remaining : v.used)} MB von ${v.total} MB`
-  } else if (parseInt(v.total) >= 100000000) {
-    if (showRemainingContingent === true) {
-      totalValues = `Flat`
+  const unitOfMeasure = descriptionMapping[v.unitOfMeasure] || v.unitOfMeasure;
+  const remainingOrUsed = showRemainingContingent ? v.remaining : v.used;
+  const total = parseInt(v.total);
+
+  if (v.unitOfMeasure !== 'MB' || total < 1024) {
+    return `${remainingOrUsed} ${unitOfMeasure} von ${total} ${unitOfMeasure}`;
+  } else if (total >= 100000000) {
+    if (showRemainingContingent) {
+      return 'Flat';
     } else {
-      if (v.used <= 1024) {
-        totalValues = `${v.used} MB verbraucht`
-      } else {
-        let usedGB = (v.used / 1024).toFixed(2)
-        totalValues = `${usedGB} GB verbraucht`
-      }
+      const usedValue = v.used <= 1024 ? `${v.used} MB` : `${(v.used / 1024).toFixed(2)} GB`;
+      return `${usedValue} verbraucht`;
     }
   } else {
-    let GB = ((showRemainingContingent ? v.remaining : v.used) / 1024).toFixed(2)
-    let totalGB = (v.total / 1024).toFixed(2)
-    totalValues = `${GB} GB von ${totalGB} GB`
+    const GB = (remainingOrUsed / 1024).toFixed(2);
+    const totalGB = (total / 1024).toFixed(2);
+    return `${GB} GB von ${totalGB} GB`;
   }
-  return totalValues
 }
 
 async function getSessionCookiesViaNetworkLogin() {
