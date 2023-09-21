@@ -376,7 +376,7 @@ function creatProgress(total, havegone) {
   return context.getImage()
 }
 
-function getDiagram(percentage, isFlat) {
+function getDiagram(percentage, v) {
   function drawArc(ctr, rad, w, deg) {
     bgx = ctr.x - rad
     bgy = ctr.y - rad
@@ -429,7 +429,7 @@ function getDiagram(percentage, isFlat) {
   canvas.setTextAlignedCenter()
   canvas.setTextColor(textColor)
   canvas.setFont(Font.boldSystemFont(canvTextSize))
-  if (isFlat) {
+  if (v.total >= 100000000) {
     const infinitySize = canvSize / 2;
     canvas.setFont(Font.boldSystemFont(infinitySize));
     const verticalPosition = config.widgetFamily === "small" || "medium" || "large" || "extraLarge" ? infinitySize / 3 : infinitySize / 1;
@@ -690,8 +690,7 @@ if (data !== undefined) {
     let v = data.usage[0]
     if (config.widgetFamily !== "accessoryInline") {
       const percentage = v.total >= 100000000 ? '∞' : (100 / v.total * (showRemainingContingent ? v.remaining : v.used)).toFixed(0);
-      const isFlat = v.total >= 100000000
-      stack.addImage(getDiagram(percentage, isFlat));
+      stack.addImage(getDiagram(percentage, v));
     }
     if(config.widgetFamily === "accessoryRectangular"){
       stack.addSpacer(5)
@@ -751,11 +750,10 @@ if (data !== undefined) {
     column.centerAlignContent()
 
     const percentage = v.total > 100000000 ? 100 : (100 / v.total * (showRemainingContingent ? v.remaining : v.used)).toFixed(0);
-    const isFlat = v.total >= 100000000
     const imageStack = column.addStack()
     imageStack.layoutHorizontally()
     imageStack.addSpacer()
-    imageStack.addImage(getDiagram(percentage, isFlat));
+    imageStack.addImage(getDiagram(percentage, v));
     imageStack.addSpacer()
     column.addSpacer(2)
     
