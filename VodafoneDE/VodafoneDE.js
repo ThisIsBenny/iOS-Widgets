@@ -465,12 +465,7 @@ function getTotalValues(v) {
   if (v.unitOfMeasure !== 'MB' || total < 1024) {
     return `${remainingOrUsed} ${unitOfMeasure} von ${total} ${unitOfMeasure}`;
   } else if (total >= 100000000) {
-    if (showRemainingContingent) {
-      return 'Flat';
-    } else {
-      const usedValue = v.used <= 1024 ? `${v.used} MB` : `${(v.used / 1024).toFixed(2)} GB`;
-      return `${usedValue} verbraucht`;
-    }
+    return showRemainingContingent ? 'Flat' : (v.used <= 1024 ? `${v.used} MB verbraucht` : `${(v.used / 1024).toFixed(2)} GB verbraucht`);
   } else {
     const GB = (remainingOrUsed / 1024).toFixed(2);
     const totalGB = (total / 1024).toFixed(2);
