@@ -3,9 +3,11 @@
 // icon-color: red; icon-glyph: broadcast-tower;
 
 /**************
-Version 2.3.0
+Version 2.4.0
 
 Changelog:  
+  v2.4.0:
+          - added Support for flat tariff like "GigaMobil M mit unbegrenzten GB", "GigaMobil XL mit unbegrenzten GB" or other flat tariffs
   v2.3.0:
           - Support for lockscreen widgets added
   v2.2.2:
@@ -374,7 +376,7 @@ function creatProgress(total, havegone) {
   return context.getImage()
 }
 
-function getDiagram(percentage) {
+function getDiagram(percentage, v) {
   function drawArc(ctr, rad, w, deg) {
     bgx = ctr.x - rad
     bgy = ctr.y - rad
@@ -427,8 +429,15 @@ function getDiagram(percentage) {
   canvas.setTextAlignedCenter()
   canvas.setTextColor(textColor)
   canvas.setFont(Font.boldSystemFont(canvTextSize))
-  canvas.drawTextInRect(`${percentage}%`, canvTextRect)
-
+  if (v.total >= 100000000) {
+    const infinitySize = canvSize / 2;
+    canvas.setFont(Font.boldSystemFont(infinitySize));
+    const verticalPosition = config.widgetFamily === "small" || "medium" || "large" || "extraLarge" ? infinitySize / 3 : infinitySize / 1;
+    const textRect = new Rect(0, verticalPosition, canvSize, canvSize);
+    canvas.drawTextInRect(`∞`, textRect);
+  } else {
+    canvas.drawTextInRect(`${percentage}%`, canvTextRect);
+  }
   return canvas.getImage()
 }
 
@@ -449,17 +458,19 @@ function getTimeRemaining(endtime) {
 }
 
 function getTotalValues(v) {
-  let totalValues;
-    if (v.unitOfMeasure !== 'MB') {
-      totalValues = `${(showRemainingContingent ? v.remaining : v.used)} ${descriptionMapping[v.unitOfMeasure] !== undefined ? descriptionMapping[v.unitOfMeasure] : v.unitOfMeasure} von ${v.total} ${descriptionMapping[v.unitOfMeasure] !== undefined ? descriptionMapping[v.unitOfMeasure] : v.unitOfMeasure}`
-    } else if (parseInt(v.total) < 1000) {
-      totalValues = `${(showRemainingContingent ? v.remaining : v.used)} MB von ${v.total} MB`
-    } else {
-      let GB = ((showRemainingContingent ? v.remaining : v.used) / 1024).toFixed(2)
-      let totalGB = (v.total / 1024).toFixed(2)
-      totalValues = `${GB} GB von ${totalGB} GB`
-    }
-  return totalValues
+  const unitOfMeasure = descriptionMapping[v.unitOfMeasure] || v.unitOfMeasure;
+  const remainingOrUsed = showRemainingContingent ? v.remaining : v.used;
+  const total = parseInt(v.total);
+
+  if (v.unitOfMeasure !== 'MB' || total < 1024) {
+    return `${remainingOrUsed} ${unitOfMeasure} von ${total} ${unitOfMeasure}`;
+  } else if (total >= 100000000) {
+    return showRemainingContingent ? 'Flat' : (v.used <= 1024 ? `${v.used} MB verbraucht` : `${(v.used / 1024).toFixed(2)} GB verbraucht`);
+  } else {
+    const GB = (remainingOrUsed / 1024).toFixed(2);
+    const totalGB = (total / 1024).toFixed(2);
+    return `${GB} GB von ${totalGB} GB`;
+  }
 }
 
 async function getSessionCookiesViaNetworkLogin() {
@@ -672,9 +683,9 @@ if (data !== undefined) {
     let stack = widget.addStack()
     stack.layoutHorizontally()
     let v = data.usage[0]
-    if(config.widgetFamily !== "accessoryInline") {
-      const percentage = (100 / v.total * (showRemainingContingent ? v.remaining : v.used)).toFixed(0);  
-stack.addImage(getDiagram(percentage));     
+    if (config.widgetFamily !== "accessoryInline") {
+      const percentage = v.total >= 100000000 ? '∞' : (100 / v.total * (showRemainingContingent ? v.remaining : v.used)).toFixed(0);
+      stack.addImage(getDiagram(percentage, v));
     }
     if(config.widgetFamily === "accessoryRectangular"){
       stack.addSpacer(5)
@@ -732,12 +743,12 @@ stack.addImage(getDiagram(percentage));
     column = row.addStack()
     column.layoutVertically()
     column.centerAlignContent()
-    
-    const percentage = (100 / v.total * (showRemainingContingent ? v.remaining : v.used)).toFixed(0);
+
+    const percentage = v.total > 100000000 ? 100 : (100 / v.total * (showRemainingContingent ? v.remaining : v.used)).toFixed(0);
     const imageStack = column.addStack()
     imageStack.layoutHorizontally()
     imageStack.addSpacer()
-    imageStack.addImage(getDiagram(percentage));
+    imageStack.addImage(getDiagram(percentage, v));
     imageStack.addSpacer()
     column.addSpacer(2)
     
